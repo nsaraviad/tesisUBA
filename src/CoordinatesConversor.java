@@ -10,7 +10,7 @@ public class CoordinatesConversor {
 		
 		
 		public static double getTileNumberLong(double longitude){
-			double xTile =  ((longitude + 180)/360);// *(1<<10));
+			double xTile =  ((longitude + 180)/360);//*(1<<10);
 			return xTile;
 		}
 }		

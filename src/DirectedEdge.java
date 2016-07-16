@@ -1,7 +1,6 @@
 import java.io.Serializable;
 
 public class DirectedEdge {
-	private static final long serialVersionUID = -9074416579376692922L;
 	 
 	private final GraphNode startNode;
     private final GraphNode endNode;
@@ -14,9 +13,9 @@ public class DirectedEdge {
     private float weight;
     private long way_id; 
 
-    /**
-     * Constructor
-     */
+    /*
+     	Constructor
+    */
 	
     public DirectedEdge(GraphNode startNode, GraphNode endNode, double length, boolean isOneway,
     		String type, String name,  long way_id ) {
@@ -64,7 +63,6 @@ public class DirectedEdge {
         return endNode;
     }
  
-    
     public double getLength() {
         return length;
     }
