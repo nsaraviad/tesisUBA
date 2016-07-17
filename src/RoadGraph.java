@@ -152,7 +152,7 @@ public class RoadGraph {
 					double len = getDistance(firstNode.getLat(),firstNode.getLon(),
 							nextNode.getLat(),nextNode.getLon());
 	
-					
+										
 					DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,
 							len,way.getOneway(),way.getType(),
 							way.getName(),way.getId());

@@ -8,6 +8,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.collections15.functors.ConstantTransformer;
 
 import java.awt.*;
 import java.awt.Polygon;
@@ -30,6 +31,8 @@ import edu.uci.ics.jung.visualization.*;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.renderers.DefaultEdgeLabelRenderer;
+import edu.uci.ics.jung.visualization.renderers.EdgeLabelRenderer;
 import javafx.scene.shape.*;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 
@@ -71,7 +74,7 @@ public class GraphVisualizer {
 		Transformer<GraphNode, Paint> vertexPaint = new Transformer<GraphNode, Paint>() {
 
 		       public Paint transform(GraphNode v) {   
-		            return Color.ORANGE;
+		            return Color.lightGray;
 		       }
 		};
 
@@ -79,10 +82,16 @@ public class GraphVisualizer {
 		Transformer<DirectedEdge, Paint> edgePaint = new Transformer<DirectedEdge, Paint>() {
 
 			  public Paint transform(DirectedEdge e) {
-				    		return Color.BLACK;				    	
+				    if(e.getType().equals("secondary")){
+				    	return Color.ORANGE;
+				    }else{
+				  		return Color.WHITE;
+				    }
+				    	
 			  }
 		};
 		 
+			
 				
 		//VISUALIZACIÓN
 	        
@@ -91,18 +100,21 @@ public class GraphVisualizer {
 		map.setSize(new Dimension(800,800));
 		 
 		VisualizationViewer<GraphNode,DirectedEdge> vv = new VisualizationViewer<GraphNode,DirectedEdge>(map);
-				
+		
 		vv.setPreferredSize(new Dimension(850,850));
+		
+		vv.getRenderingHints().remove(RenderingHints.KEY_ANTIALIASING); 
 	    		
+		
 		//Visualización de nodos
 		Transformer<GraphNode,Shape> vertexSize = new Transformer<GraphNode,Shape>(){
 		
 			public Shape transform(GraphNode i){
-				Ellipse2D circle = new Ellipse2D.Double(-2,-2,4,4);
+				Ellipse2D circle = new Ellipse2D.Double(-2,-2,3,3);
 				return circle;
 			}
 		};
-	    
+				    
 		//Coloreo nodos	   
 	    vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 		
@@ -112,6 +124,10 @@ public class GraphVisualizer {
 	    //Coloreo ejes
 	    vv.getRenderContext().setEdgeDrawPaintTransformer(edgePaint);
 	    
+	    //Coloreo de flechas de ejes(sentido calles)
+	    vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.WHITE));
+	    
+	    
 	    //Visualizaciòn de Ejes
 	    vv.getRenderContext().setEdgeLabelTransformer(new Transformer<DirectedEdge,String>(){
 	    	public String transform(DirectedEdge e){
@@ -119,17 +135,19 @@ public class GraphVisualizer {
 	    	}
 	    });
 	    
+	    
 	    //Ejes rectos
 	    vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<GraphNode, DirectedEdge>());
 	    
-	    vv.setBackground(Color.WHITE);
-	    vv.getRenderingHints().remove(RenderingHints.KEY_ANTIALIASING); 
+	    vv.setBackground(Color.BLACK);
 	    
-	    // Create a graph mouse and add it to the visualization component
+	    
+	    //Create a graph mouse and add it to the visualization component
         DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         vv.setGraphMouse(gm); 
-                 
+        
+                         
         JFrame frame = new JFrame("Grafo Vista de " + nameArchive);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(vv);
