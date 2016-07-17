@@ -53,9 +53,9 @@ public class GraphVisualizer {
 	    addEdgesToVisualize(a, edges);
 	
 	     
-		//TRANSFORMERs
+		//TRANSFORMERS DE VISUALIZACIÓN
 		
-		//Mapeo geocoordenadas (Latitud,Longitud) a puntos (x,y).
+		//Mapeo geocoordenadas (Latitud,Longitud) a puntos del plano (x,y).
 		Transformer<GraphNode,Point2D> locationTransformer = new Transformer<GraphNode,Point2D>(){
 	
 				public Point2D transform(GraphNode vertex){
@@ -74,7 +74,7 @@ public class GraphVisualizer {
 		Transformer<GraphNode, Paint> vertexPaint = new Transformer<GraphNode, Paint>() {
 
 		       public Paint transform(GraphNode v) {   
-		            return Color.lightGray;
+		            return Color.LIGHT_GRAY;
 		       }
 		};
 
@@ -90,9 +90,23 @@ public class GraphVisualizer {
 				    	
 			  }
 		};
-		 
-			
+		
+		//Visualización de nodos
+		Transformer<GraphNode,Shape> vertexSize = new Transformer<GraphNode,Shape>(){
 				
+			public Shape transform(GraphNode i){
+				Ellipse2D circle = new Ellipse2D.Double(-0.5,-0.5,1,1);
+				return circle;
+			}
+		};
+				
+		Transformer<DirectedEdge,String> showRoadName = new Transformer<DirectedEdge,String>(){
+	    	
+			public String transform(DirectedEdge e){
+	    		return e.getName();
+	    	}
+	    };
+	    
 		//VISUALIZACIÓN
 	        
 		Layout<GraphNode,DirectedEdge> map = new StaticLayout<GraphNode,DirectedEdge>(a,locationTransformer);
@@ -105,16 +119,8 @@ public class GraphVisualizer {
 		
 		vv.getRenderingHints().remove(RenderingHints.KEY_ANTIALIASING); 
 	    		
+		/* SE APLICAN LAS TRANSFORMACIONES */		    
 		
-		//Visualización de nodos
-		Transformer<GraphNode,Shape> vertexSize = new Transformer<GraphNode,Shape>(){
-		
-			public Shape transform(GraphNode i){
-				Ellipse2D circle = new Ellipse2D.Double(-2,-2,3,3);
-				return circle;
-			}
-		};
-				    
 		//Coloreo nodos	   
 	    vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 		
@@ -126,15 +132,9 @@ public class GraphVisualizer {
 	    
 	    //Coloreo de flechas de ejes(sentido calles)
 	    vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.WHITE));
-	    
-	    
+	    	    
 	    //Visualizaciòn de Ejes
-	    vv.getRenderContext().setEdgeLabelTransformer(new Transformer<DirectedEdge,String>(){
-	    	public String transform(DirectedEdge e){
-	    		return e.getName();
-	    	}
-	    });
-	    
+	    vv.getRenderContext().setEdgeLabelTransformer(showRoadName);
 	    
 	    //Ejes rectos
 	    vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<GraphNode, DirectedEdge>());
@@ -142,7 +142,7 @@ public class GraphVisualizer {
 	    vv.setBackground(Color.BLACK);
 	    
 	    
-	    //Create a graph mouse and add it to the visualization component
+	    //Detección eventos mouse en el panel
         DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         vv.setGraphMouse(gm); 

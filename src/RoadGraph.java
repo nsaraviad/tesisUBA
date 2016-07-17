@@ -63,7 +63,7 @@ public class RoadGraph {
 						}
 
 					}
-					/*Extracting road attributes*/
+					/*Obteniendo atributos del camino*/
 					else if(xrp.getName().equals("tag")){
 						if(tempNode == NULL_NODE)	{
 							for(int i = 0; i < attributeCount; i++){
@@ -83,7 +83,7 @@ public class RoadGraph {
 								}
 							}
 						}
-						/*Extracting roadways */
+						/*Obteniendo roadways */
 					}else if(xrp.getName().equals("way")){							
 						tempWay = new GraphWay();
 						for(int i = 0; i < attributeCount; i++){

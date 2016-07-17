@@ -30,8 +30,6 @@ public class ParseOSM {
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
 		System.out.println("Nodes = "+nodes.size());
-		//System.out.println("Node = "+nodes.get(0).toString());
-		
 		
 		
 	}
