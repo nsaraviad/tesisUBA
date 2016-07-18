@@ -1,8 +1,10 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -13,10 +15,13 @@ import org.apache.commons.collections15.functors.ConstantTransformer;
 import java.awt.*;
 import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.event.ItemEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -26,11 +31,14 @@ import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.algorithms.*;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.SparseGraph;
 import edu.uci.ics.jung.graph.util.Context;
+import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.*;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.renderers.DefaultEdgeLabelRenderer;
 import edu.uci.ics.jung.visualization.renderers.EdgeLabelRenderer;
 import javafx.scene.shape.*;
@@ -46,7 +54,7 @@ public class GraphVisualizer {
 		nodes = graph.getNodes();
 		edges = graph.getEdges();
 		
-		Graph<GraphNode, DirectedEdge> a = new DirectedSparseGraph<GraphNode,DirectedEdge>();
+		Graph<GraphNode, DirectedEdge> a = new SparseGraph<GraphNode,DirectedEdge>();
 		
 		//ARMADO DEL GRAFO A VISUALIZAR
 		addVertexToVisualize(a, nodes);
@@ -82,8 +90,11 @@ public class GraphVisualizer {
 		Transformer<DirectedEdge, Paint> edgePaint = new Transformer<DirectedEdge, Paint>() {
 
 			  public Paint transform(DirectedEdge e) {
-				    if(e.getType().equals("secondary")){
+				    
+				  	if(e.getType().equals("primary")){
 				    	return Color.ORANGE;
+				    }else if(e.getType().equals("secondary")){
+				    	return Color.RED;
 				    }else{
 				  		return Color.WHITE;
 				    }
@@ -115,10 +126,11 @@ public class GraphVisualizer {
 		 
 		VisualizationViewer<GraphNode,DirectedEdge> vv = new VisualizationViewer<GraphNode,DirectedEdge>(map);
 		
+		
 		vv.setPreferredSize(new Dimension(850,850));
 		
 		vv.getRenderingHints().remove(RenderingHints.KEY_ANTIALIASING); 
-	    		
+	    	
 		/* SE APLICAN LAS TRANSFORMACIONES */		    
 		
 		//Coloreo nodos	   
@@ -134,25 +146,30 @@ public class GraphVisualizer {
 	    vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.WHITE));
 	    	    
 	    //Visualizaciòn de Ejes
-	    vv.getRenderContext().setEdgeLabelTransformer(showRoadName);
+	    //vv.getRenderContext().setEdgeLabelTransformer(showRoadName);
 	    
+	    vv.setEdgeToolTipTransformer(showRoadName);
+	    	    
 	    //Ejes rectos
 	    vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<GraphNode, DirectedEdge>());
 	    
 	    vv.setBackground(Color.BLACK);
 	    
-	    
 	    //Detección eventos mouse en el panel
         DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         vv.setGraphMouse(gm); 
-        
-                         
+                               
         JFrame frame = new JFrame("Grafo Vista de " + nameArchive);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        
         frame.getContentPane().add(vv);
+        frame.setLocationRelativeTo(null);
         frame.pack();
-        frame.setVisible(true);      
+        frame.setVisible(true);
+	    
+	        
 	}
 	
 	
@@ -163,13 +180,16 @@ public class GraphVisualizer {
 			//solo se agregan los ejes correspondientes a caminos transitables "highway"
 			if(e.getType() != null){
 				
-				a.addEdge(e, e.from(),e.to());
+				//a.addEdge(e, e.from(),e.to());
+				DirectedEdge ei = new DirectedEdge(e.to(),e.from(),e.getLength(),
+						e.isOneway(),e.getType(),e.getName(),e.getWayId());
 				
-				//Si es doble sentido de circulación se agrega un eje en sentido contrario (doble mano)
-				if(!e.isOneway()){
-					DirectedEdge ei = new DirectedEdge(e.to(),e.from(),e.getLength(),
-														e.isOneway(),e.getType(),"",e.getWayId());
-					a.addEdge(ei, ei.from(),ei.to());					
+				if(e.isOneway() == true){
+					a.addEdge(ei, ei.from(),ei.to(),EdgeType.DIRECTED);	
+				}
+				else
+				{
+					a.addEdge(ei, ei.from(),ei.to(),EdgeType.UNDIRECTED);					
 				}
 			}
 		}
@@ -182,7 +202,7 @@ public class GraphVisualizer {
   				a.addVertex(n);
   		}
 	}
-		
+			
 }
 	
 	
