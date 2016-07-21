@@ -25,12 +25,13 @@ public class ParseOSM {
 		//xpp.setInput ( new FileReader ("/home/nicolas/Documentos/tesis/maps/lezama.osm"));
 		xpp.setInput ( new FileReader (pathToArchive));
 		g.osmGraphParser(xpp);
+		
 		nodes = g.nodes;
 		edges = g.edges;
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
 		System.out.println("Nodes = "+nodes.size());
-		
+		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 	

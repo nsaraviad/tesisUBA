@@ -60,8 +60,8 @@ public class GraphVisualizer {
 		addVertexToVisualize(a, nodes);
 	    addEdgesToVisualize(a, edges);
 	
-	     
-		//TRANSFORMERS DE VISUALIZACIÓN
+	    
+	    //TRANSFORMERS DE VISUALIZACIÓN
 		
 		//Mapeo geocoordenadas (Latitud,Longitud) a puntos del plano (x,y).
 		Transformer<GraphNode,Point2D> locationTransformer = new Transformer<GraphNode,Point2D>(){
@@ -96,9 +96,8 @@ public class GraphVisualizer {
 				    }else if(e.getType().equals("secondary")){
 				    	return Color.RED;
 				    }else{
-				  		return Color.WHITE;
+				    	return Color.WHITE;
 				    }
-				    	
 			  }
 		};
 		
@@ -119,13 +118,11 @@ public class GraphVisualizer {
 	    };
 	    
 		//VISUALIZACIÓN
-	        
-		Layout<GraphNode,DirectedEdge> map = new StaticLayout<GraphNode,DirectedEdge>(a,locationTransformer);
+	    Layout<GraphNode,DirectedEdge> map = new StaticLayout<GraphNode,DirectedEdge>(a,locationTransformer);
 		 
 		map.setSize(new Dimension(800,800));
 		 
 		VisualizationViewer<GraphNode,DirectedEdge> vv = new VisualizationViewer<GraphNode,DirectedEdge>(map);
-		
 		
 		vv.setPreferredSize(new Dimension(850,850));
 		
@@ -159,17 +156,14 @@ public class GraphVisualizer {
         DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         vv.setGraphMouse(gm); 
-                               
+    
         JFrame frame = new JFrame("Grafo Vista de " + nameArchive);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        
         frame.getContentPane().add(vv);
         frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);
-	    
-	        
+	
 	}
 	
 	
@@ -180,11 +174,10 @@ public class GraphVisualizer {
 			//solo se agregan los ejes correspondientes a caminos transitables "highway"
 			if(e.getType() != null){
 				
-				//a.addEdge(e, e.from(),e.to());
 				DirectedEdge ei = new DirectedEdge(e.to(),e.from(),e.getLength(),
 						e.isOneway(),e.getType(),e.getName(),e.getWayId());
 				
-				if(e.isOneway() == true){
+				if(e.isOneway()){
 					a.addEdge(ei, ei.from(),ei.to(),EdgeType.DIRECTED);	
 				}
 				else
@@ -202,7 +195,7 @@ public class GraphVisualizer {
   				a.addVertex(n);
   		}
 	}
-			
+		
 }
 	
 	

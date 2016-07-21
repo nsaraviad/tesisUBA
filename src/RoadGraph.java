@@ -10,12 +10,15 @@ public class RoadGraph {
 
 	public LinkedList<GraphNode> nodes;
 	public LinkedList<DirectedEdge> edges;
+	public LinkedList<Long> refBound;
 
 
 	public RoadGraph(){
-		
+			
 		nodes = new LinkedList<GraphNode>();
 		edges = new LinkedList<DirectedEdge>();
+		refBound = new LinkedList<Long>();
+		
 	}
 	
 	//método de Parseo
@@ -23,14 +26,17 @@ public class RoadGraph {
 	public boolean osmGraphParser(XmlPullParser xrp) throws XmlPullParserException, IOException{
 		/*Initialization of temporary variables */
 		boolean ret = false;
-		boolean isOsmData = false;	
+		boolean isOsmData = false;
+		boolean isBoundary = false;
+		
 		GraphNode tempNode = new GraphNode();					
 		GraphNode NULL_NODE = new GraphNode();					
-		GraphWay tempWay = new GraphWay();						
+		GraphWay tempWay = new GraphWay();
+		LinkedList<Long> tempRefsWayBound = new LinkedList<Long>();
 		GraphWay NULL_WAY = new GraphWay();						
 		LinkedList<GraphNode> allNodes = new LinkedList<GraphNode>();	
-		LinkedList<GraphWay> allWays = new LinkedList<GraphWay>();		
-
+		LinkedList<GraphWay> allWays = new LinkedList<GraphWay>();
+		
 		if(xrp == null){
 			return ret;
 		}
@@ -61,7 +67,6 @@ public class RoadGraph {
 								tempNode.setLon(Double.parseDouble(xrp.getAttributeValue(i)));	
 							}
 						}
-
 					}
 					/*Obteniendo atributos del camino*/
 					else if(xrp.getName().equals("tag")){
@@ -70,25 +75,31 @@ public class RoadGraph {
 								if(xrp.getAttributeName(i).equals("k")
 										&& xrp.getAttributeValue(i).equals("highway")){		
 									String v = xrp.getAttributeValue(i + 1);
-									tempWay.setType(v);
-									
+									if(isnotFilteredWay(v))
+										tempWay.setType(v);									
 								} else if(xrp.getAttributeName(i).equals("k")
 										&& xrp.getAttributeValue(i).equals("name")){	
 									String v = xrp.getAttributeValue(i + 1);
 									tempWay.setName(v);
 								} else if(xrp.getAttributeName(i).equals("k")
 										&& xrp.getAttributeValue(i).equals("oneway")){	
+									
 									String v = xrp.getAttributeValue(i + 1);
 									tempWay.setOneway(isOneWay(v));
-								}
-							}
+								} else if(xrp.getAttributeName(i).equals("k")
+										&& xrp.getAttributeValue(i).equals("admin_level") 
+										&& xrp.getAttributeValue(i+1).equals("8")){	
+											this.setRefBoundary(tempRefsWayBound);
+									
+										}
+								}						
 						}
-						/*Obteniendo roadways */
+						/* OBTENIENDO ROADWAYS */
 					}else if(xrp.getName().equals("way")){							
 						tempWay = new GraphWay();
 						for(int i = 0; i < attributeCount; i++){
 							if(xrp.getAttributeName(i).equals("id")){
-								tempWay.setId(Long.parseLong(xrp.getAttributeValue(i)));
+									tempWay.setId(Long.parseLong(xrp.getAttributeValue(i)));
 							}
 						}	
 					} else if(xrp.getName().equals("nd")){										
@@ -99,9 +110,20 @@ public class RoadGraph {
 								tempWay.addRef(ref);
 							}
 						}
+					} else if(xrp.getName().equals("relation")){										
+						tempRefsWayBound.clear();
+				    }else if(xrp.getName().equals("member") && xrp.getAttributeValue(0).equals("way")){
+				    	for(int i = 0; i < attributeCount; i++){
+							if(xrp.getAttributeName(i).equals("ref")){							
+								String v = xrp.getAttributeValue(i);
+								long ref = Long.parseLong(v);
+								tempRefsWayBound.add(ref);
+							}
+						}
+				    }
 					}
-				}
 				break;
+			
 			case XmlPullParser.END_TAG:
 				if(isOsmData){
 					if(xrp.getName().equals("osm")){
@@ -109,20 +131,16 @@ public class RoadGraph {
 					} else if(xrp.getName().equals("node")){						
 						allNodes.add(tempNode);
 						tempNode = NULL_NODE;		
-					} else if(xrp.getName().equals("tag")){							
-
 					} else if(xrp.getName().equals("way")){							
 						allWays.add(tempWay);
 						tempWay = NULL_WAY;
-					} else if(xrp.getName().equals("nd")){							
-
-					}
+					} 
 				}
 				break;
 			}
 			eventType = xrp.next();
 		}
-		/*Relaciones nodos-ejes*/
+		/*RELACIONES NODO-EJES*/
 		LinkedList<GraphWay> remainingWays = new LinkedList<GraphWay>();
 		for(GraphWay way : allWays){	
 			LinkedList<Long> refs = way.getRefs();
@@ -144,8 +162,9 @@ public class RoadGraph {
 			return false;
 		
 		for(GraphWay way : remainingWays){
-			//Se descartan aquellos cainos no útiles para ser transitados. (agua, vías, etc)
+			//Se descartan aquellos caminos no útiles para ser transitados. (agua, vías, etc)
 			if(way.getType() != null){
+				
 				GraphNode firstNode = getNode(allNodes,(long) way.getRefs().get(0));
 				for(int i = 1; i <= way.getRefs().size() - 1; i++){
 					GraphNode nextNode = getNode(allNodes,(long) way.getRefs().get(i));
@@ -170,9 +189,16 @@ public class RoadGraph {
 				}
 			}
 		}
+		System.out.println("refBound = "+ this.getRefBoundary().size());
 		return ret;
 	}
 	
+	private boolean isnotFilteredWay(String v) {
+		// Metodo encargado de filtrar highways no considerables
+		return (!v.equals("footway") && (!v.equals("service")) && (!v.equals("pedestrian")) && (!v.equals("raceway")) 
+				&& (!v.equals("bridleway") && (!v.equals("steps")) && (!v.equals("path")) && (!v.equals("cycleway"))));
+	}
+
 	private boolean isOneWay(String v) {
 		
 		if(v.equals("yes")){
@@ -218,6 +244,8 @@ public class RoadGraph {
 		}
 		return null;
 	}
+	
+	
 	/**
 	 * Retorna la distancia entre dos puntos en Km dada Latitud/Longitud
 	 * @param lat_1atitud del primer punto.
@@ -244,6 +272,13 @@ public class RoadGraph {
 		return c*r;
 	}
 	
+	public LinkedList<Long> getRefBoundary(){
+		return refBound;
+	}
+	
+	public void setRefBoundary(LinkedList<Long> l){
+		refBound.addAll(l);
+	}
 	
 	/*Inner class defined to store the road attributes temporarily*/
 	class OtherTags
