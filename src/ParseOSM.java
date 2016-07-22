@@ -22,10 +22,8 @@ public class ParseOSM {
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		factory.setNamespaceAware(true);
 		XmlPullParser xpp = factory.newPullParser();
-		//xpp.setInput ( new FileReader ("/home/nicolas/Documentos/tesis/maps/lezama.osm"));
 		xpp.setInput ( new FileReader (pathToArchive));
-		g.osmGraphParser(xpp);
-		
+		g.osmGraphParser(xpp, nameArchives);
 		nodes = g.nodes;
 		edges = g.edges;
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
@@ -34,9 +32,7 @@ public class ParseOSM {
 		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
-	
-	
-	
+		
 	public LinkedList getNodes() {
 		return nodes;
 	}

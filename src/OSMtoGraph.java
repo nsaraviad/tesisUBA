@@ -15,10 +15,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.xmlpull.v1.XmlPullParserException;
  
-/**
- *
- * @author Rafa
- */
 public class OSMtoGraph extends JFrame {
     private JButton boton;
     

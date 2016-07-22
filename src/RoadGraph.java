@@ -23,7 +23,7 @@ public class RoadGraph {
 	
 	//método de Parseo
 
-	public boolean osmGraphParser(XmlPullParser xrp) throws XmlPullParserException, IOException{
+	public boolean osmGraphParser(XmlPullParser xrp, String nameArchive) throws XmlPullParserException, IOException{
 		/*Initialization of temporary variables */
 		boolean ret = false;
 		boolean isOsmData = false;
@@ -78,21 +78,29 @@ public class RoadGraph {
 									if(isnotFilteredWay(v))
 										tempWay.setType(v);									
 								} else if(xrp.getAttributeName(i).equals("k")
-										&& xrp.getAttributeValue(i).equals("name")){	
-									String v = xrp.getAttributeValue(i + 1);
-									tempWay.setName(v);
+										&& xrp.getAttributeValue(i).equals("name")){
+									if(xrp.getAttributeValue(i+1).equals(nameArchive.substring(0, nameArchive.lastIndexOf('.')))){
+										if(isBoundary){		
+											this.setRefBoundary(tempRefsWayBound);
+											isBoundary= false;
+										}
+									}else{
+										String v = xrp.getAttributeValue(i + 1);
+										tempWay.setName(v);
+									}
 								} else if(xrp.getAttributeName(i).equals("k")
 										&& xrp.getAttributeValue(i).equals("oneway")){	
-									
 									String v = xrp.getAttributeValue(i + 1);
 									tempWay.setOneway(isOneWay(v));
 								} else if(xrp.getAttributeName(i).equals("k")
 										&& xrp.getAttributeValue(i).equals("admin_level") 
 										&& xrp.getAttributeValue(i+1).equals("8")){	
-											this.setRefBoundary(tempRefsWayBound);
-									
-										}
-								}						
+											//this.setRefBoundary(tempRefsWayBound);
+											if(tempRefsWayBound.size()>0)
+															isBoundary= true;
+								} 
+								
+							}						
 						}
 						/* OBTENIENDO ROADWAYS */
 					}else if(xrp.getName().equals("way")){							
@@ -162,6 +170,9 @@ public class RoadGraph {
 			return false;
 		
 		for(GraphWay way : remainingWays){
+			
+			//ME GUARDO EL/LOS CAMINO/S QUE DETERMINAN EL LIMITE DE LA CIUDAD
+			
 			//Se descartan aquellos caminos no útiles para ser transitados. (agua, vías, etc)
 			if(way.getType() != null){
 				
