@@ -10,19 +10,18 @@ public class RoadGraph {
 
 	public LinkedList<GraphNode> nodes;
 	public LinkedList<DirectedEdge> edges;
-	public LinkedList<Long> refBound;
-
+	private LinkedList<Long> refBound;
+	public LinkedList<GraphNode> nodesBoundary;
 
 	public RoadGraph(){
 			
 		nodes = new LinkedList<GraphNode>();
 		edges = new LinkedList<DirectedEdge>();
 		refBound = new LinkedList<Long>();
-		
+		nodesBoundary = new LinkedList<GraphNode>();
 	}
 	
-	//método de Parseo
-
+	//Método de Parseo
 	public boolean osmGraphParser(XmlPullParser xrp, String nameArchive) throws XmlPullParserException, IOException{
 		/*Initialization of temporary variables */
 		boolean ret = false;
@@ -32,17 +31,20 @@ public class RoadGraph {
 		GraphNode tempNode = new GraphNode();					
 		GraphNode NULL_NODE = new GraphNode();					
 		GraphWay tempWay = new GraphWay();
+		Long tempRef;
 		LinkedList<Long> tempRefsWayBound = new LinkedList<Long>();
 		GraphWay NULL_WAY = new GraphWay();						
 		LinkedList<GraphNode> allNodes = new LinkedList<GraphNode>();	
 		LinkedList<GraphWay> allWays = new LinkedList<GraphWay>();
 		
+	
 		if(xrp == null){
 			return ret;
 		}
 
 		xrp.next();
 		int eventType = xrp.getEventType();
+		
 		/*Parseo xml*/
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			switch(eventType){
@@ -81,7 +83,8 @@ public class RoadGraph {
 										&& xrp.getAttributeValue(i).equals("name")){
 									if(xrp.getAttributeValue(i+1).equals(nameArchive.substring(0, nameArchive.lastIndexOf('.')))){
 										if(isBoundary){		
-											this.setRefBoundary(tempRefsWayBound);
+											//Se guardan la/las referencia/s de caminos que forman la frontera
+											setRefBoundary(tempRefsWayBound);
 											isBoundary= false;
 										}
 									}else{
@@ -95,15 +98,14 @@ public class RoadGraph {
 								} else if(xrp.getAttributeName(i).equals("k")
 										&& xrp.getAttributeValue(i).equals("admin_level") 
 										&& xrp.getAttributeValue(i+1).equals("8")){	
-											//this.setRefBoundary(tempRefsWayBound);
 											if(tempRefsWayBound.size()>0)
-															isBoundary= true;
+													isBoundary= true;
 								} 
-								
 							}						
 						}
-						/* OBTENIENDO ROADWAYS */
-					}else if(xrp.getName().equals("way")){							
+						
+					}  /* OBTENIENDO ROADWAYS */
+					else if(xrp.getName().equals("way")){							
 						tempWay = new GraphWay();
 						for(int i = 0; i < attributeCount; i++){
 							if(xrp.getAttributeName(i).equals("id")){
@@ -129,7 +131,7 @@ public class RoadGraph {
 							}
 						}
 				    }
-					}
+				}
 				break;
 			
 			case XmlPullParser.END_TAG:
@@ -171,11 +173,10 @@ public class RoadGraph {
 		
 		for(GraphWay way : remainingWays){
 			
-			//ME GUARDO EL/LOS CAMINO/S QUE DETERMINAN EL LIMITE DE LA CIUDAD
 			
 			//Se descartan aquellos caminos no útiles para ser transitados. (agua, vías, etc)
 			if(way.getType() != null){
-				
+			
 				GraphNode firstNode = getNode(allNodes,(long) way.getRefs().get(0));
 				for(int i = 1; i <= way.getRefs().size() - 1; i++){
 					GraphNode nextNode = getNode(allNodes,(long) way.getRefs().get(i));
@@ -199,10 +200,64 @@ public class RoadGraph {
 					nodes.add(firstNode);										
 				}
 			}
+			
 		}
-		System.out.println("refBound = "+ this.getRefBoundary().size());
+		
+		//EXTRAER LOS NODOS PARA ARMAR LA ZONA FRONTERA (en nodesBoundary)
+		getBoundary(allNodes, allWays);
+		
+		System.out.println("Boundary = "+ this.nodesBoundary.size());
 		return ret;
 	}
+
+	private void getBoundary(LinkedList<GraphNode> allNodes,
+			LinkedList<GraphWay> allWays) {
+		GraphNode tempNode;
+		GraphWay tempWay;
+		Long tempRef;
+		for(int k=0; k < refBound.size(); k++){
+			tempRef = refBound.get(k);
+			tempWay= getWayWithReference(allWays,tempRef); //me taigo el way con id= ref
+			
+			//Si se encontro camino
+			if(tempWay != null){
+				for(int j=0; j < tempWay.getRefs().size(); j++){
+					tempRef = (Long) tempWay.getRefs().get(j);
+					tempNode = getNodeWithReference(allNodes,tempRef);
+					nodesBoundary.add(tempNode);
+				}
+			}
+		}
+	}
+	
+	
+	//Devuelve el nodeo con id especificado. Si no lo encuentra devuelve null
+	private GraphNode getNodeWithReference(LinkedList<GraphNode> nodes,Long ref) {
+
+		//Sort lists
+		Collections.sort(nodes, new NodeComparator());
+
+		//Binary search
+		BinSearch bs = new BinSearch();
+		int index = bs.binSearchOverNodes(nodes,ref);
+		
+		return nodes.get(index);
+	}
+	
+	
+	//Devuelve el camino con id especificado. Si no lo encuentra devuelve null
+	private GraphWay getWayWithReference(LinkedList<GraphWay> ways,Long ref) {
+		
+		//Sort list
+		Collections.sort(ways, new WayComparator());
+		
+		//Binary search
+		BinSearch bs= new BinSearch();
+		int index = bs.binSearchOverWays(ways,ref);
+		
+		return ways.get(index);
+	}
+
 	
 	private boolean isnotFilteredWay(String v) {
 		// Metodo encargado de filtrar highways no considerables
@@ -219,7 +274,7 @@ public class RoadGraph {
 		}
 	}
 
-	//Clase auxiliar para guardar informacion de ciertos atributos de las rutas (maxima velocidad, sentido unico,etc)
+	//Clase auxiliar para guardar informacion de ciertos atributos de las rutas (si es sentido unico)
 	private OtherTags parseOtherTags(String v) {
 		String[] other_tags = v.split(",");
 		OtherTags output = new OtherTags();
@@ -247,7 +302,9 @@ public class RoadGraph {
 
 		return output;
 	}
+	
 	// This is the slower version which is used during parsing
+	
 	private GraphNode getNode(LinkedList<GraphNode> list, long id){
 		for(GraphNode node: list){
 			if(node.getId() == id)
@@ -283,6 +340,7 @@ public class RoadGraph {
 		return c*r;
 	}
 	
+
 	public LinkedList<Long> getRefBoundary(){
 		return refBound;
 	}

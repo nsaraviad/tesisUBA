@@ -8,7 +8,6 @@ public class DirectedEdge {
     private boolean isOneway;
     private String type;
     private String name;
-    private String other_tags;
     
     private float weight;
     private long way_id; 
@@ -88,11 +87,7 @@ public class DirectedEdge {
     public void setName(String name) {
 		this.name = name;
 	}
-    
-    public void setOtherTags(String other_tags) {
-		this.other_tags = other_tags;
-	}
-    
+            
     public double getWeight(){
     	//return (this.weight*60);
     	return (this.length);

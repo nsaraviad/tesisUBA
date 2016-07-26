@@ -78,5 +78,7 @@ public class GraphWay {
  
     public String getName(){
     	return name;
-    }	
+    }
+
+	
 }
