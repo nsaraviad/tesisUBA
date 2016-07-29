@@ -210,8 +210,7 @@ public class RoadGraph {
 		return ret;
 	}
 
-	private void getBoundary(LinkedList<GraphNode> allNodes,
-			LinkedList<GraphWay> allWays) {
+	private void getBoundary(LinkedList<GraphNode> allNodes,LinkedList<GraphWay> allWays) {
 		GraphNode tempNode;
 		GraphWay tempWay;
 		Long tempRef;
@@ -362,6 +361,11 @@ public class RoadGraph {
 		{
 			this.isOneWay = false;
 		}
+	}
+
+	public LinkedList<GraphNode> getNodesBoundary() {
+		
+		return nodesBoundary;
 	}
 
 }
