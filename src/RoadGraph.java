@@ -12,7 +12,7 @@ public class RoadGraph {
 	public LinkedList<DirectedEdge> edges;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
-
+	
 	public RoadGraph(){
 			
 		nodes = new LinkedList<GraphNode>();
@@ -207,6 +207,7 @@ public class RoadGraph {
 		getBoundary(allNodes, allWays);
 		
 		System.out.println("Boundary = "+ this.nodesBoundary.size());
+		
 		return ret;
 	}
 
@@ -214,17 +215,19 @@ public class RoadGraph {
 		GraphNode tempNode;
 		GraphWay tempWay;
 		Long tempRef;
+		
 		for(int k=0; k < refBound.size(); k++){
 			tempRef = refBound.get(k);
 			tempWay= getWayWithReference(allWays,tempRef); //me taigo el way con id= ref
 			
 			//Si se encontro camino
 			if(tempWay != null){
-				for(int j=0; j < tempWay.getRefs().size(); j++){
+				for(int j=tempWay.getRefs().size()-1; j >= 0; j--){
 					tempRef = (Long) tempWay.getRefs().get(j);
 					tempNode = getNodeWithReference(allNodes,tempRef);
 					nodesBoundary.add(tempNode);
 				}
+				
 			}
 		}
 	}
