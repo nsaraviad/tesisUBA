@@ -71,31 +71,30 @@ public class OSMtoGraph extends JFrame {
 				double max_lat,max_lon,min_lat,min_lon;
 				
 				//Obtener la maxima,mínima latitud/longitud de nodos frontera
+				if(nodesB.size() > 0){
+					//Inicializar las variables con el primer nodo de la lista
+					max_lat= nodesB.get(0).getLat();
+					max_lon= nodesB.get(0).getLon();
+					min_lat= nodesB.get(0).getLat();
+					min_lon= nodesB.get(0).getLon();
 				
 				
-				//Inicializar las variables con el primer nodo de la lista
-				max_lat= nodesB.get(0).getLat();
-				max_lon= nodesB.get(0).getLon();
-				min_lat= nodesB.get(0).getLat();
-				min_lon= nodesB.get(0).getLon();
-				
-				
-				for(int j=1; j < nodesB.size(); j++){
-					latit= nodesB.get(j).getLat();
-					longit= nodesB.get(j).getLon();
-					
-					if(latit > max_lat)
-						max_lat= latit;
-					if(longit > max_lon)
-						max_lon= longit;
-					
-					if(latit < min_lat)
-						min_lat= latit;
-					
-					if(longit < min_lon)
-						min_lon= longit;
-					
-				}
+					for(int j=1; j < nodesB.size(); j++){
+						latit= nodesB.get(j).getLat();
+						longit= nodesB.get(j).getLon();
+						
+						if(latit > max_lat)
+							max_lat= latit;
+						if(longit > max_lon)
+							max_lon= longit;
+						
+						if(latit < min_lat)
+							min_lat= latit;
+						
+						if(longit < min_lon)
+							min_lon= longit;
+						
+					}
 				
 				//Puntos que delimitan la zona 
 				lista.add(new Coordinate(max_lat,min_lon));
@@ -103,6 +102,7 @@ public class OSMtoGraph extends JFrame {
 				lista.add(new Coordinate(min_lat,max_lon));
 				lista.add(new Coordinate(min_lat,min_lon));
 				
+				}
 				
 				//ANALIZAR SI SE PUEDE REALIZAR
 				/*for(int i=0; i < nodesB.size(); i++){
