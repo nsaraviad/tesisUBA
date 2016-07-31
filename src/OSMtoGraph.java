@@ -53,31 +53,8 @@ public class OSMtoGraph extends JFrame {
                 	    try {
 							p.ParseOSM(pathArchivo,nombre);
 							
-							//ALGORITMO DE ZONIFICACIÓN
 							
-							//ARMADO DE POLÍGONO BOUNDARY
-							LinkedList<GraphNode> nodesB= p.getRoadGraph().getNodesBoundary();
-							int size= p.getRoadGraph().getNodesBoundary().size();
-							double latit, longit;
-							double[] xPoints= new double[size];
-							double[] yPoints= new double[size];
-							
-							for(int i=0;i < size; i++){
-								latit= nodesB.get(i).getLat();
-								longit= nodesB.get(i).getLon();
-								xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
-								yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
-							}
-							
-							Path2D path= new Path2D.Double();
-							
-							path.moveTo(xPoints[0], yPoints[0]);
-							for(int i=1;i < size;i++){
-								path.lineTo(xPoints[i], yPoints[i]);
-							}
-							
-							path.closePath();
-							final Area area= new Area(path);
+							/* PRUEBA DE INCLUSION */
 							
 							
 							double p1,p2;
@@ -86,8 +63,9 @@ public class OSMtoGraph extends JFrame {
 							
 							Point2D point= new Point2D.Double(p1,p2);
 							
-							if(area.contains(point))
-								 cont= true;
+							
+							if(p.getBoundaryArea().contains(point))
+								cont= true;
 							
 							
 							/* VISUALIZACIÓN */
