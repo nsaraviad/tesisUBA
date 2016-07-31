@@ -126,8 +126,7 @@ public class RoadGraph {
 				    	for(int i = 0; i < attributeCount; i++){
 							if(xrp.getAttributeName(i).equals("ref")){							
 								String v = xrp.getAttributeValue(i);
-								long ref = Long.parseLong(v);
-								tempRefsWayBound.add(ref);
+								tempRefsWayBound.add(Long.parseLong(v));
 							}
 						}
 				    }
@@ -168,22 +167,22 @@ public class RoadGraph {
 					break;
 			}
 		}
+
 		if(remainingWays.size() == 0)	
 			return false;
 		
 		for(GraphWay way : remainingWays){
-			
-			
-			//Se descartan aquellos caminos no útiles para ser transitados. (agua, vías, etc)
+		
+			//Se descartan aquellos caminos no útiles para ser transitados (agua, vías, etc)
 			if(way.getType() != null){
 			
 				GraphNode firstNode = getNode(allNodes,(long) way.getRefs().get(0));
+				
 				for(int i = 1; i <= way.getRefs().size() - 1; i++){
 					GraphNode nextNode = getNode(allNodes,(long) way.getRefs().get(i));
 					double len = getDistance(firstNode.getLat(),firstNode.getLon(),
 							nextNode.getLat(),nextNode.getLon());
 	
-										
 					DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,
 							len,way.getOneway(),way.getType(),
 							way.getName(),way.getId());
@@ -200,7 +199,6 @@ public class RoadGraph {
 					nodes.add(firstNode);										
 				}
 			}
-			
 		}
 		
 		//EXTRAER LOS NODOS PARA ARMAR LA ZONA FRONTERA (en nodesBoundary)
@@ -298,15 +296,13 @@ public class RoadGraph {
 							output.isOneWay = false;
 						flag =0;
 					}
-					}
+				}
 			}
 		}
 
 		return output;
 	}
-	
-	// This is the slower version which is used during parsing
-	
+		
 	private GraphNode getNode(LinkedList<GraphNode> list, long id){
 		for(GraphNode node: list){
 			if(node.getId() == id)
@@ -314,7 +310,6 @@ public class RoadGraph {
 		}
 		return null;
 	}
-	
 	
 	/**
 	 * Retorna la distancia entre dos puntos en Km dada Latitud/Longitud
@@ -342,7 +337,6 @@ public class RoadGraph {
 		return c*r;
 	}
 	
-
 	public LinkedList<Long> getRefBoundary(){
 		return refBound;
 	}
