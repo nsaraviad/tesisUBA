@@ -23,7 +23,7 @@ public class RoadGraph {
 	
 	//Método de Parseo
 	public boolean osmGraphParser(XmlPullParser xrp, String nameArchive) throws XmlPullParserException, IOException{
-		/*Initialization of temporary variables */
+		/* Variables temporales */
 		boolean ret = false;
 		boolean isOsmData = false;
 		boolean isBoundary = false;
@@ -222,7 +222,7 @@ public class RoadGraph {
 			
 			//Si se encontro camino
 			if(tempWay != null){
-				for(int j=tempWay.getRefs().size()-1; j >= 0; j--){
+				for(int j= 0; j < tempWay.getRefs().size(); j++){
 					tempRef = (Long) tempWay.getRefs().get(j);
 					tempNode = getNodeWithReference(allNodes,tempRef);
 					nodesBoundary.add(tempNode);

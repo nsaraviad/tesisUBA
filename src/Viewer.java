@@ -8,6 +8,7 @@ import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 
 import java.awt.BorderLayout;
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 public class Viewer
@@ -55,6 +56,11 @@ public class Viewer
 		// Agregamos varios marcadores
 		for(Coordinate c: lista)
 			mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
+		
+		/* PRUEBAS */		
+		
+		
+		//mapViewer.addMapMarker(new MapMarkerDot(-26.878915,-65.209067));
 		
 		// Agregamos un polígono usando los marcadores
 		mapViewer.addMapPolygon(new MapPolygonImpl(lista));

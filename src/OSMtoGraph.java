@@ -6,6 +6,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Area;
+import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -29,7 +32,8 @@ public class OSMtoGraph extends JFrame {
        
         boton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evento) {
-                    JFileChooser elegir = new JFileChooser();
+                    boolean cont;
+            		JFileChooser elegir = new JFileChooser();
                     
                     //Se filtran solamente archivos con extensión "osm"
                     FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -49,7 +53,46 @@ public class OSMtoGraph extends JFrame {
                 	    try {
 							p.ParseOSM(pathArchivo,nombre);
 							
-							//Visualización
+							//ALGORITMO DE ZONIFICACIÓN
+							
+							//ARMADO DE POLÍGONO BOUNDARY
+							LinkedList<GraphNode> nodesB= p.getRoadGraph().getNodesBoundary();
+							int size= p.getRoadGraph().getNodesBoundary().size();
+							double latit, longit;
+							double[] xPoints= new double[size];
+							double[] yPoints= new double[size];
+							
+							for(int i=0;i < size; i++){
+								latit= nodesB.get(i).getLat();
+								longit= nodesB.get(i).getLon();
+								xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
+								yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
+							}
+							
+							Path2D path= new Path2D.Double();
+							
+							path.moveTo(xPoints[0], yPoints[0]);
+							for(int i=1;i < size;i++){
+								path.lineTo(xPoints[i], yPoints[i]);
+							}
+							
+							path.closePath();
+							final Area area= new Area(path);
+							
+							
+							double p1,p2;
+							p1= CoordinatesConversor.getTileNumberLat(-26.878915);
+							p2= CoordinatesConversor.getTileNumberLong(-65.209067);
+							
+							Point2D point= new Point2D.Double(p1,p2);
+							
+							if(area.contains(point))
+								 cont= true;
+							
+							
+							/* VISUALIZACIÓN */
+							
+							//JUNG
 							//GraphVisualizer gv = new GraphVisualizer();
 		                	//gv.Visualize(p,nombre);
 						
@@ -70,6 +113,7 @@ public class OSMtoGraph extends JFrame {
 				double latit,longit;
 				double max_lat,max_lon,min_lat,min_lon;
 				
+				/*
 				//Obtener la maxima,mínima latitud/longitud de nodos frontera
 				if(nodesB.size() > 0){
 					//Inicializar las variables con el primer nodo de la lista
@@ -103,13 +147,13 @@ public class OSMtoGraph extends JFrame {
 				lista.add(new Coordinate(min_lat,min_lon));
 				
 				}
-				
+				*/
 				//ANALIZAR SI SE PUEDE REALIZAR
-				/*for(int i=0; i < nodesB.size(); i++){
+				for(int i=0; i < nodesB.size(); i++){
 					latit= nodesB.get(i).getLat();
 					longit= nodesB.get(i).getLon();
 					lista.add(new Coordinate(latit,longit));
-				}*/
+				}
 				
 				
 				Viewer viewer = new Viewer(lista);
