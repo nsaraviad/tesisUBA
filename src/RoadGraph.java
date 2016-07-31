@@ -212,6 +212,9 @@ public class RoadGraph {
 	private void getBoundary(LinkedList<GraphNode> allNodes,LinkedList<GraphWay> allWays) {
 		GraphNode tempNode;
 		GraphWay tempWay;
+		GraphWay auxWay;
+		LinkedList<GraphNode> tempWayNodes = new LinkedList<GraphNode>();
+		
 		Long tempRef;
 		
 		for(int k=0; k < refBound.size(); k++){
@@ -220,17 +223,42 @@ public class RoadGraph {
 			
 			//Si se encontro camino
 			if(tempWay != null){
+				
+				//TRAIGO LOS NODOS DEL CAMINO ACTUAL
 				for(int j= 0; j < tempWay.getRefs().size(); j++){
 					tempRef = (Long) tempWay.getRefs().get(j);
 					tempNode = getNodeWithReference(allNodes,tempRef);
-					nodesBoundary.add(tempNode);
+					tempWayNodes.add(tempNode);
 				}
 				
+				
+				//El camino esta enlazado en orden con el anterior
+				if(nodesBoundary.isEmpty() || (nodesBoundary.getLast().getId() == (Long) tempWay.getRefs().getFirst())){
+					
+					nodesBoundary.addAll(tempWayNodes);
+					tempWayNodes.clear();
+					
+				}else{
+					//SE AGREGAN NODOS DEL CAMINO EN REVERSO
+					nodesBoundary.addAll(reverse(tempWayNodes));
+					tempWayNodes.clear();
+				}
 			}
 		}
 	}
 	
 	
+	private LinkedList<GraphNode> reverse(LinkedList<GraphNode> list) {
+		LinkedList<GraphNode> retList= new LinkedList<GraphNode>();
+		
+		while(!list.isEmpty()){
+			retList.add(list.getLast());
+			list.removeLast();
+		}
+		
+		return retList;
+	}
+
 	//Devuelve el nodeo con id especificado. Si no lo encuentra devuelve null
 	private GraphNode getNodeWithReference(LinkedList<GraphNode> nodes,Long ref) {
 

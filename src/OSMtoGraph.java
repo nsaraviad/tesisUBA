@@ -56,10 +56,9 @@ public class OSMtoGraph extends JFrame {
 							
 							/* PRUEBA DE INCLUSION */
 							
-							
 							double p1,p2;
-							p1= CoordinatesConversor.getTileNumberLat(-26.878915);
-							p2= CoordinatesConversor.getTileNumberLong(-65.209067);
+							p1= CoordinatesConversor.getTileNumberLat(-36.3472271);
+							p2= CoordinatesConversor.getTileNumberLong(-56.7389681);
 							
 							Point2D point= new Point2D.Double(p1,p2);
 							
@@ -89,7 +88,7 @@ public class OSMtoGraph extends JFrame {
 				LinkedList<GraphNode> nodesB = p.getRoadGraph().getNodesBoundary();
 				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
 				double latit,longit;
-				double max_lat,max_lon,min_lat,min_lon;
+				//double max_lat,max_lon,min_lat,min_lon;
 				
 				/*
 				//Obtener la maxima,mínima latitud/longitud de nodos frontera
@@ -99,7 +98,6 @@ public class OSMtoGraph extends JFrame {
 					max_lon= nodesB.get(0).getLon();
 					min_lat= nodesB.get(0).getLat();
 					min_lon= nodesB.get(0).getLon();
-				
 				
 					for(int j=1; j < nodesB.size(); j++){
 						latit= nodesB.get(j).getLat();
@@ -132,7 +130,6 @@ public class OSMtoGraph extends JFrame {
 					longit= nodesB.get(i).getLon();
 					lista.add(new Coordinate(latit,longit));
 				}
-				
 				
 				Viewer viewer = new Viewer(lista);
 				
