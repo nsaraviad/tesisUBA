@@ -55,17 +55,14 @@ public class OSMtoGraph extends JFrame {
 							
 							
 							/* PRUEBA DE INCLUSION */
-							
 							double p1,p2;
 							p1= CoordinatesConversor.getTileNumberLat(-36.3472271);
 							p2= CoordinatesConversor.getTileNumberLong(-56.7389681);
 							
 							Point2D point= new Point2D.Double(p1,p2);
 							
-							
 							if(p.getBoundaryArea().contains(point))
 								cont= true;
-							
 							
 							/* VISUALIZACIÓN */
 							
@@ -124,7 +121,7 @@ public class OSMtoGraph extends JFrame {
 				
 				}
 				*/
-				//ANALIZAR SI SE PUEDE REALIZAR
+				
 				for(int i=0; i < nodesB.size(); i++){
 					latit= nodesB.get(i).getLat();
 					longit= nodesB.get(i).getLon();

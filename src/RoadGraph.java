@@ -122,6 +122,7 @@ public class RoadGraph {
 						}
 					} else if(xrp.getName().equals("relation")){										
 						tempRefsWayBound.clear();
+						isBoundary= false;
 				    }else if(xrp.getName().equals("member") && xrp.getAttributeValue(0).equals("way")){
 				    	for(int i = 0; i < attributeCount; i++){
 							if(xrp.getAttributeName(i).equals("ref")){							
