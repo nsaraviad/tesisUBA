@@ -53,7 +53,6 @@ public class OSMtoGraph extends JFrame {
                 	    try {
 							p.ParseOSM(pathArchivo,nombre);
 							
-							
 							/* PRUEBA DE INCLUSION */
 							double p1,p2;
 							p1= CoordinatesConversor.getTileNumberLat(-36.3472271);

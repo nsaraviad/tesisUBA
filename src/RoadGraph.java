@@ -11,7 +11,7 @@ public class RoadGraph {
 	//public LinkedList<GraphNode> nodes;
 	public HashMap<Long,GraphNode> nodes;
 	public LinkedList<DirectedEdge> edges;
-	public Map<Long,List<Tuple<Long,Double>>> adylst;
+	public Map<Long,List<AdyacencyInfo>> adylst;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
 	
@@ -184,7 +184,7 @@ public class RoadGraph {
 			if(way.getType() != null){
 			
 				long keyActualNode, keyNextNode; 
-				Tuple<Long,Double> nextNodeAsNeighbor, actualNodeAsNeighbor ;
+				AdyacencyInfo nextNodeAsNeighbor, actualNodeAsNeighbor ;
 				
 				GraphNode firstNode = getNode(allNodes,(long) way.getRefs().get(0));
 				keyActualNode= firstNode.getId();
@@ -201,14 +201,13 @@ public class RoadGraph {
 					
 					//AGREGO AL HASHMAP
 					
-					//Ya se agrego la clave del nodo firstNode
-					
-					nextNodeAsNeighbor = new Tuple(nextNode.getId(),len);
-					actualNodeAsNeighbor= new Tuple(keyActualNode,len);
+					//long ady_id, double lgt, boolean oneWay, String typ, String nm
+					nextNodeAsNeighbor = new AdyacencyInfo(nextNode.getId(),len,way.isOneway(),way.getType(),way.getName());
+					actualNodeAsNeighbor= new AdyacencyInfo(keyActualNode,len,way.isOneway(),way.getType(),way.getName());
 					
 					//Si no estan creadas las listas para ambos id,se crean
-					adylst.putIfAbsent(keyActualNode,new LinkedList<Tuple<Long,Double>>());
-					adylst.putIfAbsent(keyNextNode,new LinkedList<Tuple<Long,Double>>());
+					adylst.putIfAbsent(keyActualNode,new LinkedList<AdyacencyInfo>());
+					adylst.putIfAbsent(keyNextNode,new LinkedList<AdyacencyInfo>());
 					
 					//Si la clave está ya contenida
 					if(adylst.containsKey(keyActualNode))
@@ -218,8 +217,6 @@ public class RoadGraph {
 						adylst.get(keyActualNode).add(nextNodeAsNeighbor);
 						adylst.get(nextNode.getId()).add(actualNodeAsNeighbor);
 					}
-					
-					
 											
 					//Agrego un eje
 					DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,

@@ -1,5 +1,6 @@
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -35,29 +36,42 @@ public class ParseOSM {
 
 		//Armado del polígono de la ciudad
 		generateBoundaryArea();
-				
-		//ITERAR
 		
-		//for(long key : g.nodes.keySet()){
-		//	GraphNode value= g.nodes.get(key);
-		//	nodes.add(value);
-		//}
-		//nodes.add(n.);
-		
-		long key= 1374853151;
+		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
+		filterGraph();
 		
 		
 		edges = g.edges;
+		
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
-		System.out.println("Ady = "+g.adylst.get(key));
-		System.out.println("Nodes = "+g.nodes.keySet());
+		System.out.println("Nodes = "+nodes.size());
 		
 		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
+
+	private void filterGraph() {
+		//ITERAR
+		for(long key : g.nodes.keySet()){
+			GraphNode value= g.nodes.get(key);
+			
+			if(nodeIsIncludedInCity(value))
+				nodes.add(value);
+		}
+	}
 		
-	public LinkedList getNodes() {
+	private boolean nodeIsIncludedInCity(GraphNode value) {
+		double p1,p2;
+		p1= CoordinatesConversor.getTileNumberLat(value.getLat());
+		p2= CoordinatesConversor.getTileNumberLong(value.getLon());
+		
+		Point2D point= new Point2D.Double(p1,p2);
+		
+		return (this.getBoundaryArea().contains(point));
+	}
+
+	public LinkedList getNodes() {	
 		return nodes;
 	}
 	public void setNodes(LinkedList nodes) {
