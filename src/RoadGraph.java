@@ -8,14 +8,19 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class RoadGraph {
 
-	public LinkedList<GraphNode> nodes;
+	//public LinkedList<GraphNode> nodes;
+	public HashMap<Long,GraphNode> nodes;
 	public LinkedList<DirectedEdge> edges;
+	public Map<Long,List<Tuple<Long,Double>>> adylst;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
 	
 	public RoadGraph(){
 			
-		nodes = new LinkedList<GraphNode>();
+		//nodes = new LinkedList<GraphNode>();
+		nodes= new HashMap();
+		adylst= new HashMap();
+		
 		edges = new LinkedList<DirectedEdge>();
 		refBound = new LinkedList<Long>();
 		nodesBoundary = new LinkedList<GraphNode>();
@@ -172,33 +177,65 @@ public class RoadGraph {
 		if(remainingWays.size() == 0)	
 			return false;
 		
+		//PROCESAMIENTO DE CAMINOS
 		for(GraphWay way : remainingWays){
 		
 			//Se descartan aquellos caminos no útiles para ser transitados (agua, vías, etc)
 			if(way.getType() != null){
 			
+				long keyActualNode, keyNextNode; 
+				Tuple<Long,Double> nextNodeAsNeighbor, actualNodeAsNeighbor ;
+				
 				GraphNode firstNode = getNode(allNodes,(long) way.getRefs().get(0));
+				keyActualNode= firstNode.getId();
 				
 				for(int i = 1; i <= way.getRefs().size() - 1; i++){
+				
 					GraphNode nextNode = getNode(allNodes,(long) way.getRefs().get(i));
+					keyNextNode= nextNode.getId();
+					
+					//Se calcula la distancia entre el firstNode y el nextNode
 					double len = getDistance(firstNode.getLat(),firstNode.getLon(),
 							nextNode.getLat(),nextNode.getLon());
 	
+					
+					//AGREGO AL HASHMAP
+					
+					//Ya se agrego la clave del nodo firstNode
+					
+					nextNodeAsNeighbor = new Tuple(nextNode.getId(),len);
+					actualNodeAsNeighbor= new Tuple(keyActualNode,len);
+					
+					//Si no estan creadas las listas para ambos id,se crean
+					adylst.putIfAbsent(keyActualNode,new LinkedList<Tuple<Long,Double>>());
+					adylst.putIfAbsent(keyNextNode,new LinkedList<Tuple<Long,Double>>());
+					
+					//Si la clave está ya contenida
+					if(adylst.containsKey(keyActualNode))
+					{
+						//Se agrega nextnode a la lista de adyacencias del nodo firstnode y firstnode en 
+						//las adyacencias de nextnode.
+						adylst.get(keyActualNode).add(nextNodeAsNeighbor);
+						adylst.get(nextNode.getId()).add(actualNodeAsNeighbor);
+					}
+					
+					
+											
+					//Agrego un eje
 					DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,
 							len,way.getOneway(),way.getType(),
 							way.getName(),way.getId());
 					
 					edges.add(tempEdge);
-	
-					if(!nodes.contains(firstNode)){
-						nodes.add(firstNode);							
-					}
+					
+					nodes.putIfAbsent(keyActualNode, firstNode);
+					
 					firstNode = nextNode;
+					keyActualNode= firstNode.getId();
 				}
 	
-				if(!nodes.contains(firstNode)){
-					nodes.add(firstNode);										
-				}
+				nodes.putIfAbsent(keyActualNode, firstNode);
+				
 			}
 		}
 		

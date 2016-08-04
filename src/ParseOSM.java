@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.*;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JFileChooser;
 
@@ -14,7 +17,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 public class ParseOSM {
-	LinkedList nodes;
+	LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
 	LinkedList edges;
 	RoadGraph g = new RoadGraph();
 	Area boundaryArea;
@@ -32,12 +35,24 @@ public class ParseOSM {
 
 		//Armado del polígono de la ciudad
 		generateBoundaryArea();
+				
+		//ITERAR
 		
-		nodes = g.nodes;
+		//for(long key : g.nodes.keySet()){
+		//	GraphNode value= g.nodes.get(key);
+		//	nodes.add(value);
+		//}
+		//nodes.add(n.);
+		
+		long key= 1374853151;
+		
+		
 		edges = g.edges;
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
-		System.out.println("Nodes = "+nodes.size());
+		System.out.println("Ady = "+g.adylst.get(key));
+		System.out.println("Nodes = "+g.nodes.keySet());
+		
 		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
