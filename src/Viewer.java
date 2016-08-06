@@ -59,7 +59,7 @@ public class Viewer
 		
 		/* PRUEBAS */		
 		
-		//mapViewer.addMapMarker(new MapMarkerDot(-36.3472271,-56.7389681));
+		//mapViewer.addMapMarker(new MapMarkerDot(-31.6792205,-63.8703698));
 		
 		// Agregamos un polígono usando los marcadores
 		mapViewer.addMapPolygon(new MapPolygonImpl(lista));

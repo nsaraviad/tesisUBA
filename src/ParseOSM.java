@@ -40,25 +40,30 @@ public class ParseOSM {
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
 		filterGraph();
 		
-		
+		long k= 2644320638L;
 		edges = g.edges;
 		
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
-		System.out.println("Nodes = "+nodes.size());
+		System.out.println("Nodes = "+g.nodes.size());
+		System.out.println("Nodes = "+g.nodes.containsKey(k));
 		
 		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 
 	private void filterGraph() {
+
 		//ITERAR
-		for(long key : g.nodes.keySet()){
-			GraphNode value= g.nodes.get(key);
+		for(Iterator<Map.Entry<Long,GraphNode>> it= g.nodes.entrySet().iterator(); it.hasNext();)
+		{
+			Map.Entry<Long, GraphNode> entry= it.next();
+			GraphNode nodeValue= entry.getValue();
 			
-			if(nodeIsIncludedInCity(value))
-				nodes.add(value);
+			if(!nodeIsIncludedInCity(nodeValue))
+					it.remove();
 		}
+		
 	}
 		
 	private boolean nodeIsIncludedInCity(GraphNode value) {

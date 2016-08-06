@@ -55,8 +55,8 @@ public class OSMtoGraph extends JFrame {
 							
 							/* PRUEBA DE INCLUSION */
 							double p1,p2;
-							p1= CoordinatesConversor.getTileNumberLat(-36.3472271);
-							p2= CoordinatesConversor.getTileNumberLong(-56.7389681);
+							p1= CoordinatesConversor.getTileNumberLat(-31.6792205);
+							p2= CoordinatesConversor.getTileNumberLong(-63.8703698);
 							
 							Point2D point= new Point2D.Double(p1,p2);
 							
