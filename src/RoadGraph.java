@@ -11,7 +11,7 @@ public class RoadGraph {
 	//public LinkedList<GraphNode> nodes;
 	public HashMap<Long,GraphNode> nodes;
 	public LinkedList<DirectedEdge> edges;
-	public Map<Long,List<AdyacencyInfo>> adylst;
+	public Map<Long,LinkedList<AdyacencyInfo>> adylst;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
 	
@@ -218,12 +218,14 @@ public class RoadGraph {
 						adylst.get(nextNode.getId()).add(actualNodeAsNeighbor);
 					}
 											
+					/*
 					//Agrego un eje
 					DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,
 							len,way.getOneway(),way.getType(),
 							way.getName(),way.getId());
 					
 					edges.add(tempEdge);
+					*/
 					
 					nodes.putIfAbsent(keyActualNode, firstNode);
 					

@@ -9,7 +9,9 @@ import java.time.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.awt.List;
 
 import javax.swing.JFileChooser;
 
@@ -46,15 +48,43 @@ public class ParseOSM {
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
 		System.out.println("Nodes = "+g.nodes.size());
-		System.out.println("Nodes = "+g.nodes.containsKey(k));
+		System.out.println("Nodes = "+g.adylst.size());
 		
 		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 
 	private void filterGraph() {
+		filterOnlyNodesInCityPolygon();
+		filterOnlyEdgesBetweenCityNodes();
+	}
 
-		//ITERAR
+	private void filterOnlyEdgesBetweenCityNodes() {
+		AdyacencyInfo ady;
+		//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES A LA CIUDAD 
+		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.adylst.entrySet().iterator(); it.hasNext();)
+		{
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
+			
+			//verifica si es un nodo de la ciudad
+			if(g.nodes.containsKey(entry.getKey())){
+				LinkedList<AdyacencyInfo> listValues= entry.getValue();
+				for(int i=0;i < listValues.size();i++){
+					ady= listValues.get(i);
+					//Si el adyacente no es nodo de la ciudad lo quito de la lista de adyacentes
+					if(!g.nodes.containsKey(ady.getAdyId()))
+						listValues.remove(ady);
+				}
+			}else{
+				it.remove();
+			}
+			
+		}
+		
+	}
+
+	private void filterOnlyNodesInCityPolygon() {
+		//FILTRO NODOS QUE ESTEN DENTRO DE LA ZONA ADMINISTRATIVA DE LA CIUDAD
 		for(Iterator<Map.Entry<Long,GraphNode>> it= g.nodes.entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, GraphNode> entry= it.next();
@@ -63,7 +93,6 @@ public class ParseOSM {
 			if(!nodeIsIncludedInCity(nodeValue))
 					it.remove();
 		}
-		
 	}
 		
 	private boolean nodeIsIncludedInCity(GraphNode value) {
