@@ -21,7 +21,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 public class ParseOSM {
 	LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
-	LinkedList edges;
+	LinkedList<DirectedEdge> edges= new LinkedList<DirectedEdge>();
 	RoadGraph g = new RoadGraph();
 	Area boundaryArea;
  
@@ -42,15 +42,59 @@ public class ParseOSM {
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
 		filterGraph();
 		
-		long k= 2644320638L;
-		edges = g.edges;
+		//Se crean los nodos a visualizar
+		generateNodes();
+		
+		//Se crean los ejes
+		generateEdges();
 		
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
 		System.out.println("Nodes = "+g.nodes.size());
-		System.out.println("Nodes = "+g.adylst.size());
+		System.out.println("AdyList = "+g.adylst.size());
 		
 		System.out.println("refBound = "+g.getRefBoundary().size());
+		
+	}
+
+	private void generateNodes() {
+		for(Iterator<Entry<Long,GraphNode>> it= g.nodes.entrySet().iterator(); it.hasNext();){
+			
+			Map.Entry<Long,GraphNode> entry= it.next();
+			nodes.add(g.nodes.get(entry.getKey()));
+		}
+			
+	}
+
+	//Método para generar ejes del grafo
+	private void generateEdges() {
+		GraphNode actual, next;
+		AdyacencyInfo adyItem;
+		DirectedEdge tempEdge;
+		
+		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.adylst.entrySet().iterator(); it.hasNext();)
+		{
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
+			
+			//Nodo actual
+			actual= g.nodes.get(entry.getKey());
+			//Lista de adyacentes
+			LinkedList<AdyacencyInfo> listValues= entry.getValue();
+			
+			
+			for(int i=0;i < listValues.size();i++){
+				adyItem= listValues.get(i);
+				next= g.nodes.get(adyItem.getAdyId());
+				
+				//Creo eje
+				tempEdge = new DirectedEdge(actual, next,
+						adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
+						adyItem.getName());
+				
+				edges.add(tempEdge);
+			}
+	
+		}		
 		
 	}
 
@@ -90,7 +134,8 @@ public class ParseOSM {
 			Map.Entry<Long, GraphNode> entry= it.next();
 			GraphNode nodeValue= entry.getValue();
 			
-			if(!nodeIsIncludedInCity(nodeValue))
+			//Solo quedan los nodos que están dentro del polygono de la ciudad y en la frontera.
+			if(!nodeIsIncludedInCity(nodeValue) && !g.getNodesBoundary().contains(nodeValue))
 					it.remove();
 		}
 	}
@@ -105,13 +150,13 @@ public class ParseOSM {
 		return (this.getBoundaryArea().contains(point));
 	}
 
-	public LinkedList getNodes() {	
+	public LinkedList<GraphNode> getNodes() {	
 		return nodes;
 	}
 	public void setNodes(LinkedList nodes) {
 		this.nodes = nodes;
 	}
-	public LinkedList getEdges() {
+	public LinkedList<DirectedEdge> getEdges() {
 		return edges;
 	}
 	public void setEdges(LinkedList edges) {

@@ -8,9 +8,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class RoadGraph {
 
-	//public LinkedList<GraphNode> nodes;
 	public HashMap<Long,GraphNode> nodes;
-	public LinkedList<DirectedEdge> edges;
 	public Map<Long,LinkedList<AdyacencyInfo>> adylst;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
@@ -21,7 +19,7 @@ public class RoadGraph {
 		nodes= new HashMap();
 		adylst= new HashMap();
 		
-		edges = new LinkedList<DirectedEdge>();
+		//edges = new LinkedList<DirectedEdge>();
 		refBound = new LinkedList<Long>();
 		nodesBoundary = new LinkedList<GraphNode>();
 	}

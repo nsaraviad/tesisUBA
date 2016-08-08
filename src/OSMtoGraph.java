@@ -54,23 +54,23 @@ public class OSMtoGraph extends JFrame {
 							p.ParseOSM(pathArchivo,nombre);
 							
 							/* PRUEBA DE INCLUSION */
-							double p1,p2;
-							p1= CoordinatesConversor.getTileNumberLat(-31.6792205);
-							p2= CoordinatesConversor.getTileNumberLong(-63.8703698);
+							//double p1,p2;
+							//p1= CoordinatesConversor.getTileNumberLat(-31.6792205);
+							//p2= CoordinatesConversor.getTileNumberLong(-63.8703698);
 							
-							Point2D point= new Point2D.Double(p1,p2);
+							//Point2D point= new Point2D.Double(p1,p2);
 							
-							if(p.getBoundaryArea().contains(point))
-								cont= true;
+							//if(p.getBoundaryArea().contains(point))
+							//	cont= true;
 							
 							/* VISUALIZACIÓN */
 							
 							//JUNG
-							//GraphVisualizer gv = new GraphVisualizer();
-		                	//gv.Visualize(p,nombre);
+							GraphVisualizer gv = new GraphVisualizer();
+		                	gv.Visualize(p,nombre);
 						
 							//JMAP VIEWER
-							Visualize(p);
+							//Visualize(p);
 						
                 	    } catch (IOException | XmlPullParserException e) {
 						

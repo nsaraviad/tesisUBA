@@ -175,14 +175,18 @@ public class GraphVisualizer {
 			if(e.getType() != null){
 				
 				DirectedEdge ei = new DirectedEdge(e.to(),e.from(),e.getLength(),
-						e.isOneway(),e.getType(),e.getName(),e.getWayId());
+						e.isOneway(),e.getType(),e.getName());//,e.getWayId());
 				
-				if(e.isOneway()){
-					a.addEdge(ei, ei.from(),ei.to(),EdgeType.DIRECTED);	
-				}
-				else
-				{
-					a.addEdge(ei, ei.from(),ei.to(),EdgeType.UNDIRECTED);					
+				//Solo se agregan ejes con extremos no nulos
+				if(ei.from() != null && ei.to() != null){
+					
+					if(e.isOneway()){
+						a.addEdge(ei, ei.from(),ei.to(),EdgeType.DIRECTED);	
+					}
+					else
+					{
+						a.addEdge(ei, ei.from(),ei.to(),EdgeType.UNDIRECTED);					
+					}
 				}
 			}
 		}
