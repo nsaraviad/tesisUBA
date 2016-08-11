@@ -53,11 +53,14 @@ public class OSMtoGraph extends JFrame {
                 	    try {
 							p.ParseOSM(pathArchivo,nombre);
 							
-							/* PRUEBA DE INCLUSION */
-							//double p1,p2;
-							//p1= CoordinatesConversor.getTileNumberLat(-31.6792205);
-							//p2= CoordinatesConversor.getTileNumberLong(-63.8703698);
+							//ALGORITMO GENERADOR DE POLÍGONOS
+							PolygonsGenerator gen= new PolygonsGenerator(p);
+							gen.generatePolygons();
 							
+							
+							
+							
+							/* PRUEBA DE INCLUSION */
 							//Point2D point= new Point2D.Double(p1,p2);
 							
 							//if(p.getBoundaryArea().contains(point))
@@ -66,17 +69,15 @@ public class OSMtoGraph extends JFrame {
 							/* VISUALIZACIÓN */
 							
 							//JUNG
-							GraphVisualizer gv = new GraphVisualizer();
-		                	gv.Visualize(p,nombre);
+							//GraphVisualizer gv = new GraphVisualizer();
+		                	//gv.Visualize(p,nombre);
 						
 							//JMAP VIEWER
-							//Visualize(p);
+							Visualize(p);
 						
                 	    } catch (IOException | XmlPullParserException e) {
-						
 							e.printStackTrace();
 						}
-                		  
                     }
                 }
 
@@ -84,42 +85,6 @@ public class OSMtoGraph extends JFrame {
 				LinkedList<GraphNode> nodesB = p.getRoadGraph().getNodesBoundary();
 				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
 				double latit,longit;
-				//double max_lat,max_lon,min_lat,min_lon;
-				
-				/*
-				//Obtener la maxima,mínima latitud/longitud de nodos frontera
-				if(nodesB.size() > 0){
-					//Inicializar las variables con el primer nodo de la lista
-					max_lat= nodesB.get(0).getLat();
-					max_lon= nodesB.get(0).getLon();
-					min_lat= nodesB.get(0).getLat();
-					min_lon= nodesB.get(0).getLon();
-				
-					for(int j=1; j < nodesB.size(); j++){
-						latit= nodesB.get(j).getLat();
-						longit= nodesB.get(j).getLon();
-						
-						if(latit > max_lat)
-							max_lat= latit;
-						if(longit > max_lon)
-							max_lon= longit;
-						
-						if(latit < min_lat)
-							min_lat= latit;
-						
-						if(longit < min_lon)
-							min_lon= longit;
-						
-					}
-				
-				//Puntos que delimitan la zona 
-				lista.add(new Coordinate(max_lat,min_lon));
-				lista.add(new Coordinate(max_lat,max_lon));
-				lista.add(new Coordinate(min_lat,max_lon));
-				lista.add(new Coordinate(min_lat,min_lon));
-				
-				}
-				*/
 				
 				for(int i=0; i < nodesB.size(); i++){
 					latit= nodesB.get(i).getLat();

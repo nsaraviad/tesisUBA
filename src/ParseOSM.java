@@ -43,25 +43,25 @@ public class ParseOSM {
 		filterGraph();
 		
 		//Se crean los nodos a visualizar
-		generateNodes();
+		//generateNodes();
 		
 		//Se crean los ejes
-		generateEdges();
+		//generateEdges();
 		
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
-		System.out.println("Nodes = "+g.nodes.size());
-		System.out.println("AdyList = "+g.adylst.size());
+		System.out.println("Nodes = "+g.getNodes().size());
+		System.out.println("AdyList = "+g.getAdyLst().size());
 		
 		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 
 	private void generateNodes() {
-		for(Iterator<Entry<Long,GraphNode>> it= g.nodes.entrySet().iterator(); it.hasNext();){
+		for(Iterator<Entry<Long,GraphNode>> it= g.getNodes().entrySet().iterator(); it.hasNext();){
 			
 			Map.Entry<Long,GraphNode> entry= it.next();
-			nodes.add(g.nodes.get(entry.getKey()));
+			nodes.add(g.getNodes().get(entry.getKey()));
 		}
 			
 	}
@@ -72,19 +72,19 @@ public class ParseOSM {
 		AdyacencyInfo adyItem;
 		DirectedEdge tempEdge;
 		
-		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.adylst.entrySet().iterator(); it.hasNext();)
+		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
 			
 			//Nodo actual
-			actual= g.nodes.get(entry.getKey());
+			actual= g.getNodes().get(entry.getKey());
 			//Lista de adyacentes
 			LinkedList<AdyacencyInfo> listValues= entry.getValue();
 			
 			
 			for(int i=0;i < listValues.size();i++){
 				adyItem= listValues.get(i);
-				next= g.nodes.get(adyItem.getAdyId());
+				next= g.getNodes().get(adyItem.getAdyId());
 				
 				//Creo eje
 				tempEdge = new DirectedEdge(actual, next,
@@ -106,17 +106,17 @@ public class ParseOSM {
 	private void filterOnlyEdgesBetweenCityNodes() {
 		AdyacencyInfo ady;
 		//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES A LA CIUDAD 
-		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.adylst.entrySet().iterator(); it.hasNext();)
+		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
 			
 			//verifica si es un nodo de la ciudad
-			if(g.nodes.containsKey(entry.getKey())){
+			if(g.getNodes().containsKey(entry.getKey())){
 				LinkedList<AdyacencyInfo> listValues= entry.getValue();
 				for(int i=0;i < listValues.size();i++){
 					ady= listValues.get(i);
 					//Si el adyacente no es nodo de la ciudad lo quito de la lista de adyacentes
-					if(!g.nodes.containsKey(ady.getAdyId()))
+					if(!g.getNodes().containsKey(ady.getAdyId()))
 						listValues.remove(ady);
 				}
 			}else{
@@ -129,7 +129,7 @@ public class ParseOSM {
 
 	private void filterOnlyNodesInCityPolygon() {
 		//FILTRO NODOS QUE ESTEN DENTRO DE LA ZONA ADMINISTRATIVA DE LA CIUDAD
-		for(Iterator<Map.Entry<Long,GraphNode>> it= g.nodes.entrySet().iterator(); it.hasNext();)
+		for(Iterator<Map.Entry<Long,GraphNode>> it= g.getNodes().entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, GraphNode> entry= it.next();
 			GraphNode nodeValue= entry.getValue();

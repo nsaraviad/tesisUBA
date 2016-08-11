@@ -8,8 +8,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class RoadGraph {
 
-	public HashMap<Long,GraphNode> nodes;
-	public Map<Long,LinkedList<AdyacencyInfo>> adylst;
+	private HashMap<Long,GraphNode> nodes;
+	private Map<Long,LinkedList<AdyacencyInfo>> adylst;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
 	
@@ -428,4 +428,11 @@ public class RoadGraph {
 		return nodesBoundary;
 	}
 
+	public  HashMap<Long,GraphNode> getNodes(){
+		return this.nodes;
+	}
+	
+	public  Map<Long,LinkedList<AdyacencyInfo>> getAdyLst(){
+		return this.adylst;
+	}
 }
