@@ -48,10 +48,13 @@ public class PolygonsGenerator {
 					
 					LinkedList<AdyacencyInfo>[] pathsNode1;
 					LinkedList<AdyacencyInfo>[] pathsNode2;
+					
+					LinkedList<Long> visitedNodes;
 					//Analizo las cuatro direcciones adyacentes a cada uno de los nodos
 					
 					pathsNode1= new LinkedList[4];
 					pathsNode2= new LinkedList[4];
+					visitedNodes= new LinkedList<Long>();
 					
 					for(int i=0;i < 4; i++){
 						pathsNode1[i]= new LinkedList<AdyacencyInfo>();
@@ -63,16 +66,20 @@ public class PolygonsGenerator {
 					res.add(nodes.get(entry1.getKey()).getId());
 					res.add(nodes.get(entry2.getKey()).getId());
 					
+					visitedNodes.add(nodes.get(entry1.getKey()).getId());
+					visitedNodes.add(nodes.get(entry2.getKey()).getId());
 					
 					
 					//nodo1
 					for(int i=0; i < entry1.getValue().size(); i++){
 						pathsNode1[i].add(entry1.getValue().get(i));
+						visitedNodes.add(entry1.getValue().get(i).getAdyId());
 					}
 					
 					//nodo2
 					for(int i=0; i < entry2.getValue().size(); i++){
 						pathsNode2[i].add(entry2.getValue().get(i));
+						visitedNodes.add(entry2.getValue().get(i).getAdyId());
 					}
 					
 					//Se chequea si hay intersecciones iniciales
@@ -86,7 +93,7 @@ public class PolygonsGenerator {
 					
 					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda
 					//seguir avanzando
-					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res)){
+					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes)){
 						//avanzar un nodo en cada camino(que sea posible)
 						//Verificar si encuentro en dos caminos distintos un mismo nodo (se agrega a res y se incrementa la cant de inters)
 						
@@ -143,18 +150,19 @@ public class PolygonsGenerator {
 	
 	
 	
-	private boolean puedaAvanzarEnAlgunaDir(LinkedList<AdyacencyInfo>[] pathsNode1, LinkedList<AdyacencyInfo>[] pathsNode2, LinkedList res) {
+	private boolean puedaAvanzarEnAlgunaDir(LinkedList<AdyacencyInfo>[] pathsNode1, LinkedList<AdyacencyInfo>[] pathsNode2, 
+											LinkedList res, LinkedList visitedNodes) {
 		// Método que indica si es posible encotrar en cada ultimo elemento de cada camino un adyacente en su misma direccion (nombre de calle)
 		//Si es posible avanza
 		boolean res1, res2;
-		res1= avanzarCaminosNodo(pathsNode1, res);
-		res2= avanzarCaminosNodo(pathsNode2, res);
+		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes);
+		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes);
 		return res1 && res2;
 		
 	}
 
 	//Método encargado de avanzar (si es posible) un nodo en la misa direcion de cada camino del array pathNodes
-	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, LinkedList res) {
+	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, LinkedList res, LinkedList visitedNodes) {
 		String nameStreet;
 		Long key_last;
 		boolean puedeAvanzar= false;
@@ -167,7 +175,7 @@ public class PolygonsGenerator {
 			//Buscar adyacentes de temp_last enla misma direccion
 			key_last= temp_last.getAdyId();
 			
-			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, pathsNode[i]); 
+			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes); 
 			
 			//si encuentro adyacente en la misma direccion
 			if(ady != null){
@@ -181,8 +189,7 @@ public class PolygonsGenerator {
 	}
 
 	
-	private AdyacencyInfo buscarAdyacenteConDireccion(Long key_last,String nameStreet, LinkedList resList, 
-																LinkedList<AdyacencyInfo> pathNode) {
+	private AdyacencyInfo buscarAdyacenteConDireccion(Long key_last,String nameStreet, LinkedList resList, LinkedList visitedNodes) {
 		//Metodo que se encarga de buscar entre todos los adyacentes al nodo key_last aquel con mismo nombre 
 		boolean found= false;
 		LinkedList<AdyacencyInfo> adyacents;
@@ -194,7 +201,7 @@ public class PolygonsGenerator {
 			int i= 0;
 			while(i < adyacents.size() && !found){
 				ady_temp= adyacents.get(i);
-				if((ady_temp.getName().equals(nameStreet)) && (!pathNode.contains(ady_temp)) &&
+				if((ady_temp.getName().equals(nameStreet)) && (!visitedNodes.contains(ady_temp)) &&
 																(!resList.contains(ady_temp.getAdyId()))){
 					res= adyacents.get(i);
 					found= true;
