@@ -25,61 +25,71 @@ public class PolygonsGenerator {
 	}
 	
 	//Método encargado de generar todos los polígonos a ser considerados
-	public void generatePolygons(){
-		int cantIntersecciones;
+	public LinkedList<LinkedList<Long>> generatePolygons(){
+		
+		//Variables
+		LinkedList<LinkedList<Long>> result= new LinkedList<LinkedList<Long>>();
 		LinkedList<Long> res= new LinkedList<Long>();
-				
+		int cantIntersecciones;
+		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
+		LinkedList<Long> visitedNodes1, visitedNodes2;
+		
+		//Inicializo
+		pathsNode1= new LinkedList[4];
+		pathsNode2= new LinkedList[4];
+		
+		visitedNodes1= new LinkedList<Long>();
+		visitedNodes2= new LinkedList<Long>();
+		
+		for(int i=0;i < 4; i++){
+			pathsNode1[i]= new LinkedList<AdyacencyInfo>();
+			pathsNode2[i]= new LinkedList<AdyacencyInfo>();
+		}
+		
+		
+		
+		
+		//Algoritmo busqueda de polygonos
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it_node_1= adyLst.entrySet().iterator();
 																					it_node_1.hasNext();){
 			
 			Map.Entry<Long,LinkedList<AdyacencyInfo>> entry1= it_node_1.next();
 			
-			//itero sobre lso demas nodos
+			//itero sobre los demas nodos
 			for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it_node_2=adyLst.entrySet().iterator();
 																					it_node_2.hasNext();){
 				Map.Entry<Long,LinkedList<AdyacencyInfo>> entry2= it_node_2.next();
 				
+				//reseteo variables
 				cantIntersecciones= 0;
+				clearLists(pathsNode1, pathsNode2);
+				res.clear();
 				
 				//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 				if((entry1.getKey() != entry2.getKey()) && 
 					entry1.getValue().size()==4 &&
 					entry2.getValue().size()==4){
 					
-					LinkedList<AdyacencyInfo>[] pathsNode1;
-					LinkedList<AdyacencyInfo>[] pathsNode2;
 					
-					LinkedList<Long> visitedNodes;
-					//Analizo las cuatro direcciones adyacentes a cada uno de los nodos
-					
-					pathsNode1= new LinkedList[4];
-					pathsNode2= new LinkedList[4];
-					visitedNodes= new LinkedList<Long>();
-					
-					for(int i=0;i < 4; i++){
-						pathsNode1[i]= new LinkedList<AdyacencyInfo>();
-						pathsNode2[i]= new LinkedList<AdyacencyInfo>();
-					}
-					
-					
-					//Agrego los dos nodos a la solucion
+					//Agrego los dos nodos iniciales a la solución
 					res.add(nodes.get(entry1.getKey()).getId());
 					res.add(nodes.get(entry2.getKey()).getId());
 					
-					visitedNodes.add(nodes.get(entry1.getKey()).getId());
-					visitedNodes.add(nodes.get(entry2.getKey()).getId());
+					//Los agrego a los nodos visitados
+					visitedNodes1.add(nodes.get(entry1.getKey()).getId());
+					visitedNodes2.add(nodes.get(entry2.getKey()).getId());
 					
 					
-					//nodo1
+					//Agrego los primeros adyacentes al nodo1
 					for(int i=0; i < entry1.getValue().size(); i++){
 						pathsNode1[i].add(entry1.getValue().get(i));
-						visitedNodes.add(entry1.getValue().get(i).getAdyId());
+						visitedNodes1.add(entry1.getValue().get(i).getAdyId());
 					}
 					
-					//nodo2
+					//Agrego los primeros adyacentes al nodo2
 					for(int i=0; i < entry2.getValue().size(); i++){
 						pathsNode2[i].add(entry2.getValue().get(i));
-						visitedNodes.add(entry2.getValue().get(i).getAdyId());
+						visitedNodes2.add(entry2.getValue().get(i).getAdyId());
 					}
 					
 					//Se chequea si hay intersecciones iniciales
@@ -93,56 +103,48 @@ public class PolygonsGenerator {
 					
 					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda
 					//seguir avanzando
-					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes)){
-						//avanzar un nodo en cada camino(que sea posible)
-						//Verificar si encuentro en dos caminos distintos un mismo nodo (se agrega a res y se incrementa la cant de inters)
+					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2)){
 						
-						LinkedList p1= (LinkedList) verificarSiHayInterseccionesYAgregarRef(pathsNode1,pathsNode2).getFirst();
-						int p2= (int) verificarSiHayInterseccionesYAgregarRef(pathsNode1,pathsNode2).getSecond();
+						LinkedList p1= (LinkedList) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getFirst();
+						int p2= (int) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getSecond();
 						
 						Pair ret = new Pair(p1,p2);
 						
 						cantIntersecciones= cantIntersecciones + (int)ret.getSecond();
 						res.addAll((LinkedList<Long>) ret.getFirst());
 					}
-					
+					result.add(res);
 				}
 			
 			}
+			
 		}
 		
+		return result;	
+	}
+
+	private void clearLists(LinkedList<AdyacencyInfo>[] pathsNode1,
+			LinkedList<AdyacencyInfo>[] pathsNode2) {
+		for(int i=0; i < 4;i++){
+			pathsNode1[i].clear();
+			pathsNode2[i].clear();
+		}
 	}
 
 	
-	private Pair verificarSiHayInterseccionesYAgregarRef(LinkedList<AdyacencyInfo>[] pathsNode1,LinkedList<AdyacencyInfo>[] pathsNode2) {
+	private Pair verificarSiHayInterseccionesYAgregarRef(LinkedList<Long> visitedNode1,LinkedList<Long> visitedNode2) {
 		//Metodo encargado de chequear si hay nodos compartidos entre caminos de path1 y path2. En el caso de haber se incrementa la 
 		//cantidad y se agraga dichas referencias al resultado
 		LinkedList<Long> resRef= new LinkedList();
 		int resCountIntersect= 0;
-		Set<Long> lastNodesPath1, lastNodesPath2;
-		lastNodesPath1= new HashSet<Long>();
-		lastNodesPath2= new HashSet<Long>();
 		
-		//Obtener un arreglo con ultimos nodos de caminos de pathnodes1= 1
-		//Obtener un arreglo con ultimos nodos de caminos de pathnodes2= 2
-		for(int i=0;i < 4;i++){
-			if(!pathsNode1[i].isEmpty())
-				lastNodesPath1.add(pathsNode1[i].getLast().getAdyId());
-			if(!pathsNode2[i].isEmpty())
-				lastNodesPath2.add(pathsNode2[i].getLast().getAdyId());
-		}
-		
-		Iterator it= lastNodesPath1.iterator();
-		Long elem;
-		//para cada uno de los nodos de 1, verificar si esta incluido en 2
-		//si lo esta, cant++ y agregar a res.
-		while(it.hasNext()){
-			elem= (Long) it.next();
-			if(lastNodesPath2.contains(elem)){
+		for(int i=0;i<visitedNode1.size();i++){
+			if(visitedNode2.contains(visitedNode1.get(i)) && !resRef.contains(visitedNode1.get(i))){
 				resCountIntersect++;
-				resRef.add(elem);
-			}				
+				resRef.add(visitedNode1.get(i));
+			}
 		}
+		
 		return new Pair(resRef,resCountIntersect);
 		
 	}
@@ -151,12 +153,12 @@ public class PolygonsGenerator {
 	
 	
 	private boolean puedaAvanzarEnAlgunaDir(LinkedList<AdyacencyInfo>[] pathsNode1, LinkedList<AdyacencyInfo>[] pathsNode2, 
-											LinkedList res, LinkedList visitedNodes) {
+											LinkedList res, LinkedList visitedNodes1, LinkedList visitedNodes2) {
 		// Método que indica si es posible encotrar en cada ultimo elemento de cada camino un adyacente en su misma direccion (nombre de calle)
 		//Si es posible avanza
 		boolean res1, res2;
-		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes);
-		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes);
+		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes1);
+		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes2);
 		return res1 && res2;
 		
 	}
@@ -201,9 +203,11 @@ public class PolygonsGenerator {
 			int i= 0;
 			while(i < adyacents.size() && !found){
 				ady_temp= adyacents.get(i);
-				if((ady_temp.getName().equals(nameStreet)) && (!visitedNodes.contains(ady_temp)) &&
+				
+				if((ady_temp.getName() != null) && (ady_temp.getName().equals(nameStreet)) && (!visitedNodes.contains(ady_temp.getAdyId())) &&
 																(!resList.contains(ady_temp.getAdyId()))){
 					res= adyacents.get(i);
+					visitedNodes.add(res.getAdyId());
 					found= true;
 				}
 				i++;
