@@ -119,10 +119,10 @@ public class PolygonsGenerator {
 		//Obtener un arreglo con ultimos nodos de caminos de pathnodes1= 1
 		//Obtener un arreglo con ultimos nodos de caminos de pathnodes2= 2
 		for(int i=0;i < 4;i++){
-			if(pathsNode1[i] != null)
-				lastNodesPath1.add(pathsNode1[i].get(i).getAdyId());
-			if(pathsNode2[i] != null)
-				lastNodesPath2.add(pathsNode2[i].get(i).getAdyId());
+			if(!pathsNode1[i].isEmpty())
+				lastNodesPath1.add(pathsNode1[i].getLast().getAdyId());
+			if(!pathsNode2[i].isEmpty())
+				lastNodesPath2.add(pathsNode2[i].getLast().getAdyId());
 		}
 		
 		Iterator it= lastNodesPath1.iterator();
