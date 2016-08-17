@@ -25,11 +25,11 @@ public class PolygonsGenerator {
 	}
 	
 	//Método encargado de generar todos los polígonos a ser considerados
-	public LinkedList<LinkedList<Long>> generatePolygons(){
+	public LinkedList<HashSet<Long>> generatePolygons(){
 		
 		//Variables
-		LinkedList<LinkedList<Long>> result= new LinkedList<LinkedList<Long>>();
-		LinkedList<Long> res= new LinkedList<Long>();
+		LinkedList<HashSet<Long>> result= new LinkedList<HashSet<Long>>();
+		HashSet<Long> res= new HashSet<Long>();
 		int cantIntersecciones;
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
 		LinkedList<Long> visitedNodes1, visitedNodes2;
@@ -64,11 +64,12 @@ public class PolygonsGenerator {
 				cantIntersecciones= 0;
 				clearLists(pathsNode1, pathsNode2);
 				res.clear();
+				visitedNodes1.clear();
+				visitedNodes2.clear();
 				
 				//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
-				if((entry1.getKey() != entry2.getKey()) && 
-					entry1.getValue().size()==4 &&
-					entry2.getValue().size()==4){
+				//y ademas no tiene que estar en la misma calle
+				if((entry1.getKey() != entry2.getKey()) && esDeGrado4(entry1) && esDeGrado4(entry2)){
 					
 					
 					//Agrego los dos nodos iniciales a la solución
@@ -110,17 +111,21 @@ public class PolygonsGenerator {
 						
 						Pair ret = new Pair(p1,p2);
 						
-						cantIntersecciones= cantIntersecciones + (int)ret.getSecond();
+						cantIntersecciones= (int)ret.getSecond();
 						res.addAll((LinkedList<Long>) ret.getFirst());
 					}
-					
+					result.add(res);
 				}
-				result.add(res);
+				
 			}
 			
 		}
 		
 		return result;	
+	}
+
+		private boolean esDeGrado4(Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1) {
+		return entry1.getValue().size()==4;
 	}
 
 	private void clearLists(LinkedList<AdyacencyInfo>[] pathsNode1,
@@ -153,7 +158,7 @@ public class PolygonsGenerator {
 	
 	
 	private boolean puedaAvanzarEnAlgunaDir(LinkedList<AdyacencyInfo>[] pathsNode1, LinkedList<AdyacencyInfo>[] pathsNode2, 
-											LinkedList res, LinkedList visitedNodes1, LinkedList visitedNodes2) {
+											Set res, LinkedList visitedNodes1, LinkedList visitedNodes2) {
 		// Método que indica si es posible encotrar en cada ultimo elemento de cada camino un adyacente en su misma direccion (nombre de calle)
 		//Si es posible avanza
 		boolean res1, res2;
@@ -164,7 +169,7 @@ public class PolygonsGenerator {
 	}
 
 	//Método encargado de avanzar (si es posible) un nodo en la misa direcion de cada camino del array pathNodes
-	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, LinkedList res, LinkedList visitedNodes) {
+	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, Set res, LinkedList visitedNodes) {
 		String nameStreet;
 		Long key_last;
 		boolean puedeAvanzar= false;
@@ -191,7 +196,7 @@ public class PolygonsGenerator {
 	}
 
 	
-	private AdyacencyInfo buscarAdyacenteConDireccion(Long key_last,String nameStreet, LinkedList resList, LinkedList visitedNodes) {
+	private AdyacencyInfo buscarAdyacenteConDireccion(Long key_last,String nameStreet, Set resList, LinkedList visitedNodes) {
 		//Metodo que se encarga de buscar entre todos los adyacentes al nodo key_last aquel con mismo nombre 
 		boolean found= false;
 		LinkedList<AdyacencyInfo> adyacents;
