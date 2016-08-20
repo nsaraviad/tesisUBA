@@ -118,19 +118,16 @@ public class PolygonsGenerator {
 					if(cantIntersecciones >= 2)
 						polygons.add(new HashSet<Long>(res));
 				}
-				
 			}
-			
 		}
-			
 	}
 
-		private boolean esDeGrado4(Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1) {
+	private boolean esDeGrado4(Map.Entry<Long,LinkedList<AdyacencyInfo>> entry1) {
 		return entry1.getValue().size()==4;
 	}
 
-	private void clearLists(LinkedList<AdyacencyInfo>[] pathsNode1,
-			LinkedList<AdyacencyInfo>[] pathsNode2) {
+	//Método encargado de limpiar los caminos en cada nueva iteración
+	private void clearLists(LinkedList<AdyacencyInfo>[] pathsNode1,LinkedList<AdyacencyInfo>[] pathsNode2) {
 		for(int i=0; i < 4;i++){
 			pathsNode1[i].clear();
 			pathsNode2[i].clear();
