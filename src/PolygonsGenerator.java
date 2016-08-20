@@ -114,7 +114,9 @@ public class PolygonsGenerator {
 						cantIntersecciones= (int)ret.getSecond();
 						res.addAll((LinkedList<Long>) ret.getFirst());
 					}
-					result.add(res);
+					
+					if(cantIntersecciones >= 2)
+						result.add(res);
 				}
 				
 			}
