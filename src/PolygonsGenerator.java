@@ -15,24 +15,25 @@ public class PolygonsGenerator {
 	private RoadGraph rg;
 	private  HashMap<Long,GraphNode> nodes;
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
-	
+	private LinkedList<HashSet<Long>> polygons;
 	
 	//Constructor
 	public PolygonsGenerator(ParseOSM g) {
 		this.rg= g.getRoadGraph();
 		this.nodes= rg.getNodes();
 		this.adyLst= rg.getAdyLst();
+		this.polygons= new LinkedList();
 	}
 	
 	//Método encargado de generar todos los polígonos a ser considerados
-	public LinkedList<HashSet<Long>> generatePolygons(){
+	public void generatePolygons(){
 		
 		//Variables
-		LinkedList<HashSet<Long>> result= new LinkedList<HashSet<Long>>();
 		HashSet<Long> res= new HashSet<Long>();
-		int cantIntersecciones;
+		int cantIntersecciones, p2;
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
-		LinkedList<Long> visitedNodes1, visitedNodes2;
+		LinkedList<Long> visitedNodes1, visitedNodes2, p1;
+	
 		
 		//Inicializo
 		pathsNode1= new LinkedList[4];
@@ -71,7 +72,6 @@ public class PolygonsGenerator {
 				//y ademas no tiene que estar en la misma calle
 				if((entry1.getKey() != entry2.getKey()) && esDeGrado4(entry1) && esDeGrado4(entry2)){
 					
-					
 					//Agrego los dos nodos iniciales a la solución
 					res.add(nodes.get(entry1.getKey()).getId());
 					res.add(nodes.get(entry2.getKey()).getId());
@@ -106,24 +106,23 @@ public class PolygonsGenerator {
 					//seguir avanzando
 					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2)){
 						
-						LinkedList p1= (LinkedList) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getFirst();
-						int p2= (int) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getSecond();
+						p1=(LinkedList<Long>) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getFirst();
+						p2= (int) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getSecond();
 						
 						Pair ret = new Pair(p1,p2);
 						
 						cantIntersecciones= (int)ret.getSecond();
 						res.addAll((LinkedList<Long>) ret.getFirst());
 					}
-					
+					//Se agrega a la lista de poligonos obtenidos
 					if(cantIntersecciones >= 2)
-						result.add(res);
+						polygons.add(new HashSet<Long>(res));
 				}
 				
 			}
 			
 		}
-		
-		return result;	
+			
 	}
 
 		private boolean esDeGrado4(Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1) {
@@ -223,6 +222,10 @@ public class PolygonsGenerator {
 		return res;
 	}
 	
+	
+	public LinkedList<HashSet<Long>> getPolygons(){
+		return polygons;
+	}
 	
 	
 	}
