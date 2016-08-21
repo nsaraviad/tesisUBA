@@ -58,8 +58,6 @@ public class OSMtoGraph extends JFrame {
 							gen.generatePolygons();
 							
 							
-							
-							
 							/* PRUEBA DE INCLUSION */
 							//Point2D point= new Point2D.Double(p1,p2);
 							
