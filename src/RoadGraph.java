@@ -14,12 +14,9 @@ public class RoadGraph {
 	public LinkedList<GraphNode> nodesBoundary;
 	
 	public RoadGraph(){
-			
-		//nodes = new LinkedList<GraphNode>();
 		nodes= new HashMap();
 		adylst= new HashMap();
 		
-		//edges = new LinkedList<DirectedEdge>();
 		refBound = new LinkedList<Long>();
 		nodesBoundary = new LinkedList<GraphNode>();
 	}

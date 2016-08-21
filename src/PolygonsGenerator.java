@@ -70,7 +70,8 @@ public class PolygonsGenerator {
 				
 				//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 				//y ademas no tiene que estar en la misma calle
-				if((entry1.getKey() != entry2.getKey()) && esDeGrado4(entry1) && esDeGrado4(entry2)){
+				if((entry1.getKey() != entry2.getKey()) && esDeGrado4(entry1) && esDeGrado4(entry2) 
+						&& theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2)){
 					
 					//Agrego los dos nodos iniciales a la solución
 					res.add(nodes.get(entry1.getKey()).getId());
@@ -120,6 +121,49 @@ public class PolygonsGenerator {
 				}
 			}
 		}
+	}
+
+	private boolean noDirectPathBetween(Entry<Long, LinkedList<AdyacencyInfo>> entry1,Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+		// Se chequea que entry1 y entry2 no esten sobre una misma dirección (calle)
+		LinkedList<AdyacencyInfo> ady1,ady2;
+		Set streetNames1,streetNames2, namesIntersection;
+		
+		streetNames1= new HashSet<String>();
+		streetNames2= new HashSet<String>();
+		namesIntersection= new HashSet<String>(streetNames1);
+		
+		ady1= entry1.getValue();
+		ady2= entry2.getValue();
+		
+		getStreetNames(ady1, streetNames1);
+		getStreetNames(ady2,streetNames2);
+		
+		//Check for intersection
+		namesIntersection.retainAll(streetNames2);
+		
+		return namesIntersection.isEmpty();
+		
+	}
+
+	private void getStreetNames(LinkedList<AdyacencyInfo> ady, Set streetNames) {
+		for(int i=0;i < ady.size();i++)
+			streetNames.add(ady.get(i).getName());
+	}
+
+	private boolean theyAreNotNeighbors(Entry<Long, LinkedList<AdyacencyInfo>> entry1,Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+		// Metodo que devuelve true si entry1 y entry2 no son adyacentes entre si. 
+		LinkedList<AdyacencyInfo> adyacents1;
+		boolean res= false;
+		
+		adyacents1= entry1.getValue();
+		//iterate over entry1 adyacents
+		for(int i=0;(i < adyacents1.size()) && !res;i++){
+			//Si hay un adyacente de entry1 que tenga el mismo id que entry2 (entonces serian vecinos)
+			res= (adyacents1.get(i).getAdyId() == entry2.getKey());
+		}
+		
+		return !res;
+		
 	}
 
 	private boolean esDeGrado4(Map.Entry<Long,LinkedList<AdyacencyInfo>> entry1) {
