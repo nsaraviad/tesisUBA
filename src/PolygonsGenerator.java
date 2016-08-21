@@ -130,7 +130,7 @@ public class PolygonsGenerator {
 		
 		streetNames1= new HashSet<String>();
 		streetNames2= new HashSet<String>();
-		namesIntersection= new HashSet<String>(streetNames1);
+		
 		
 		ady1= entry1.getValue();
 		ady2= entry2.getValue();
@@ -139,6 +139,7 @@ public class PolygonsGenerator {
 		getStreetNames(ady2,streetNames2);
 		
 		//Check for intersection
+		namesIntersection= new HashSet<String>(streetNames1);
 		namesIntersection.retainAll(streetNames2);
 		
 		return namesIntersection.isEmpty();
