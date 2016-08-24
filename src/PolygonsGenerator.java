@@ -33,22 +33,16 @@ public class PolygonsGenerator {
 		int cantIntersecciones, p2;
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
 		LinkedList<Long> visitedNodes1, visitedNodes2, p1;
+		HashSet<Integer> dimensiones;
 	
 		
 		//Inicializo
 		pathsNode1= new LinkedList[4];
 		pathsNode2= new LinkedList[4];
-		
 		visitedNodes1= new LinkedList<Long>();
 		visitedNodes2= new LinkedList<Long>();
-		
-		for(int i=0;i < 4; i++){
-			pathsNode1[i]= new LinkedList<AdyacencyInfo>();
-			pathsNode2[i]= new LinkedList<AdyacencyInfo>();
-		}
-		
-		
-		
+		dimensiones= new HashSet<Integer>();
+		initializePaths(pathsNode1, pathsNode2);
 		
 		//Algoritmo busqueda de polygonos
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it_node_1= adyLst.entrySet().iterator();
@@ -107,19 +101,52 @@ public class PolygonsGenerator {
 					//seguir avanzando
 					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2)){
 						
-						p1=(LinkedList<Long>) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getFirst();
-						p2= (int) verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2).getSecond();
+						Pair p= verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2);
 						
-						Pair ret = new Pair(p1,p2);
+						p1= (LinkedList<Long>) p.getFirst();
+						p2= (int) p.getSecond();
 						
-						cantIntersecciones= (int)ret.getSecond();
-						res.addAll((LinkedList<Long>) ret.getFirst());
+						cantIntersecciones= p2;
+						res.addAll(p1);
+
+						updateDim(cantIntersecciones, pathsNode1, dimensiones);	
 					}
 					//Se agrega a la lista de poligonos obtenidos
 					if(cantIntersecciones >= 2)
 						polygons.add(new HashSet<Long>(res));
 				}
 			}
+		}
+	}
+
+	private void updateDim(int cantIntersecciones,LinkedList<AdyacencyInfo>[] pathsNode1, Set dimensiones) {
+		//Este metodo se encarga de guardar la dimension actual de los paths cuando se encuentra interseccion
+		int max;
+		
+		if(cantIntersecciones > 0){
+			max= buscarDimensionMaximaEn(pathsNode1);
+			dimensiones.add(max);
+		}
+			
+	}
+
+	private int buscarDimensionMaximaEn(LinkedList<AdyacencyInfo>[] pathsNode) {
+		// Busca la maxima dimension en el pathnodes
+		int maxDim= pathsNode[0].size();
+		
+		for(int i=1; i < pathsNode.length; i++){
+			if(pathsNode[i].size() > maxDim)
+					maxDim= pathsNode[i].size();
+		}
+		
+		return maxDim;
+	}
+
+	private void initializePaths(LinkedList<AdyacencyInfo>[] pathsNode1,
+			LinkedList<AdyacencyInfo>[] pathsNode2) {
+		for(int i=0;i < 4; i++){
+			pathsNode1[i]= new LinkedList<AdyacencyInfo>();
+			pathsNode2[i]= new LinkedList<AdyacencyInfo>();
 		}
 	}
 
