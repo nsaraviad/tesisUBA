@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -15,7 +16,7 @@ public class PolygonsGenerator {
 	private RoadGraph rg;
 	private  HashMap<Long,GraphNode> nodes;
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
-	private LinkedList<HashSet<Long>> polygons;
+	private LinkedList<LinkedList<Long>> polygons;
 	
 	//Constructor
 	public PolygonsGenerator(ParseOSM g) {
@@ -34,7 +35,7 @@ public class PolygonsGenerator {
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
 		LinkedList<Long> visitedNodes1, visitedNodes2, p1;
 		HashSet<Integer> dimensiones;
-	
+		long[] resultado;
 		
 		//Inicializo
 		pathsNode1= new LinkedList[4];
@@ -43,6 +44,7 @@ public class PolygonsGenerator {
 		visitedNodes2= new LinkedList<Long>();
 		dimensiones= new HashSet<Integer>();
 		initializePaths(pathsNode1, pathsNode2);
+		resultado= new long[4];
 		
 		//Algoritmo busqueda de polygonos
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it_node_1= adyLst.entrySet().iterator();
@@ -61,6 +63,7 @@ public class PolygonsGenerator {
 				res.clear();
 				visitedNodes1.clear();
 				visitedNodes2.clear();
+				dimensiones.clear();
 				
 				//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 				//y ademas no tiene que estar en la misma calle
@@ -68,25 +71,13 @@ public class PolygonsGenerator {
 						&& theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2)){
 					
 					//Agrego los dos nodos iniciales a la solución
-					res.add(nodes.get(entry1.getKey()).getId());
-					res.add(nodes.get(entry2.getKey()).getId());
-					
-					//Los agrego a los nodos visitados
-					visitedNodes1.add(nodes.get(entry1.getKey()).getId());
-					visitedNodes2.add(nodes.get(entry2.getKey()).getId());
+					//res.add(nodes.get(entry1.getKey()).getId());
+					//res.add(nodes.get(entry2.getKey()).getId());
 					
 					
-					//Agrego los primeros adyacentes al nodo1
-					for(int i=0; i < entry1.getValue().size(); i++){
-						pathsNode1[i].add(entry1.getValue().get(i));
-						visitedNodes1.add(entry1.getValue().get(i).getAdyId());
-					}
-					
-					//Agrego los primeros adyacentes al nodo2
-					for(int i=0; i < entry2.getValue().size(); i++){
-						pathsNode2[i].add(entry2.getValue().get(i));
-						visitedNodes2.add(entry2.getValue().get(i).getAdyId());
-					}
+					//Se agregan inicialmente los adyacentes
+					addAdyacents(pathsNode1, visitedNodes1, entry1);
+					addAdyacents(pathsNode2, visitedNodes2, entry2);
 					
 					//Se chequea si hay intersecciones iniciales
 					for(int i=0;i<entry1.getValue().size();i++){
@@ -112,10 +103,44 @@ public class PolygonsGenerator {
 						updateDim(cantIntersecciones, pathsNode1, dimensiones);	
 					}
 					//Se agrega a la lista de poligonos obtenidos
-					if(cantIntersecciones >= 2)
-						polygons.add(new HashSet<Long>(res));
+					if(cantIntersecciones == 2){
+						ordenarResultado(res, entry1, entry2, resultado);
+						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
+						addAll(resultado, nuevoPoligono);
+						polygons.add(nuevoPoligono);
+					}
 				}
 			}
+		}
+	}
+
+	private void addAll(long[] resultado, LinkedList<Long> nuevoPoligono) {
+		for(int i=0; i<resultado.length;i++)
+			nuevoPoligono.add(resultado[i]);
+	}
+
+	private void ordenarResultado(HashSet<Long> res,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2, long[] resultado) {
+		resultado[0]= entry1.getKey();
+		resultado[2]= entry2.getKey();
+		
+		Iterator<Long> iter= res.iterator();
+		int i=0;
+		while(iter.hasNext()){
+			long elem= iter.next();
+			resultado[2*i+1]= elem;
+			i++;
+		}
+	}
+
+	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode1,
+			LinkedList<Long> visitedNodes1,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1) {
+		//Agrego los primeros adyacentes al nodo1
+		for(int i=0; i < entry1.getValue().size(); i++){
+			pathsNode1[i].add(entry1.getValue().get(i));
+			visitedNodes1.add(entry1.getValue().get(i).getAdyId());
 		}
 	}
 
@@ -292,7 +317,7 @@ public class PolygonsGenerator {
 	}
 	
 	
-	public LinkedList<HashSet<Long>> getPolygons(){
+	public LinkedList<LinkedList<Long>> getPolygons(){
 		return polygons;
 	}
 	
