@@ -31,6 +31,7 @@ public class PolygonsGenerator {
 		
 		//Variables
 		HashSet<Long> res= new HashSet<Long>();
+		Map<Long,Integer> distancesToNode1,distancesToNode2;
 		int cantIntersecciones, p2;
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
 		LinkedList<Long> visitedNodes1, visitedNodes2, p1;
@@ -38,10 +39,15 @@ public class PolygonsGenerator {
 		long[] resultado;
 		
 		//Inicializo
+		distancesToNode1= new HashMap();
+		distancesToNode2= new HashMap();
+		
 		pathsNode1= new LinkedList[4];
 		pathsNode2= new LinkedList[4];
+		
 		visitedNodes1= new LinkedList<Long>();
 		visitedNodes2= new LinkedList<Long>();
+		
 		dimensiones= new HashSet<Integer>();
 		initializePaths(pathsNode1, pathsNode2);
 		resultado= new long[4];
@@ -64,20 +70,17 @@ public class PolygonsGenerator {
 				visitedNodes1.clear();
 				visitedNodes2.clear();
 				dimensiones.clear();
+				distancesToNode1.clear();
+				distancesToNode2.clear();
 				
 				//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 				//y ademas no tiene que estar en la misma calle
 				if((entry1.getKey() != entry2.getKey()) && esDeGrado4(entry1) && esDeGrado4(entry2) 
 						&& theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2)){
 					
-					//Agrego los dos nodos iniciales a la solución
-					//res.add(nodes.get(entry1.getKey()).getId());
-					//res.add(nodes.get(entry2.getKey()).getId());
-					
-					
 					//Se agregan inicialmente los adyacentes
-					addAdyacents(pathsNode1, visitedNodes1, entry1);
-					addAdyacents(pathsNode2, visitedNodes2, entry2);
+					addAdyacents(pathsNode1, visitedNodes1, distancesToNode1, entry1);
+					addAdyacents(pathsNode2, visitedNodes2, distancesToNode2, entry2);
 					
 					//Se chequea si hay intersecciones iniciales
 					for(int i=0;i<entry1.getValue().size();i++){
@@ -87,10 +90,11 @@ public class PolygonsGenerator {
 						}
 					}
 					
-					
 					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda
 					//seguir avanzando
-					while((cantIntersecciones < 2) && puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2)){
+					while((cantIntersecciones < 2) && 
+							puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2,
+													distancesToNode1, distancesToNode2)){
 						
 						Pair p= verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2);
 						
@@ -100,11 +104,12 @@ public class PolygonsGenerator {
 						cantIntersecciones= p2;
 						res.addAll(p1);
 
-						updateDim(cantIntersecciones, pathsNode1, dimensiones);	
+						//updateDim(cantIntersecciones, pathsNode1, dimensiones);	
 					}
 					//Se agrega a la lista de poligonos obtenidos
 					if(cantIntersecciones == 2){
 						ordenarResultado(res, entry1, entry2, resultado);
+						calculateDistances(res,distancesToNode1,distancesToNode2);
 						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
 						addAll(resultado, nuevoPoligono);
 						polygons.add(nuevoPoligono);
@@ -114,6 +119,30 @@ public class PolygonsGenerator {
 		}
 	}
 
+	private LinkedList<Integer> calculateDistances(HashSet<Long> res, Map<Long, Integer> distancesToNode1,Map<Long, Integer> distancesToNode2) {
+		
+		//se calculan las dimensiones del poligono
+		
+		long actual;
+		int distanceTo1,distanceTo2;
+		LinkedList<Integer> setRes= new LinkedList<Integer>();
+		
+		Iterator<Long> it= res.iterator();
+		
+		//itero sobre los nodos de la interseccion
+		while(it.hasNext()){
+			actual= it.next();
+			
+			//agrego las distancias desde actual al nodo1 y nodo2
+			distanceTo1= distancesToNode1.get(actual);
+			distanceTo2= distancesToNode2.get(actual);
+			setRes.add(distanceTo1);
+			setRes.add(distanceTo2);
+		}
+		
+		return setRes;
+	}
+
 	private void addAll(long[] resultado, LinkedList<Long> nuevoPoligono) {
 		for(int i=0; i<resultado.length;i++)
 			nuevoPoligono.add(resultado[i]);
@@ -121,7 +150,9 @@ public class PolygonsGenerator {
 
 	private void ordenarResultado(HashSet<Long> res,
 			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2, long[] resultado) {
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2, 
+			long[] resultado) {
+		
 		resultado[0]= entry1.getKey();
 		resultado[2]= entry2.getKey();
 		
@@ -134,13 +165,17 @@ public class PolygonsGenerator {
 		}
 	}
 
-	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode1,
-			LinkedList<Long> visitedNodes1,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1) {
+	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode,LinkedList<Long> visitedNodes,
+			Map<Long,Integer> distancesToNode,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry) {
+
+		AdyacencyInfo ady;
 		//Agrego los primeros adyacentes al nodo1
-		for(int i=0; i < entry1.getValue().size(); i++){
-			pathsNode1[i].add(entry1.getValue().get(i));
-			visitedNodes1.add(entry1.getValue().get(i).getAdyId());
+		for(int i=0; i < entry.getValue().size(); i++){
+			ady= entry.getValue().get(i);
+			pathsNode[i].add(ady);
+			visitedNodes.add(ady.getAdyId());
+			distancesToNode.put(ady.getAdyId(),1); //distanci 1 al nodo
 		}
 	}
 
@@ -253,20 +288,26 @@ public class PolygonsGenerator {
 	
 	
 	private boolean puedaAvanzarEnAlgunaDir(LinkedList<AdyacencyInfo>[] pathsNode1, LinkedList<AdyacencyInfo>[] pathsNode2, 
-											Set res, LinkedList visitedNodes1, LinkedList visitedNodes2) {
+											Set res, LinkedList visitedNodes1, LinkedList visitedNodes2,
+											Map distancesToNode1, Map distancesToNode2) {
 		// Método que indica si es posible encotrar en cada ultimo elemento de cada camino un adyacente en su misma direccion (nombre de calle)
 		//Si es posible avanza
 		boolean res1, res2;
-		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes1);
-		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes2);
+		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes1,distancesToNode1);
+		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes2, distancesToNode2);
 		return res1 && res2;
 		
 	}
 
-	//Método encargado de avanzar (si es posible) un nodo en la misa direcion de cada camino del array pathNodes
-	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, Set res, LinkedList visitedNodes) {
+	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, 
+										Set res, LinkedList visitedNodes, 
+										Map distancesToNode) {
+
+		//Método encargado de avanzar (si es posible) un nodo en la misa direcion de cada camino del array pathNodes
+		
 		String nameStreet;
 		Long key_last;
+		int dist;
 		boolean puedeAvanzar= false;
 		AdyacencyInfo temp_last, ady;
 		
@@ -278,10 +319,12 @@ public class PolygonsGenerator {
 			key_last= temp_last.getAdyId();
 			
 			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes); 
+			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 			
 			//si encuentro adyacente en la misma direccion
 			if(ady != null){
 				pathsNode[i].add(ady);
+				distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
 				puedeAvanzar= true;
 			}
 			
