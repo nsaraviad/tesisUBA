@@ -35,7 +35,7 @@ public class PolygonsGenerator {
 		int cantIntersecciones, p2;
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
 		LinkedList<Long> visitedNodes1, visitedNodes2, p1;
-		HashSet<Integer> dimensiones;
+		LinkedList<Integer> dimensiones;
 		long[] resultado;
 		
 		//Inicializo
@@ -48,7 +48,7 @@ public class PolygonsGenerator {
 		visitedNodes1= new LinkedList<Long>();
 		visitedNodes2= new LinkedList<Long>();
 		
-		dimensiones= new HashSet<Integer>();
+		dimensiones= new LinkedList<Integer>();
 		initializePaths(pathsNode1, pathsNode2);
 		resultado= new long[4];
 		
@@ -69,7 +69,6 @@ public class PolygonsGenerator {
 				res.clear();
 				visitedNodes1.clear();
 				visitedNodes2.clear();
-				dimensiones.clear();
 				distancesToNode1.clear();
 				distancesToNode2.clear();
 				
@@ -106,10 +105,11 @@ public class PolygonsGenerator {
 
 						//updateDim(cantIntersecciones, pathsNode1, dimensiones);	
 					}
+					
 					//Se agrega a la lista de poligonos obtenidos
 					if(cantIntersecciones == 2){
 						ordenarResultado(res, entry1, entry2, resultado);
-						calculateDistances(res,distancesToNode1,distancesToNode2);
+						dimensiones= calculateDistances(res,distancesToNode1,distancesToNode2);
 						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
 						addAll(resultado, nuevoPoligono);
 						polygons.add(nuevoPoligono);
@@ -179,17 +179,7 @@ public class PolygonsGenerator {
 		}
 	}
 
-	private void updateDim(int cantIntersecciones,LinkedList<AdyacencyInfo>[] pathsNode1, Set dimensiones) {
-		//Este metodo se encarga de guardar la dimension actual de los paths cuando se encuentra interseccion
-		int max;
-		
-		if(cantIntersecciones > 0){
-			max= buscarDimensionMaximaEn(pathsNode1);
-			dimensiones.add(max);
-		}
-			
-	}
-
+	
 	private int buscarDimensionMaximaEn(LinkedList<AdyacencyInfo>[] pathsNode) {
 		// Busca la maxima dimension en el pathnodes
 		int maxDim= pathsNode[0].size();
