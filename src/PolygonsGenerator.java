@@ -72,10 +72,7 @@ public class PolygonsGenerator {
 				distancesToNode1.clear();
 				distancesToNode2.clear();
 				
-				//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
-				//y ademas no tiene que estar en la misma calle
-				if((entry1.getKey() != entry2.getKey()) && esDeGrado4(entry1) && esDeGrado4(entry2) 
-						&& theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2)){
+				if(theyAreSelectableNodes(entry1, entry2)){
 					
 					//Se agregan inicialmente los adyacentes
 					addAdyacents(pathsNode1, visitedNodes1, distancesToNode1, entry1);
@@ -100,10 +97,9 @@ public class PolygonsGenerator {
 						p1= (LinkedList<Long>) p.getFirst();
 						p2= (int) p.getSecond();
 						
+						//update de variables
 						cantIntersecciones= p2;
 						res.addAll(p1);
-
-						//updateDim(cantIntersecciones, pathsNode1, dimensiones);	
 					}
 					
 					//Se agrega a la lista de poligonos obtenidos
@@ -117,6 +113,20 @@ public class PolygonsGenerator {
 				}
 			}
 		}
+	}
+
+	private boolean theyAreSelectableNodes(Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+		
+		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
+		//y ademas no tiene que estar en la misma calle
+		
+		return nodosDistintos(entry1, entry2) && esDeGrado4(entry1) && esDeGrado4(entry2) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
+	}
+
+	private boolean nodosDistintos(
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+		return entry1.getKey() != entry2.getKey();
 	}
 
 	private LinkedList<Integer> calculateDistances(HashSet<Long> res, Map<Long, Integer> distancesToNode1,Map<Long, Integer> distancesToNode2) {
