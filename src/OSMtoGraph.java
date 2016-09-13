@@ -10,6 +10,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -57,7 +58,6 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
-							
 							/* PRUEBA DE INCLUSION */
 							//Point2D point= new Point2D.Double(p1,p2);
 							
@@ -71,7 +71,7 @@ public class OSMtoGraph extends JFrame {
 		                	//gv.Visualize(p,nombre);
 						
 							//JMAP VIEWER
-							Visualize(p);
+							VisualizePolygons(p,gen.getPolygons());
 						
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();
@@ -79,25 +79,40 @@ public class OSMtoGraph extends JFrame {
                     }
                 }
 
-			private void Visualize(ParseOSM p) {
-				LinkedList<GraphNode> nodesB = p.getRoadGraph().getNodesBoundary();
+			private void VisualizePolygons(ParseOSM p, LinkedList<LinkedList<Long>> polygons) {
+				//LinkedList<GraphNode> nodesB = p.getRoadGraph().getNodesBoundary();
 				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
+				LinkedList<Long> poly= new LinkedList<Long>();
+				
+				//Iterate over the polygons collection
+				//for(int i=0;i<polygons.size();i++){
+				for(int i=0;i<1;i++){	
+					poly= polygons.get(i);
+					setCoordinates(poly,p,lista);
+					show(lista);
+				}
+					
+			}
+
+			private void show(LinkedList<Coordinate> lista) {
+				Viewer viewer = new Viewer(lista);
+				viewer.mostrar();
+			}
+
+			private void setCoordinates(LinkedList<Long> poly, ParseOSM p,LinkedList<Coordinate> lista) {
+				//Método encargado de setear las coordenadas del polygono a la lista  
+				HashMap<Long,GraphNode> nodes;
+				long keyPoint;
 				double latit,longit;
 				
-				for(int i=0; i < nodesB.size(); i++){
-					latit= nodesB.get(i).getLat();
-					longit= nodesB.get(i).getLon();
+				nodes= p.getRoadGraph().getNodes();
+				
+				for(int j=0;j<poly.size();j++){
+					keyPoint= poly.get(j);
+					latit= nodes.get(keyPoint).getLat();
+					longit= nodes.get(keyPoint).getLon();
 					lista.add(new Coordinate(latit,longit));
 				}
-				
-				Viewer viewer = new Viewer(lista);
-				
-				if(lista.size()>0){
-					viewer.mostrar();
-				}else{
-					System.out.println("No hay boundary");
-				}
-				
 			}
         });  
     }

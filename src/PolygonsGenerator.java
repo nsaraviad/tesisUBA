@@ -303,7 +303,7 @@ public class PolygonsGenerator {
 										Set res, LinkedList visitedNodes, 
 										Map distancesToNode) {
 
-		//Método encargado de avanzar (si es posible) un nodo en la misa direcion de cada camino del array pathNodes
+		//Método encargado de avanzar (si es posible) un nodo en la misa dirección de cada camino del array pathNodes
 		
 		String nameStreet;
 		Long key_last;
