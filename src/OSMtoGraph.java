@@ -11,7 +11,10 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -49,10 +52,10 @@ public class OSMtoGraph extends JFrame {
                         String pathArchivo = elegir.getSelectedFile().getPath(); //Obtiene path del archivo
                         String nombre = elegir.getSelectedFile().getName(); //obtiene nombre del archivo
                         
-                        //Parseo del osm al grafo
                         ParseOSM p = new ParseOSM();
                 	    try {
-							p.ParseOSM(pathArchivo,nombre);
+                	    	//Parseo del osm al grafo
+                            p.ParseOSM(pathArchivo,nombre);
 							
 							//ALGORITMO GENERADOR DE POLÍGONOS
 							PolygonsGenerator gen= new PolygonsGenerator(p);
@@ -71,7 +74,7 @@ public class OSMtoGraph extends JFrame {
 		                	//gv.Visualize(p,nombre);
 						
 							//JMAP VIEWER
-							VisualizePolygons(p,gen.getPolygons());
+							operateWithPolygons(p,gen.getPolygons());
 						
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();
@@ -79,19 +82,58 @@ public class OSMtoGraph extends JFrame {
                     }
                 }
 
-			private void VisualizePolygons(ParseOSM p, LinkedList<LinkedList<Long>> polygons) {
-				//LinkedList<GraphNode> nodesB = p.getRoadGraph().getNodesBoundary();
-				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
+			private void operateWithPolygons(ParseOSM p, LinkedList<LinkedList<Long>> polygons) {
 				LinkedList<Long> poly= new LinkedList<Long>();
-				
-				//Iterate over the polygons collection
+				double polygon_lenght; //longitud en km a recorrer dado un polígono
+			    
+				//Calculo distancias recorridas y visualizacion de cada polígono
 				//for(int i=0;i<polygons.size();i++){
 				for(int i=0;i<1;i++){	
+				//i-esimo polígono
 					poly= polygons.get(i);
-					setCoordinates(poly,p,lista);
-					show(lista);
+					visualizePolygon(poly,p);
+					//polygon_lenght= calculatePolygonLenght(poly,p);	
 				}
 					
+			}
+
+			private void visualizePolygon(LinkedList<Long> poly,ParseOSM p) {
+				// Visualización de polígonos usando JMap Viewer
+				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
+				
+				//Iterate over the polygons collection
+				setCoordinates(poly,p,lista);
+				show(lista);
+			}
+
+			private double calculatePolygonLenght(LinkedList<Long> poly, ParseOSM p) {
+				//Cálculo de longitud de recorrido para un polígono dado
+				AdyacencyInfo ady;
+				
+				//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES AL POLIGONO 
+				for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= p.getRoadGraph().getAdyLst().entrySet().iterator(); it.hasNext();)
+				{
+					Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
+					
+					//verifica si es un nodo del polígono
+					/*if(poly.contains(entry){
+						//obtengo adyacentes
+						LinkedList<AdyacencyInfo> listValues= entry.getValue();
+						for(int i=0;i < listValues.size();i++){
+							ady= listValues.get(i);
+							//Si el adyacente  es nodo del poligono entonces cuento la distancia (el eje pertenece al poligono)
+							 * ya que une dos nodos del mismo.
+							 * 
+							if(poly.contains(ady))
+								lenght= lenght + (eje(entry,ady).distance)
+						}
+					}else{
+						it.remove();
+					}
+				*/	
+				}
+				
+				return 0;
 			}
 
 			private void show(LinkedList<Coordinate> lista) {
