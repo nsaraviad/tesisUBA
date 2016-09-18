@@ -92,7 +92,7 @@ public class OSMtoGraph extends JFrame {
 				//i-esimo polígono
 					poly= polygons.get(i);
 					visualizePolygon(poly,p);
-					//polygon_lenght= calculatePolygonLenght(poly,p);	
+					//polygon_lenght= calculatePolygonEdgesAndLenght(poly,p);	
 				}
 					
 			}
@@ -106,34 +106,96 @@ public class OSMtoGraph extends JFrame {
 				show(lista);
 			}
 
-			private double calculatePolygonLenght(LinkedList<Long> poly, ParseOSM p) {
-				//Cálculo de longitud de recorrido para un polígono dado
+			private Pair calculatePolygonEdgesAndLenght(LinkedList<Long> poly, ParseOSM p) {
+				
+				//Cálculo del conjunto de ejes incluídos en el polígono y longitud de recorrido 
 				AdyacencyInfo ady;
+				RoadGraph graph;
+				GraphNode temp_node,ady_node;
+				
+				graph= p.getRoadGraph();
+				
+				//ARMADO DEL AREA DEL POLÍGONO poly
+				Area polygon_area= calculatePolygonArea(poly, graph);
 				
 				//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES AL POLIGONO 
-				for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= p.getRoadGraph().getAdyLst().entrySet().iterator(); it.hasNext();)
+				for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= graph.getAdyLst().entrySet().iterator(); it.hasNext();)
 				{
 					Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
 					
+					//Nodo actual
+					temp_node= graph.getNodes().get(entry.getKey());
+					
 					//verifica si es un nodo del polígono
-					/*if(poly.contains(entry){
+					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
+					
 						//obtengo adyacentes
-						LinkedList<AdyacencyInfo> listValues= entry.getValue();
-						for(int i=0;i < listValues.size();i++){
-							ady= listValues.get(i);
+						LinkedList<AdyacencyInfo> adyacents= entry.getValue();
+						for(int i=0;i < adyacents.size();i++){
+							ady= adyacents.get(i);
 							//Si el adyacente  es nodo del poligono entonces cuento la distancia (el eje pertenece al poligono)
-							 * ya que une dos nodos del mismo.
-							 * 
-							if(poly.contains(ady))
-								lenght= lenght + (eje(entry,ady).distance)
+							//ya que une dos nodos del mismo.
+							ady_node= graph.getNodes().get(ady.getAdyId());  
+							
+						    if(nodeIsContainedInPolygon(ady_node,polygon_area)){
+						    	//lenght= lenght + (eje(entry,ady).distance);
+						    	//Agregar el eje que los une al conjunto de ejes del polígono
+						    }
+						    		
 						}
-					}else{
-						it.remove();
 					}
-				*/	
 				}
 				
-				return 0;
+				return null;
+			}
+
+			private boolean nodeIsContainedInPolygon(GraphNode temp_node,Area polygon_area) {
+				// Se chequea si dada la latitud y longitud del nodo, está contenida en el área del 
+				//polígono
+				double latit2D,longit2D,latit,longit;
+				
+				latit= temp_node.getLat();
+				longit= temp_node.getLon();
+				
+				latit2D= CoordinatesConversor.getTileNumberLat(latit);
+				longit2D= CoordinatesConversor.getTileNumberLat(longit);
+				
+				Point2D nodePoint= new Point2D.Double(latit2D,longit2D);
+				
+				
+				return polygon_area.contains(nodePoint);
+			}
+
+			private Area calculatePolygonArea(LinkedList<Long> poly,RoadGraph graph) {
+				int size= poly.size();
+				
+				double latit, longit;
+				GraphNode temp_node;
+				double[] xPoints= new double[size];
+				double[] yPoints= new double[size];
+				
+				//Conversión (latitud,longitud) a puntos en el plano R2 (x,y)
+				for(int i=0;i < size; i++){
+					temp_node= graph.getNodes().get(i);
+					latit= temp_node.getLat();
+					longit= temp_node.getLon();
+					xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
+					yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
+				}
+				
+				//ARMADO DEL PERÍMETRO DEL POLÍGONO
+				Path2D path= new Path2D.Double();
+				
+				path.moveTo(xPoints[0], yPoints[0]);
+				
+				for(int i=1;i < size;i++)
+					path.lineTo(xPoints[i], yPoints[i]);
+				
+				
+				path.closePath();
+				final Area polygon_area= new Area(path);
+				
+				return polygon_area;
 			}
 
 			private void show(LinkedList<Coordinate> lista) {
