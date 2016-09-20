@@ -11,6 +11,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -107,11 +108,12 @@ public class OSMtoGraph extends JFrame {
 			}
 
 			private Pair calculatePolygonEdgesAndLenght(LinkedList<Long> poly, ParseOSM p) {
-				
 				//Cálculo del conjunto de ejes incluídos en el polígono y longitud de recorrido 
 				AdyacencyInfo ady;
 				RoadGraph graph;
 				GraphNode temp_node,ady_node;
+				HashSet polygon_edges= new HashSet();
+				double polygonDistance= 0;
 				
 				graph= p.getRoadGraph();
 				
@@ -138,15 +140,30 @@ public class OSMtoGraph extends JFrame {
 							ady_node= graph.getNodes().get(ady.getAdyId());  
 							
 						    if(nodeIsContainedInPolygon(ady_node,polygon_area)){
-						    	//lenght= lenght + (eje(entry,ady).distance);
+						    	//Incremento en la distancia de recorrido del polígono
+						    	polygonDistance=+ ady.getLenght();
 						    	//Agregar el eje que los une al conjunto de ejes del polígono
+						    	addEdgeToPolygonEdges(temp_node,ady_node,ady,polygon_edges);
 						    }
 						    		
 						}
 					}
 				}
 				
-				return null;
+				return new Pair(polygonDistance,polygon_edges);
+				
+			}
+
+			private void addEdgeToPolygonEdges(GraphNode temp_node,GraphNode ady_node, AdyacencyInfo ady, HashSet polygon_edges) {
+				//Dado dos nodos pertenecientes al polígono, se crea un eje y se lo agrega al conjunto de 
+				//ejes contenidos en el mismo
+				DirectedEdge newEdge; 
+				
+				newEdge = new DirectedEdge(temp_node, ady_node,
+						ady.getLenght(),ady.getOneWay(), ady.getType(),
+						ady.getName());
+				
+				polygon_edges.add(newEdge);
 			}
 
 			private boolean nodeIsContainedInPolygon(GraphNode temp_node,Area polygon_area) {
