@@ -92,8 +92,8 @@ public class OSMtoGraph extends JFrame {
 				for(int i=0;i<1;i++){	
 				//i-esimo polígono
 					poly= polygons.get(i);
-					visualizePolygon(poly,p);
-					//polygon_lenght= calculatePolygonEdgesAndLenght(poly,p);	
+					//visualizePolygon(poly,p);
+					calculatePolygonEdgesAndLenght(poly,p);	
 				}
 					
 			}
@@ -128,6 +128,9 @@ public class OSMtoGraph extends JFrame {
 					//Nodo actual
 					temp_node= graph.getNodes().get(entry.getKey());
 					
+					if(entry.getKey()==1374316961){
+						temp_node= graph.getNodes().get(entry.getKey());
+					}
 					//verifica si es un nodo del polígono
 					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
 					
@@ -151,7 +154,6 @@ public class OSMtoGraph extends JFrame {
 				}
 				
 				return new Pair(polygonDistance,polygon_edges);
-				
 			}
 
 			private void addEdgeToPolygonEdges(GraphNode temp_node,GraphNode ady_node, AdyacencyInfo ady, HashSet polygon_edges) {
@@ -175,7 +177,7 @@ public class OSMtoGraph extends JFrame {
 				longit= temp_node.getLon();
 				
 				latit2D= CoordinatesConversor.getTileNumberLat(latit);
-				longit2D= CoordinatesConversor.getTileNumberLat(longit);
+				longit2D= CoordinatesConversor.getTileNumberLong(longit);
 				
 				Point2D nodePoint= new Point2D.Double(latit2D,longit2D);
 				
@@ -193,7 +195,7 @@ public class OSMtoGraph extends JFrame {
 				
 				//Conversión (latitud,longitud) a puntos en el plano R2 (x,y)
 				for(int i=0;i < size; i++){
-					temp_node= graph.getNodes().get(i);
+					temp_node= graph.getNodes().get(poly.get(i));
 					latit= temp_node.getLat();
 					longit= temp_node.getLon();
 					xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
