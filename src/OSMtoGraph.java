@@ -4,10 +4,12 @@
  
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
+import java.awt.geom.Path2D.Double;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.HashMap;
@@ -89,7 +91,7 @@ public class OSMtoGraph extends JFrame {
 			    
 				//Calculo distancias recorridas y visualizacion de cada polígono
 				//for(int i=0;i<polygons.size();i++){
-				for(int i=0;i<1;i++){	
+				for(int i=0;i<2;i++){	
 				//i-esimo polígono
 					poly= polygons.get(i);
 					//visualizePolygon(poly,p);
@@ -114,10 +116,11 @@ public class OSMtoGraph extends JFrame {
 				GraphNode temp_node,ady_node;
 				HashSet polygon_edges= new HashSet();
 				double polygonDistance= 0;
+				Pair res;
 				
 				graph= p.getRoadGraph();
 				
-				//ARMADO DEL AREA DEL POLÍGONO poly
+				//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
 				Area polygon_area= calculatePolygonArea(poly, graph);
 				
 				//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES AL POLIGONO 
@@ -133,7 +136,6 @@ public class OSMtoGraph extends JFrame {
 					}
 					//verifica si es un nodo del polígono
 					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
-					
 						//obtengo adyacentes
 						LinkedList<AdyacencyInfo> adyacents= entry.getValue();
 						for(int i=0;i < adyacents.size();i++){
@@ -172,17 +174,46 @@ public class OSMtoGraph extends JFrame {
 				// Se chequea si dada la latitud y longitud del nodo, está contenida en el área del 
 				//polígono
 				double latit2D,longit2D,latit,longit;
+				double latit_11,latit_12,longit_21,longit_22;
+				double latit_11_2D,latit_12_2D,longit_21_2D,longit_22_2D;
+				double move= 0.0001;
 				
+				//Punto real
 				latit= temp_node.getLat();
 				longit= temp_node.getLon();
+				
+				//Verifico si me expando "un poco" en cada dirección el punto se encuentra contenido
+				//Para detectar nodos del borde del polígono
+				latit_11= latit + move;
+				latit_12= latit - move;
+				longit_21= longit + move;
+				longit_22= longit - move;
+				
+				//Precisión
+				
 				
 				latit2D= CoordinatesConversor.getTileNumberLat(latit);
 				longit2D= CoordinatesConversor.getTileNumberLong(longit);
 				
+				latit_11_2D= CoordinatesConversor.getTileNumberLat(latit_11);
+				latit_12_2D= CoordinatesConversor.getTileNumberLat(latit_12);
+				longit_21_2D= CoordinatesConversor.getTileNumberLong(longit_21);
+				longit_22_2D= CoordinatesConversor.getTileNumberLong(longit_22);
+				
+				
+				//Analizo las cuatro direcciones
+				Point2D dir11= new Point2D.Double(latit_11_2D,longit_21_2D);
+				Point2D dir12= new Point2D.Double(latit_11_2D,longit_22_2D);
+				Point2D dir13= new Point2D.Double(latit_12_2D,longit_21_2D);
+				Point2D dir14= new Point2D.Double(latit_12_2D,longit_22_2D);
+				
+				
+				//El punto real
 				Point2D nodePoint= new Point2D.Double(latit2D,longit2D);
 				
+				return (polygon_area.contains(nodePoint) || polygon_area.contains(dir11) || polygon_area.contains(dir12)
+						|| polygon_area.contains(dir13) || polygon_area.contains(dir14));
 				
-				return polygon_area.contains(nodePoint);
 			}
 
 			private Area calculatePolygonArea(LinkedList<Long> poly,RoadGraph graph) {
@@ -205,18 +236,20 @@ public class OSMtoGraph extends JFrame {
 				//ARMADO DEL PERÍMETRO DEL POLÍGONO
 				Path2D path= new Path2D.Double();
 				
-				path.moveTo(xPoints[0], yPoints[0]);
 				
+				path.moveTo(xPoints[0], yPoints[0]);
 				for(int i=1;i < size;i++)
 					path.lineTo(xPoints[i], yPoints[i]);
 				
-				
 				path.closePath();
-				final Area polygon_area= new Area(path);
+				
+				Area polygon_area= new Area(path);
+				
 				
 				return polygon_area;
 			}
-
+			
+			
 			private void show(LinkedList<Coordinate> lista) {
 				Viewer viewer = new Viewer(lista);
 				viewer.mostrar();
