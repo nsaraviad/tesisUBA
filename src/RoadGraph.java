@@ -379,6 +379,8 @@ public class RoadGraph {
 	 * @param lon_2 longitud del segundo punto.
 	 * @return distancia en metros entre los dos puntos.
 	 */
+	
+	//Se aplica la fórmula de Haversine. Se obtiene la distancia en kilómetros 
 	public double getDistance(double lat_1, double lon_1, double lat_2, double lon_2) {
 		double dLon = lon_2 - lon_1;
 		double dLat = lat_2 - lat_1;
@@ -389,7 +391,7 @@ public class RoadGraph {
 		dLon = Math.toRadians(dLon);
 		dLat = Math.toRadians(dLat);
 
-		double r = 6378137; // km
+		double r = 6373; // km
 		double a = Math.sin(dLat/2)*Math.sin(dLat/2) + 
 				Math.cos(lat_1)*Math.cos(lat_2) *
 				Math.sin(dLon/2)*Math.sin(dLon/2);
