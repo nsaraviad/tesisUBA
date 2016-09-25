@@ -191,12 +191,9 @@ public class OSMtoGraph extends JFrame {
 				longit_21= longit + move;
 				longit_22= longit - move;
 				
-				//Precisión
-				
-				
+			
 				latit2D= CoordinatesConversor.getTileNumberLat(latit);
 				longit2D= CoordinatesConversor.getTileNumberLong(longit);
-				
 				latit_11_2D= CoordinatesConversor.getTileNumberLat(latit_11);
 				latit_12_2D= CoordinatesConversor.getTileNumberLat(latit_12);
 				longit_21_2D= CoordinatesConversor.getTileNumberLong(longit_21);
