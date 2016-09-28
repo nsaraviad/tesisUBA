@@ -176,9 +176,10 @@ public class OSMtoGraph extends JFrame {
 				// Se chequea si dada la latitud y longitud del nodo, está contenida en el área del 
 				//polígono
 				double latit2D,longit2D,latit,longit;
-				double latit_11,latit_12,longit_21,longit_22;
-				double latit_11_2D,latit_12_2D,longit_21_2D,longit_22_2D;
-				double move= 0.0001;
+				double latit_right,latit_left,longit_up,longit_down;
+				double latit_right_2D,latit_left_2D,longit_up_2D,longit_down_2D;
+				double move= 0.0001; //factor de desplazamiento en cada dirección
+				
 				
 				//Punto real
 				latit= temp_node.getLat();
@@ -186,30 +187,37 @@ public class OSMtoGraph extends JFrame {
 				
 				//Verifico si me expando "un poco" en cada dirección el punto se encuentra contenido
 				//Para detectar nodos del borde del polígono
-				latit_11= latit + move;
-				latit_12= latit - move;
-				longit_21= longit + move;
-				longit_22= longit - move;
+				latit_right= latit + move;
+				latit_left= latit - move;
+				longit_up= longit + move;
+				longit_down= longit - move;
+				
+				//Punto real
 				latit2D= CoordinatesConversor.getTileNumberLat(latit);
 				longit2D= CoordinatesConversor.getTileNumberLong(longit);
-				latit_11_2D= CoordinatesConversor.getTileNumberLat(latit_11);
-				latit_12_2D= CoordinatesConversor.getTileNumberLat(latit_12);
-				longit_21_2D= CoordinatesConversor.getTileNumberLong(longit_21);
-				longit_22_2D= CoordinatesConversor.getTileNumberLong(longit_22);
+				
+				//Direcciones desplazadas
+				latit_right_2D= CoordinatesConversor.getTileNumberLat(latit_right);
+				latit_left_2D= CoordinatesConversor.getTileNumberLat(latit_left);
+				longit_up_2D= CoordinatesConversor.getTileNumberLong(longit_up);
+				longit_down_2D= CoordinatesConversor.getTileNumberLong(longit_down);
 				
 				
 				//Analizo las cuatro direcciones
-				Point2D dir11= new Point2D.Double(latit_11_2D,longit_21_2D);
-				Point2D dir12= new Point2D.Double(latit_11_2D,longit_22_2D);
-				Point2D dir13= new Point2D.Double(latit_12_2D,longit_21_2D);
-				Point2D dir14= new Point2D.Double(latit_12_2D,longit_22_2D);
+				Point2D dir_right_up= new Point2D.Double(latit_right_2D,longit_up_2D);
+				Point2D dir_right_down= new Point2D.Double(latit_right_2D,longit_down_2D);
+				Point2D dir_left_up= new Point2D.Double(latit_left_2D,longit_up_2D);
+				Point2D dir_left_down= new Point2D.Double(latit_left_2D,longit_down_2D);
 				
 				
 				//El punto real
 				Point2D nodePoint= new Point2D.Double(latit2D,longit2D);
 				
-				return (polygon_area.contains(nodePoint) || polygon_area.contains(dir11) || polygon_area.contains(dir12)
-						|| polygon_area.contains(dir13) || polygon_area.contains(dir14));
+				return (polygon_area.contains(nodePoint) || 
+						polygon_area.contains(dir_right_up) || 
+						polygon_area.contains(dir_right_down) || 
+						polygon_area.contains(dir_left_up) || 
+						polygon_area.contains(dir_left_down));
 				
 			}
 
