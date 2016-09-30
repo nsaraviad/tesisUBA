@@ -64,19 +64,13 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
-							/* PRUEBA DE INCLUSION */
-							//Point2D point= new Point2D.Double(p1,p2);
-							
-							//if(p.getBoundaryArea().contains(point))
-							//	cont= true;
-							
 							/* VISUALIZACIÓN */
 							
 							//JUNG
 							//GraphVisualizer gv = new GraphVisualizer();
 		                	//gv.Visualize(p,nombre);
 						
-							//JMAP VIEWER
+							//UNA VEZ GENERADOS TODOS LOS POLÍGONOS, SE OPERA CON ELLOS
 							operateWithPolygons(p,gen.getPolygons());
 						
                 	    } catch (IOException | XmlPullParserException e) {
@@ -91,11 +85,11 @@ public class OSMtoGraph extends JFrame {
 			    
 				//Calculo distancias recorridas y visualizacion de cada polígono
 				//for(int i=0;i<polygons.size();i++){
-				for(int i=0;i<2;i++){	
+				for(int i=0;i<1;i++){	
 				//i-esimo polígono
 					poly= polygons.get(i);
-					calculatePolygonEdgesAndLenght(poly,p);
-					//visualizePolygon(poly,p);
+					//calculatePolygonEdgesAndLenght(poly,p);
+					visualizePolygon(poly,p);
 				}
 					
 			}
