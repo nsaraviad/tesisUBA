@@ -151,19 +151,19 @@ public class PolygonsGenerator {
 						//Los caminos
 						camino_int1_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getFirst())];
 						camino_int1_2= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getSecond())];
-						camino_int2_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_2).getFirst())];
-						camino_int2_2= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_2).getSecond())];
+						camino_int2_1= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_2).getFirst())];
+						camino_int2_2= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_2).getSecond())];
 						
 						
 						//Se van concatenando los caminos para formar el contorno del polígono
 						nuevoPoligono.add(intersect_1);
-						agregar_K_esimosElementos(camino_int1_1, distanceTo1_int_1,nuevoPoligono);
+						agregar_K_esimosElementos(intersect_1,camino_int1_1, distanceTo1_int_1 - 1,nuevoPoligono);
 						nuevoPoligono.add(entry1.getKey());
-						agregar_K_esimosElementos(camino_int2_1, distanceTo1_int_2,nuevoPoligono);
+						agregar_K_esimosElementos(entry1.getKey(),camino_int2_1, distanceTo1_int_2 - 1,nuevoPoligono);
 						nuevoPoligono.add(intersect_2);
-						agregar_K_esimosElementos(camino_int2_2, distanceTo2_int_2,nuevoPoligono);
+						agregar_K_esimosElementos(intersect_2,camino_int2_2, distanceTo2_int_2 - 1,nuevoPoligono);
 						nuevoPoligono.add(entry2.getKey());
-						agregar_K_esimosElementos(camino_int1_2, distanceTo2_int_1,nuevoPoligono);
+						agregar_K_esimosElementos(entry2.getKey(),camino_int1_2, distanceTo2_int_1 - 1,nuevoPoligono);
 						
 						
 						polygons.add(nuevoPoligono);
@@ -173,10 +173,70 @@ public class PolygonsGenerator {
 		}
 	}
 
-	private void agregar_K_esimosElementos(	LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
+	private void agregar_K_esimosElementos(	long lastAdded, LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
 		//Agrega los k primeros elementos de way en result
-			
+		//Chequea que el orden sea el adecuado (que lastAdded sea el vecino del primero del camino a agregar)
+		int i=0;
+		boolean isNeighbor= false;
 		
+		LinkedList<AdyacencyInfo> adys;
+		
+		//Si hay elementos en el camino
+		if(way.size()>0){
+			//Se chequea que el primero del camino sea vecino de lastAdded
+			if(checkIfTheyAreNeighbors(lastAdded,way.getFirst().getAdyId())){
+		
+				//Caso 1 (orden actual)
+				addElementsFromTo(way,0,k,result,true);
+			}else{
+				//Caso 2 (reverso)
+				addElementsFromTo(way,0,k,result,false);
+			}
+		}
+	}
+	
+	
+
+	private void addElementsFromTo(LinkedList<AdyacencyInfo> way, int from, int to,LinkedList<Long> result,boolean cond) {
+		
+		if((0 <= to) && (to <= way.size())){
+			
+			int i= from;
+			
+			if(cond){
+	
+				while(i < to){
+					result.add(way.get(i).getAdyId());
+					i++;
+				}	
+			}
+			else
+			{
+				while(i < to){
+					result.add(way.get(to -1 - i).getAdyId());
+					i++;
+				}
+			}
+		}
+		
+				
+    }
+	
+
+	private boolean checkIfTheyAreNeighbors(long lastAdded, long adyId) {
+		// Se verifica si ady esta en la lista de adyacentes de lastAdded
+		boolean theyAreNeighbors= false;
+		long temp_ady;
+		LinkedList<AdyacencyInfo> adys= adyLst.get(lastAdded);
+		
+		Iterator<AdyacencyInfo> it= adys.iterator();
+		
+		while(it.hasNext() && !theyAreNeighbors){
+			temp_ady= it.next().getAdyId();
+			theyAreNeighbors= (temp_ady == adyId);
+		}
+		
+		return theyAreNeighbors;
 	}
 
 	private void initializeVisitedNodes(LinkedList<Long>[] visitedNodes1,LinkedList<Long>[] visitedNodes2) {
