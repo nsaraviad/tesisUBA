@@ -58,7 +58,7 @@ public class OSMtoGraph extends JFrame {
 							//ALGORITMO GENERADOR DE POLÍGONOS
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
-							Scip scip= new Scip();
+							//Scip scip= new Scip();
 							
 							/* VISUALIZACIÓN */
 							
