@@ -1,15 +1,9 @@
-	
-
-
- 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
-import java.awt.geom.Path2D.Double;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,7 +20,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParserException;
+import jscip.*;
+
  
+
 public class OSMtoGraph extends JFrame {
     private JButton boton;
     
@@ -63,6 +60,7 @@ public class OSMtoGraph extends JFrame {
 							//ALGORITMO GENERADOR DE POLÍGONOS
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
+							Scip scip= new Scip();
 							
 							/* VISUALIZACIÓN */
 							
@@ -90,6 +88,7 @@ public class OSMtoGraph extends JFrame {
 					poly= polygons.get(i);
 					//calculatePolygonEdgesAndLenght(poly,p);
 					visualizePolygon(poly,p);
+					
 				}
 					
 			}
