@@ -22,8 +22,6 @@ import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParserException;
 import jscip.*;
 
- 
-
 public class OSMtoGraph extends JFrame {
     private JButton boton;
     

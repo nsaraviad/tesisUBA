@@ -1,47 +1,21 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Properties;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+import java.util.LinkedList;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 
 import java.awt.*;
-import java.awt.Polygon;
 import java.awt.Shape;
-import java.awt.event.ItemEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
-import edu.uci.ics.jung.algorithms.*;
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph;
-import edu.uci.ics.jung.graph.util.Context;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.*;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.picking.PickedInfo;
-import edu.uci.ics.jung.visualization.renderers.DefaultEdgeLabelRenderer;
-import edu.uci.ics.jung.visualization.renderers.EdgeLabelRenderer;
-import javafx.scene.shape.*;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 
 

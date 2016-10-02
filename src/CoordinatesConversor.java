@@ -1,5 +1,5 @@
 
-//Clase encargada de mapear coordenadas geográficas (latitud, longitud) a puntos en el plano 2D.
+//Mapeo coordenadas geográficas (latitud, longitud) a puntos en el plano 2D.
 public class CoordinatesConversor {
 
 			

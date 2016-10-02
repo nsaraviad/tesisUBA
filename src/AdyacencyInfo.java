@@ -1,10 +1,4 @@
 
-//Agrego un eje
-/*DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,
-				len,way.getOneway(),way.getType(),
-				way.getName(),way.getId());
-*/
-
 public class AdyacencyInfo{
 
 	private final long adyacent_id;
@@ -27,9 +21,6 @@ public class AdyacencyInfo{
 	public boolean getOneWay() {return isOneWayInfo;}
 	public String getType() {return type;}
 	public String getName() {return name;}
-	
-	
-	
 	
 	
 }

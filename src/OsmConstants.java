@@ -1,4 +1,5 @@
 
+
 public class OsmConstants {
 	//If speed values are not present in data, then assign values according to road type
 		public static int roadTypeToSpeed(String type)
