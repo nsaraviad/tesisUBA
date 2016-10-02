@@ -61,7 +61,6 @@ public class PolygonsGenerator {
 		initializePaths(pathsNode1, pathsNode2);
 		initializeVisitedNodes(visitedNodes1,visitedNodes2);
 		
-		
 		resultado= new long[4];
 		
 		//Algoritmo busqueda de polygonos
@@ -88,10 +87,17 @@ public class PolygonsGenerator {
 				
 				if(theyAreSelectableNodes(entry1, entry2)){
 					
+					//Se agrega a los nodos como visitados 
+					for(int i=0;i<4;i++)
+						visitedNodes1[i].add(entry1.getKey());
+					
+					for(int i=0;i<4;i++)
+						visitedNodes2[i].add(entry2.getKey());
+					
+					
 					//Se agregan inicialmente los adyacentes
 					addAdyacents(pathsNode1, visitedNodes1, distancesToNode1, entry1);
 					addAdyacents(pathsNode2, visitedNodes2, distancesToNode2, entry2);
-					
 					
 					//Se chequea si hay intersecciones iniciales
 					for(int i=0;i<entry1.getValue().size();i++){
@@ -120,10 +126,46 @@ public class PolygonsGenerator {
 					//SE OBTIENE UN NUEVO POLÍGONO
 					//Se agrega a la lista de poligonos obtenidos
 					if(cantIntersecciones == 2){
-						ordenarResultado(res, entry1, entry2, resultado);
+						//ordenarResultado(res, entry1, entry2, resultado);
 						dimensiones= calculateDistances(res,distancesToNode1,distancesToNode2);
 						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
-						addAll(resultado, nuevoPoligono);
+						//addAll(resultado, nuevoPoligono);
+						
+						//ARMADO DEL POLÍGONO
+						long intersect_1, intersect_2;
+						int distanceTo1_int_1,distanceTo2_int_1,distanceTo1_int_2,distanceTo2_int_2;
+						LinkedList<AdyacencyInfo> camino_int1_1, camino_int1_2, camino_int2_1,camino_int2_2;
+						
+						Iterator<Long> iter= res.iterator();
+						
+						//los elementos de la intersección
+						intersect_1= iter.next();
+						intersect_2= iter.next();
+						
+						//las distancias a los nodos
+						distanceTo1_int_1= dimensiones.get(0);
+						distanceTo2_int_1= dimensiones.get(1);
+						distanceTo1_int_2= dimensiones.get(2);
+						distanceTo2_int_2= dimensiones.get(3);
+						
+						//Los caminos
+						camino_int1_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getFirst())];
+						camino_int1_2= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getSecond())];
+						camino_int2_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_2).getFirst())];
+						camino_int2_2= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_2).getSecond())];
+						
+						
+						//Se van concatenando los caminos para formar el contorno del polígono
+						nuevoPoligono.add(intersect_1);
+						agregar_K_esimosElementos(camino_int1_1, distanceTo1_int_1,nuevoPoligono);
+						nuevoPoligono.add(entry1.getKey());
+						agregar_K_esimosElementos(camino_int2_1, distanceTo1_int_2,nuevoPoligono);
+						nuevoPoligono.add(intersect_2);
+						agregar_K_esimosElementos(camino_int2_2, distanceTo2_int_2,nuevoPoligono);
+						nuevoPoligono.add(entry2.getKey());
+						agregar_K_esimosElementos(camino_int1_2, distanceTo2_int_1,nuevoPoligono);
+						
+						
 						polygons.add(nuevoPoligono);
 					}
 				}
@@ -131,7 +173,12 @@ public class PolygonsGenerator {
 		}
 	}
 
-	
+	private void agregar_K_esimosElementos(	LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
+		//Agrega los k primeros elementos de way en result
+			
+		
+	}
+
 	private void initializeVisitedNodes(LinkedList<Long>[] visitedNodes1,LinkedList<Long>[] visitedNodes2) {
 		//Se crean las listas vacías(una por dirección a tomar)
 		for(int i=0;i<4;i++){
@@ -201,8 +248,7 @@ public class PolygonsGenerator {
 		}
 	}
 
-	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode,LinkedList<Long>[] visitedNodes,
-								Map<Long,Integer> distancesToNode,
+	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode,LinkedList<Long>[] visitedNodes,Map<Long,Integer> distancesToNode,
 								Map.Entry<Long, LinkedList<AdyacencyInfo>> entry) {
 
 		AdyacencyInfo ady;
@@ -244,7 +290,6 @@ public class PolygonsGenerator {
 		
 		streetNames1= new HashSet<String>();
 		streetNames2= new HashSet<String>();
-		
 		
 		ady1= entry1.getValue();
 		ady2= entry2.getValue();
