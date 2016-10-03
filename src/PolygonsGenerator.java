@@ -127,7 +127,7 @@ public class PolygonsGenerator {
 	private boolean validIntersections(HashSet<Long> res) {
 		// Se chequea que los nodos en la intersección sean válidos (distintos, que no sean vecinos y que no estén en una msima dirección)
 		//nodosDistintos(entry1, entry2) && esDeGrado4(entry1) && esDeGrado4(entry2) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
-		boolean distincts, neighbors, inSamePath;
+		boolean distincts, neighbors, theyAreNotInSamePath;
 		long intersect_1, intersect_2;
 		
 		Iterator<Long> iter= res.iterator();
@@ -136,11 +136,37 @@ public class PolygonsGenerator {
 		intersect_1= iter.next();
 		intersect_2= iter.next();
 		
+		//Si son distintos
+		distincts= (intersect_1 != intersect_2);
 		
+		//Si son vecinos
+		neighbors= checkIfTheyAreNeighbors(intersect_1,intersect_2);
 		
+		//si están en la misma dirección
+		theyAreNotInSamePath= notInSamePath(intersect_1,intersect_2); 
 		
+		return (distincts && !neighbors && theyAreNotInSamePath);
+	}
+
+	private boolean notInSamePath(long intersect_1, long intersect_2) {
+
+		LinkedList<AdyacencyInfo> ady1,ady2;
+		Set streetNames1,streetNames2, namesIntersection;
 		
-		return false;
+		streetNames1= new HashSet<String>();
+		streetNames2= new HashSet<String>();
+		
+		ady1= adyLst.get(intersect_1);
+		ady2= adyLst.get(intersect_2);
+		
+		getStreetNames(ady1, streetNames1);
+		getStreetNames(ady2,streetNames2);
+		
+		//Check for intersection
+		namesIntersection= new HashSet<String>(streetNames1);
+		namesIntersection.retainAll(streetNames2);
+		
+		return namesIntersection.isEmpty();
 	}
 
 	private void poligonAssembling(HashSet<Long> res,
