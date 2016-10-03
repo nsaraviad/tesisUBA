@@ -84,7 +84,7 @@ public class OSMtoGraph extends JFrame {
 				for(int i=0;i<2;i++){	
 				//i-esimo polígono
 					poly= polygons.get(i);
-					//calculatePolygonEdgesAndLenght(poly,p);
+					calculatePolygonEdgesAndLenght(poly,p);
 					visualizePolygon(poly,p);
 					
 				}
@@ -108,12 +108,45 @@ public class OSMtoGraph extends JFrame {
 				HashSet visitedNodes= new HashSet();
 				double polygonDistance= 0;
 				Pair res;
+				long node_id;
 				
 				RoadGraph graph= p.getRoadGraph();
 				
 				//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
 				Area polygon_area= calculatePolygonArea(poly, graph);
 				
+			
+				//PARA TODO NODO DEL POLÍGONO
+				for(int pol=0;pol < poly.size();pol++){
+					
+					node_id= poly.get(pol);
+					temp_node= graph.getNodes().get(node_id);
+					
+					//verifica si es un nodo del polígono
+					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
+						
+						//Lo agrego a los nodos ya analizados
+						visitedNodes.add(temp_node);
+						//obtengo adyacentes
+						//LinkedList<AdyacencyInfo> adyacents= entry.getValue();
+						LinkedList<AdyacencyInfo> adyacents= graph.getAdyLst().get(node_id);
+						for(int i=0;i < adyacents.size();i++){
+							ady= adyacents.get(i);
+							//Si el adyacente  es nodo del poligono entonces cuento la distancia (el eje pertenece al poligono)
+							//ya que une dos nodos del mismo.
+							ady_node= graph.getNodes().get(ady.getAdyId());  
+							
+						    if(nodeIsContainedInPolygon(ady_node,polygon_area) && !visitedNodes.contains(ady_node)){
+						    	//Incremento en la distancia de recorrido del polígono
+						    	polygonDistance= polygonDistance + ady.getLenght();
+						    	//Agregar el eje que los une al conjunto de ejes del polígono
+						    	addEdgeToPolygonEdges(temp_node,ady_node,ady,polygon_edges);
+						    }
+						}
+					}
+				}
+				
+			/*	
 				//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES AL POLIGONO 
 				for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= graph.getAdyLst().entrySet().iterator(); it.hasNext();)
 				{
@@ -122,9 +155,6 @@ public class OSMtoGraph extends JFrame {
 					//Nodo actual
 					temp_node= graph.getNodes().get(entry.getKey());
 					
-					if(entry.getKey()==1374316961){
-						temp_node= graph.getNodes().get(entry.getKey());
-					}
 					//verifica si es un nodo del polígono
 					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
 						
@@ -147,7 +177,7 @@ public class OSMtoGraph extends JFrame {
 						}
 					}
 				}
-				
+				*/
 				return new Pair(polygonDistance,polygon_edges);
 			}
 
