@@ -37,10 +37,7 @@ public class PolygonsGenerator {
 		int cantIntersecciones, p2;
 		LinkedList<Long> p1;
 		LinkedList<AdyacencyInfo>[] pathsNode1, pathsNode2;
-		
-		//LinkedList<Long> visitedNodes1, visitedNodes2, p1;
 		LinkedList<Long>[] visitedNodes1,visitedNodes2;
-		
 		LinkedList<Integer> dimensiones;
 		long[] resultado;
 		
@@ -50,9 +47,6 @@ public class PolygonsGenerator {
 		
 		pathsNode1= new LinkedList[4];
 		pathsNode2= new LinkedList[4];
-		
-		//visitedNodes1= new LinkedList<Long>();
-		//visitedNodes2= new LinkedList<Long>();
 		
 		visitedNodes1= new LinkedList[4];
 		visitedNodes2= new LinkedList[4];
@@ -78,8 +72,6 @@ public class PolygonsGenerator {
 				cantIntersecciones= 0;
 				clearLists(pathsNode1, pathsNode2);
 				res.clear();
-				//visitedNodes1.clear();
-				//visitedNodes2.clear();
 				clearLists(visitedNodes1,visitedNodes2);
 				distancesToNode1.clear();
 				distancesToNode2.clear();
@@ -88,27 +80,17 @@ public class PolygonsGenerator {
 				if(theyAreSelectableNodes(entry1, entry2)){
 					
 					//Se agrega a los nodos como visitados 
-					for(int i=0;i<4;i++)
-						visitedNodes1[i].add(entry1.getKey());
-					
-					for(int i=0;i<4;i++)
-						visitedNodes2[i].add(entry2.getKey());
-					
+					addEntryNodeAsVisited(visitedNodes1, entry1);
+					addEntryNodeAsVisited(visitedNodes2, entry2);
 					
 					//Se agregan inicialmente los adyacentes
 					addAdyacents(pathsNode1, visitedNodes1, distancesToNode1, entry1);
 					addAdyacents(pathsNode2, visitedNodes2, distancesToNode2, entry2);
 					
 					//Se chequea si hay intersecciones iniciales
-					for(int i=0;i<entry1.getValue().size();i++){
-						if(entry2.getValue().contains(entry1.getValue().get(i))){
-							cantIntersecciones++;
-							res.add(entry1.getValue().get(i).getAdyId());
-						}
-					}
+					cantIntersecciones = checkForInitialsIntersect(res,cantIntersecciones, entry1, entry2);
 					
-					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda
-					//seguir avanzando
+					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda seguir avanzando
 					while((cantIntersecciones < 2) && 
 							puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2,
 													distancesToNode1, distancesToNode2)){
@@ -125,47 +107,16 @@ public class PolygonsGenerator {
 					
 					//SE OBTIENE UN NUEVO POLÍGONO
 					//Se agrega a la lista de poligonos obtenidos
-					if(cantIntersecciones == 2){
-						//ordenarResultado(res, entry1, entry2, resultado);
+					
+					
+					if((cantIntersecciones == 2) && validIntersections(res)){
 						dimensiones= calculateDistances(res,distancesToNode1,distancesToNode2);
 						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
-						//addAll(resultado, nuevoPoligono);
 						
 						//ARMADO DEL POLÍGONO
-						long intersect_1, intersect_2;
-						int distanceTo1_int_1,distanceTo2_int_1,distanceTo1_int_2,distanceTo2_int_2;
-						LinkedList<AdyacencyInfo> camino_int1_1, camino_int1_2, camino_int2_1,camino_int2_2;
+						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, nuevoPoligono);
 						
-						Iterator<Long> iter= res.iterator();
-						
-						//los elementos de la intersección
-						intersect_1= iter.next();
-						intersect_2= iter.next();
-						
-						//las distancias a los nodos
-						distanceTo1_int_1= dimensiones.get(0);
-						distanceTo2_int_1= dimensiones.get(1);
-						distanceTo1_int_2= dimensiones.get(2);
-						distanceTo2_int_2= dimensiones.get(3);
-						
-						//Los caminos
-						camino_int1_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getFirst())];
-						camino_int1_2= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getSecond())];
-						camino_int2_1= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_2).getFirst())];
-						camino_int2_2= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_2).getSecond())];
-						
-						
-						//Se van concatenando los caminos para formar el contorno del polígono
-						nuevoPoligono.add(intersect_1);
-						agregar_K_esimosElementos(intersect_1,camino_int1_1, distanceTo1_int_1 - 1,nuevoPoligono);
-						nuevoPoligono.add(entry1.getKey());
-						agregar_K_esimosElementos(entry1.getKey(),camino_int2_1, distanceTo1_int_2 - 1,nuevoPoligono);
-						nuevoPoligono.add(intersect_2);
-						agregar_K_esimosElementos(intersect_2,camino_int2_2, distanceTo2_int_2 - 1,nuevoPoligono);
-						nuevoPoligono.add(entry2.getKey());
-						agregar_K_esimosElementos(entry2.getKey(),camino_int1_2, distanceTo2_int_1 - 1,nuevoPoligono);
-						
-						
+						//SE AGREGA A LA COLECCIÓN RESULTADO
 						polygons.add(nuevoPoligono);
 					}
 				}
@@ -173,13 +124,89 @@ public class PolygonsGenerator {
 		}
 	}
 
+	private boolean validIntersections(HashSet<Long> res) {
+		// Se chequea que los nodos en la intersección sean válidos (distintos, que no sean vecinos y que no estén en una msima dirección)
+		//nodosDistintos(entry1, entry2) && esDeGrado4(entry1) && esDeGrado4(entry2) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
+		boolean distincts, neighbors, inSamePath;
+		long intersect_1, intersect_2;
+		
+		Iterator<Long> iter= res.iterator();
+		
+		//Nodos de la intersección
+		intersect_1= iter.next();
+		intersect_2= iter.next();
+		
+		
+		
+		
+		
+		return false;
+	}
+
+	private void poligonAssembling(HashSet<Long> res,
+			LinkedList<AdyacencyInfo>[] pathsNode1,
+			LinkedList<AdyacencyInfo>[] pathsNode2,
+			LinkedList<Integer> dimensiones,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2,
+			LinkedList<Long> nuevoPoligono) {
+		long intersect_1, intersect_2;
+		int distanceTo1_int_1,distanceTo2_int_1,distanceTo1_int_2,distanceTo2_int_2;
+		LinkedList<AdyacencyInfo> camino_int1_1, camino_int1_2, camino_int2_1,camino_int2_2;
+		
+		Iterator<Long> iter= res.iterator();
+		
+		//los elementos de la intersección
+		intersect_1= iter.next();
+		intersect_2= iter.next();
+		
+		//las distancias a los nodos
+		distanceTo1_int_1= dimensiones.get(0);
+		distanceTo2_int_1= dimensiones.get(1);
+		distanceTo1_int_2= dimensiones.get(2);
+		distanceTo2_int_2= dimensiones.get(3);
+		
+		//Los caminos
+		camino_int1_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getFirst())];
+		camino_int1_2= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_1).getSecond())];
+		camino_int2_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_2).getFirst())];
+		camino_int2_2= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_2).getSecond())];
+		
+		
+		//Se van concatenando los caminos para formar el contorno del polígono
+		nuevoPoligono.add(intersect_1);
+		agregar_K_esimosElementos(intersect_1,camino_int1_1, distanceTo1_int_1 - 1,nuevoPoligono);
+		nuevoPoligono.add(entry1.getKey());
+		agregar_K_esimosElementos(entry1.getKey(),camino_int2_1, distanceTo1_int_2 - 1,nuevoPoligono);
+		nuevoPoligono.add(intersect_2);
+		agregar_K_esimosElementos(intersect_2,camino_int2_2, distanceTo2_int_2 - 1,nuevoPoligono);
+		nuevoPoligono.add(entry2.getKey());
+		agregar_K_esimosElementos(entry2.getKey(),camino_int1_2, distanceTo2_int_1 - 1,nuevoPoligono);
+	}
+
+	
+	
+	private int checkForInitialsIntersect(HashSet<Long> res,
+			int cantIntersecciones,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
+			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+		for(int i=0;i<entry1.getValue().size();i++){
+			if(entry2.getValue().contains(entry1.getValue().get(i))){
+				cantIntersecciones++;
+				res.add(entry1.getValue().get(i).getAdyId());
+			}
+		}
+		return cantIntersecciones;
+	}
+
+	private void addEntryNodeAsVisited(LinkedList<Long>[] visitedNodes ,Map.Entry<Long, LinkedList<AdyacencyInfo>> entry) {
+		for(int i=0;i<4;i++)
+			visitedNodes[i].add(entry.getKey());
+	}
+
 	private void agregar_K_esimosElementos(	long lastAdded, LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
 		//Agrega los k primeros elementos de way en result
 		//Chequea que el orden sea el adecuado (que lastAdded sea el vecino del primero del camino a agregar)
-		int i=0;
-		boolean isNeighbor= false;
-		
-		LinkedList<AdyacencyInfo> adys;
 		
 		//Si hay elementos en el camino
 		if(way.size()>0){
@@ -195,16 +222,15 @@ public class PolygonsGenerator {
 		}
 	}
 	
-	
 
 	private void addElementsFromTo(LinkedList<AdyacencyInfo> way, int from, int to,LinkedList<Long> result,boolean cond) {
 		
 		if((0 <= to) && (to <= way.size())){
 			
 			int i= from;
+			int index;
 			
 			if(cond){
-	
 				while(i < to){
 					result.add(way.get(i).getAdyId());
 					i++;
@@ -218,9 +244,7 @@ public class PolygonsGenerator {
 				}
 			}
 		}
-		
-				
-    }
+	}
 	
 
 	private boolean checkIfTheyAreNeighbors(long lastAdded, long adyId) {
@@ -252,7 +276,6 @@ public class PolygonsGenerator {
 		
 		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 		//y ademas no tiene que estar en la misma calle
-		
 		return nodosDistintos(entry1, entry2) && esDeGrado4(entry1) && esDeGrado4(entry2) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
 	}
 
@@ -291,22 +314,6 @@ public class PolygonsGenerator {
 			nuevoPoligono.add(resultado[i]);
 	}
 
-	private void ordenarResultado(HashSet<Long> res,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2, 
-			long[] resultado) {
-		
-		resultado[0]= entry1.getKey();
-		resultado[2]= entry2.getKey();
-		
-		Iterator<Long> iter= res.iterator();
-		int i=0;
-		while(iter.hasNext()){
-			long elem= iter.next();
-			resultado[2*i+1]= elem;
-			i++;
-		}
-	}
 
 	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode,LinkedList<Long>[] visitedNodes,Map<Long,Integer> distancesToNode,
 								Map.Entry<Long, LinkedList<AdyacencyInfo>> entry) {
@@ -317,7 +324,6 @@ public class PolygonsGenerator {
 			ady= entry.getValue().get(i);
 			pathsNode[i].add(ady);
 			visitedNodes[i].add(ady.getAdyId());
-			//visitedNodes.add(ady.getAdyId());
 			distancesToNode.put(ady.getAdyId(),1); //distanci 1 al nodo
 		}
 	}
@@ -425,7 +431,6 @@ public class PolygonsGenerator {
 		return new Pair(resRef,resCountIntersect);
 		
 	}
-
 	
 	
 	

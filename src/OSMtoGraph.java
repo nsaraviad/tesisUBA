@@ -81,7 +81,7 @@ public class OSMtoGraph extends JFrame {
 			    
 				//Calculo distancias recorridas y visualizacion de cada polígono
 				//for(int i=0;i<polygons.size();i++){
-				for(int i=0;i<1;i++){	
+				for(int i=0;i<2;i++){	
 				//i-esimo polígono
 					poly= polygons.get(i);
 					//calculatePolygonEdgesAndLenght(poly,p);
