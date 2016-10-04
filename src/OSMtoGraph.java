@@ -37,7 +37,7 @@ public class OSMtoGraph extends JFrame {
                     boolean cont;
             		JFileChooser elegir = new JFileChooser();
                     
-                    //Se filtran solamente archivos con extensión "osm"
+                    //Filter only osm files
                     FileNameExtensionFilter filter = new FileNameExtensionFilter(
                             "OSM maps", "osm");
                     
@@ -45,28 +45,27 @@ public class OSMtoGraph extends JFrame {
                     
                     int opcion = elegir.showOpenDialog(boton);
                
-                    //Si presionamos el boton ABRIR en pathArchivo obtenemos el path del archivo
                     if (opcion == JFileChooser.APPROVE_OPTION) {
                         String pathArchivo = elegir.getSelectedFile().getPath(); //Obtiene path del archivo
                         String nombre = elegir.getSelectedFile().getName(); //obtiene nombre del archivo
                         
                         ParseOSM p = new ParseOSM();
                 	    try {
-                	    	//Parseo del osm al grafo
+                	    	//Parse osm to graph
                             p.ParseOSM(pathArchivo,nombre);
 							
-							//ALGORITMO GENERADOR DE POLÍGONOS
+							//polygons generator algorithm
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							//Scip scip= new Scip();
 							
-							/* VISUALIZACIÓN */
+							/* VISUALIZE */
 							
-							//JUNG
+							//JUNG Interface
 							//GraphVisualizer gv = new GraphVisualizer();
 		                	//gv.Visualize(p,nombre);
 						
-							//UNA VEZ GENERADOS TODOS LOS POLÍGONOS, SE OPERA CON ELLOS
+							//Operations with generated polygons
 							operateWithPolygons(p,gen.getPolygons());
 						
                 	    } catch (IOException | XmlPullParserException e) {
@@ -82,11 +81,10 @@ public class OSMtoGraph extends JFrame {
 				//Calculo distancias recorridas y visualizacion de cada polígono
 				//for(int i=0;i<polygons.size();i++){
 				for(int i=0;i<2;i++){	
-				//i-esimo polígono
+					//i-esimo polígono
 					poly= polygons.get(i);
 					calculatePolygonEdgesAndLenght(poly,p);
 					visualizePolygon(poly,p);
-					
 				}
 					
 			}
