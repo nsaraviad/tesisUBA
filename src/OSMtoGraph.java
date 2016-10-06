@@ -73,7 +73,7 @@ public class OSMtoGraph extends JFrame {
 						}
                     }
                 }
-
+            
 			private void operateWithPolygons(ParseOSM p, LinkedList<LinkedList<Long>> polygons) {
 				LinkedList<Long> poly= new LinkedList<Long>();
 				double polygon_lenght; //longitud en km a recorrer dado un polígono
@@ -86,7 +86,6 @@ public class OSMtoGraph extends JFrame {
 					calculatePolygonEdgesAndLenght(poly,p);
 					visualizePolygon(poly,p);
 				}
-					
 			}
 
 			private void visualizePolygon(LinkedList<Long> poly,ParseOSM p) {
@@ -113,16 +112,13 @@ public class OSMtoGraph extends JFrame {
 				//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
 				Area polygon_area= calculatePolygonArea(poly, graph);
 				
-			
 				//PARA TODO NODO DEL POLÍGONO
 				for(int pol=0;pol < poly.size();pol++){
-					
 					node_id= poly.get(pol);
 					temp_node= graph.getNodes().get(node_id);
 					
 					//verifica si es un nodo del polígono
 					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
-						
 						//Lo agrego a los nodos ya analizados
 						visitedNodes.add(temp_node);
 						//obtengo adyacentes
@@ -144,38 +140,6 @@ public class OSMtoGraph extends JFrame {
 					}
 				}
 				
-			/*	
-				//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES AL POLIGONO 
-				for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= graph.getAdyLst().entrySet().iterator(); it.hasNext();)
-				{
-					Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
-					
-					//Nodo actual
-					temp_node= graph.getNodes().get(entry.getKey());
-					
-					//verifica si es un nodo del polígono
-					if(nodeIsContainedInPolygon(temp_node,polygon_area)){
-						
-						//Lo agrego a los nodos ya analizados
-						visitedNodes.add(temp_node);
-						//obtengo adyacentes
-						LinkedList<AdyacencyInfo> adyacents= entry.getValue();
-						for(int i=0;i < adyacents.size();i++){
-							ady= adyacents.get(i);
-							//Si el adyacente  es nodo del poligono entonces cuento la distancia (el eje pertenece al poligono)
-							//ya que une dos nodos del mismo.
-							ady_node= graph.getNodes().get(ady.getAdyId());  
-							
-						    if(nodeIsContainedInPolygon(ady_node,polygon_area) && !visitedNodes.contains(ady_node)){
-						    	//Incremento en la distancia de recorrido del polígono
-						    	polygonDistance= polygonDistance + ady.getLenght();
-						    	//Agregar el eje que los une al conjunto de ejes del polígono
-						    	addEdgeToPolygonEdges(temp_node,ady_node,ady,polygon_edges);
-						    }
-						}
-					}
-				}
-				*/
 				return new Pair(polygonDistance,polygon_edges);
 			}
 

@@ -90,6 +90,10 @@ public class PolygonsGenerator {
 					//Se chequea si hay intersecciones iniciales
 					cantIntersecciones = checkForInitialsIntersect(res,cantIntersecciones, entry1, entry2);
 					
+					
+					//SE CALCULAN LAS RECTAS INICIALES ENTRE CADA entry CON CADA UNO DE SUS ADYACENTES EN CADA PATH
+					
+					
 					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda seguir avanzando
 					while((cantIntersecciones < 2) && 
 							puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2,
@@ -466,6 +470,7 @@ public class PolygonsGenerator {
 		// Método que indica si es posible encotrar en cada ultimo elemento de cada camino un adyacente en su misma direccion (nombre de calle)
 		//Si es posible avanza
 		boolean res1, res2;
+		
 		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes1,distancesToNode1);
 		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes2, distancesToNode2);
 		return res1 && res2;
@@ -490,10 +495,13 @@ public class PolygonsGenerator {
 			//Buscar adyacentes de temp_last enla misma direccion
 			key_last= temp_last.getAdyId();
 			
+			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
+			
+			
 			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 			
-			//si encuentro adyacente en la misma direccion
+			//si encuentro adyacente en la misma direccion, avanzo
 			if(ady != null){
 				pathsNode[i].add(ady);
 				distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
@@ -512,7 +520,7 @@ public class PolygonsGenerator {
 		LinkedList<AdyacencyInfo> adyacents;
 		AdyacencyInfo res= null;
 		AdyacencyInfo ady_temp;
-		adyacents= adyLst.get(key_last);
+		adyacents= adyLst.get(key_last); //los adyacentes al nodo con id "key_last"
 		
 		if(nameStreet!=null){
 			int i= 0;
@@ -531,7 +539,7 @@ public class PolygonsGenerator {
 		return res;
 	}
 	
-	
+	//Obtengo el conjunto de polígonos generados
 	public LinkedList<LinkedList<Long>> getPolygons(){
 		return polygons;
 	}
