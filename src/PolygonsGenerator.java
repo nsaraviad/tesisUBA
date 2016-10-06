@@ -497,8 +497,9 @@ public class PolygonsGenerator {
 			
 			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
 			
-			
 			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
+			//ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
+			
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 			
 			//si encuentro adyacente en la misma direccion, avanzo
@@ -513,6 +514,116 @@ public class PolygonsGenerator {
 		return puedeAvanzar;
 	}
 
+	
+	private AdyacencyInfo buscarAdyacenteEnMismaDireccion(LinkedList<AdyacencyInfo> path, 
+														  Set res,
+														  LinkedList<Long> visitedNodes) 
+	{
+		//Metodo encargado de elegir el proximo nodo a visitar en el path
+		AdyacencyInfo node1,node2;
+		double m1,m2;
+		long key_last;
+		LinkedList<AdyacencyInfo> adyacents;
+		AdyacencyInfo result= null;
+		AdyacencyInfo lastNode,ady_temp;
+		double angle;
+		
+		lastNode= path.getLast();
+		key_last= lastNode.getAdyId();
+		
+		adyacents= adyLst.get(key_last); //los adyacentes al nodo con id "key_last"
+		
+		//calculo de la pendiente sobre la que estoy "parado"
+		node1= path.get(path.size() - 2);
+		node2= path.getLast();
+		
+		
+		
+			
+		m1= calculatePend(node1,node2);
+			
+		int i=0;
+		while(i < adyacents.size()){
+			ady_temp= adyacents.get(i); //obtengo un adyacente
+			
+			//Calculo m2 de la recta entre lastNode y ady_temp
+			m2= calculatePend(lastNode,ady_temp);
+			
+			//Calculo de angulo entre rectas con pendientes m1 y m2
+			angle= angleBetween(m1,m2);
+			
+			
+			/*if( esElMenorAngulo && (!visitedNodes.contains(ady_temp.getAdyId())) &&
+															(!res.contains(ady_temp.getAdyId()))){
+				result= adyacents.get(i);
+				visitedNodes.add(result.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
+			}*/
+			i++;
+		}
+		return null;
+		
+		
+		
+	}
+
+	
+	private double angleBetween(double m1, double m2) {
+		
+		double betha;
+		double num, den, value;
+		
+		num= m2 - m1;
+		den= 1 + (m1*m2);
+		value= (num / den);
+		
+		betha= Math.atan(value);
+		
+		return betha;
+	}
+
+	private double calculatePend(AdyacencyInfo node1, AdyacencyInfo node2){
+		//Calculo pendiente de la recta entre los dos nodos
+		double latit1,longit1, latitude1, longitude1;
+		double latit2,longit2, latitude2, longitude2;
+		double x1,y1,x2,y2;
+		double num,den;
+		
+		
+		//Pair(lat,long)
+		Pair p1= convertToR2(node1);
+		Pair p2= convertToR2(node2);
+		
+		x1= (double) p1.getFirst();
+		y1= (double) p1.getSecond();
+		
+		x2= (double) p2.getFirst();
+		y2= (double) p2.getSecond();
+		
+		//numerator (y2 - y1)
+		num= y2 - y1;
+		
+		//deniminator (x2 - x1)
+		den= x2 - x1;
+		
+		//y2 - y1 / x2 - x1
+		return (num/den);
+	}
+
+	private Pair convertToR2(AdyacencyInfo node) {
+		double latit;
+		double longit;
+		double latitude;
+		double longitude;
+		latitude= nodes.get(node.getAdyId()).getLat();
+		longitude= nodes.get(node.getAdyId()).getLon();
+		
+		latit= CoordinatesConversor.getTileNumberLat(latitude);
+		longit= CoordinatesConversor.getTileNumberLong(longitude);
+		
+		return new Pair(latit,longit);
+	}
+	
+	
 	
 	private AdyacencyInfo buscarAdyacenteConDireccion(Long key_last,String nameStreet, Set resList, LinkedList i_visitedNodes) {
 		//Metodo que se encarga de buscar entre todos los adyacentes al nodo key_last aquel con mismo nombre 
