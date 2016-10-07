@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.omg.CORBA.DoubleSeqHelper;
+
 
 public class PolygonsGenerator {
 	
@@ -97,7 +99,7 @@ public class PolygonsGenerator {
 					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda seguir avanzando
 					while((cantIntersecciones < 2) && 
 							puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2,
-													distancesToNode1, distancesToNode2)){
+									distancesToNode1, distancesToNode2)){
 						
 						Pair p= verificarSiHayInterseccionesYAgregarRef(visitedNodes1,visitedNodes2);
 						
@@ -520,48 +522,53 @@ public class PolygonsGenerator {
 														  LinkedList<Long> visitedNodes) 
 	{
 		//Metodo encargado de elegir el proximo nodo a visitar en el path
-		AdyacencyInfo node1,node2;
+		long node1,node2;
 		double m1,m2;
 		long key_last;
 		LinkedList<AdyacencyInfo> adyacents;
 		AdyacencyInfo result= null;
-		AdyacencyInfo lastNode,ady_temp;
-		double angle;
+		long lastNode_id, ady_temp_id;
+		double angle,min_angle;
+	
 		
-		lastNode= path.getLast();
-		key_last= lastNode.getAdyId();
+		min_angle= Double.MAX_VALUE;
+		lastNode_id= path.getLast().getAdyId();
 		
-		adyacents= adyLst.get(key_last); //los adyacentes al nodo con id "key_last"
+		adyacents= adyLst.get(lastNode_id); //los adyacentes al nodo con id "key_last"
 		
 		//calculo de la pendiente sobre la que estoy "parado"
-		node1= path.get(path.size() - 2);
-		node2= path.getLast();
-		
-		
-		
+		node1= visitedNodes.get(visitedNodes.size() - 2);
+		node2= visitedNodes.getLast();
 			
 		m1= calculatePend(node1,node2);
 			
 		int i=0;
 		while(i < adyacents.size()){
-			ady_temp= adyacents.get(i); //obtengo un adyacente
+			ady_temp_id= adyacents.get(i).getAdyId(); //obtengo un adyacente
 			
 			//Calculo m2 de la recta entre lastNode y ady_temp
-			m2= calculatePend(lastNode,ady_temp);
+			
+			m2= calculatePend(lastNode_id,ady_temp_id);
 			
 			//Calculo de angulo entre rectas con pendientes m1 y m2
-			angle= angleBetween(m1,m2);
+			angle= Math.abs(angleBetween(m1,m2));
 			
 			
-			/*if( esElMenorAngulo && (!visitedNodes.contains(ady_temp.getAdyId())) &&
-															(!res.contains(ady_temp.getAdyId()))){
+			//Actualizo el minimo angulo
+			if(angle < min_angle && !visitedNodes.contains(ady_temp_id)){
+				min_angle= angle;
 				result= adyacents.get(i);
-				visitedNodes.add(result.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
-			}*/
+			}
+			
 			i++;
 		}
-		return null;
 		
+		if((result != null) && (!visitedNodes.contains(result.getAdyId())) &&	(!res.contains(result.getAdyId()))){
+				//result= adyacents.get(i);
+				visitedNodes.add(result.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
+				
+		}
+		return result;	
 		
 		
 	}
@@ -581,17 +588,14 @@ public class PolygonsGenerator {
 		return betha;
 	}
 
-	private double calculatePend(AdyacencyInfo node1, AdyacencyInfo node2){
-		//Calculo pendiente de la recta entre los dos nodos
-		double latit1,longit1, latitude1, longitude1;
-		double latit2,longit2, latitude2, longitude2;
+	private double calculatePend(long node1_id, long node2_id){
 		double x1,y1,x2,y2;
 		double num,den;
 		
 		
 		//Pair(lat,long)
-		Pair p1= convertToR2(node1);
-		Pair p2= convertToR2(node2);
+		Pair p1= convertToR2(node1_id);
+		Pair p2= convertToR2(node2_id);
 		
 		x1= (double) p1.getFirst();
 		y1= (double) p1.getSecond();
@@ -609,13 +613,17 @@ public class PolygonsGenerator {
 		return (num/den);
 	}
 
-	private Pair convertToR2(AdyacencyInfo node) {
+	private Pair convertToR2(long node_id) {
 		double latit;
 		double longit;
 		double latitude;
 		double longitude;
-		latitude= nodes.get(node.getAdyId()).getLat();
-		longitude= nodes.get(node.getAdyId()).getLon();
+		GraphNode node;
+		
+		node= nodes.get(node_id);
+		
+		latitude=node.getLat();
+		longitude= node.getLon();
 		
 		latit= CoordinatesConversor.getTileNumberLat(latitude);
 		longit= CoordinatesConversor.getTileNumberLong(longitude);
