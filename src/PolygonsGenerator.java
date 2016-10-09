@@ -499,8 +499,8 @@ public class PolygonsGenerator {
 			
 			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
 			
-			//ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
-			ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
+			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
+			//ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
 			
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 			
@@ -553,10 +553,8 @@ public class PolygonsGenerator {
 			
 			
 			//Actualizo el angulo "actual que cumple"
-			/*if(angle < min_angle && !visitedNodes.contains(ady_temp_id)){
-				min_angle= angle;
+			if( (0 < angle) && (angle < 45) && !visitedNodes.contains(ady_temp_id))
 				result= adyacents.get(i);
-			}*/
 			
 			i++;
 		}
