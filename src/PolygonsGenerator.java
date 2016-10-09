@@ -499,8 +499,8 @@ public class PolygonsGenerator {
 			
 			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
 			
-			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
-			//ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
+			//ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
+			ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
 			
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 			
@@ -528,10 +528,8 @@ public class PolygonsGenerator {
 		LinkedList<AdyacencyInfo> adyacents;
 		AdyacencyInfo result= null;
 		long lastNode_id, ady_temp_id;
-		double angle,min_angle;
+		float angle;
 	
-		
-		min_angle= Double.MAX_VALUE;
 		lastNode_id= path.getLast().getAdyId();
 		
 		adyacents= adyLst.get(lastNode_id); //los adyacentes al nodo con id "key_last"
@@ -554,11 +552,11 @@ public class PolygonsGenerator {
 			angle= Math.abs(angleBetween(m1,m2));
 			
 			
-			//Actualizo el minimo angulo
-			if(angle < min_angle && !visitedNodes.contains(ady_temp_id)){
+			//Actualizo el angulo "actual que cumple"
+			/*if(angle < min_angle && !visitedNodes.contains(ady_temp_id)){
 				min_angle= angle;
 				result= adyacents.get(i);
-			}
+			}*/
 			
 			i++;
 		}
@@ -574,16 +572,16 @@ public class PolygonsGenerator {
 	}
 
 	
-	private double angleBetween(double m1, double m2) {
+	private float angleBetween(double m1, double m2) {
 		
-		double betha;
+		float betha;
 		double num, den, value;
 		
 		num= m2 - m1;
 		den= 1 + (m1*m2);
 		value= (num / den);
 		
-		betha= Math.atan(value);
+		betha= (float) Math.toDegrees(Math.atan(value));
 		
 		return betha;
 	}
