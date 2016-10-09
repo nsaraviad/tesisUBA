@@ -42,6 +42,7 @@ public class PolygonsGenerator {
 		LinkedList<Long>[] visitedNodes1,visitedNodes2;
 		LinkedList<Integer> dimensiones;
 		long[] resultado;
+		boolean esElpol;
 		
 		//Inicializo
 		distancesToNode1= new HashMap();
@@ -60,15 +61,15 @@ public class PolygonsGenerator {
 		resultado= new long[4];
 		
 		//Algoritmo busqueda de polygonos
-		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it_node_1= adyLst.entrySet().iterator();
+		for(Iterator<Entry<Long, GraphNode>> it_node_1= nodes.entrySet().iterator();
 																					it_node_1.hasNext();){
 			
-			Map.Entry<Long,LinkedList<AdyacencyInfo>> entry1= it_node_1.next();
+			Entry<Long, GraphNode> entry1= it_node_1.next();
 			
 			//itero sobre los demas nodos
-			for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it_node_2=adyLst.entrySet().iterator();
+			for(Iterator<Entry<Long, GraphNode>> it_node_2=nodes.entrySet().iterator();
 																					it_node_2.hasNext();){
-				Map.Entry<Long,LinkedList<AdyacencyInfo>> entry2= it_node_2.next();
+				Entry<Long, GraphNode> entry2= it_node_2.next();
 				
 				//RESETEO VARIABLES
 				cantIntersecciones= 0;
@@ -78,6 +79,7 @@ public class PolygonsGenerator {
 				distancesToNode1.clear();
 				distancesToNode2.clear();
 				nodosInterseccionEnCaminos.clear();
+				
 				
 				if(theyAreSelectableNodes(entry1, entry2)){
 					
@@ -92,10 +94,6 @@ public class PolygonsGenerator {
 					//Se chequea si hay intersecciones iniciales
 					cantIntersecciones = checkForInitialsIntersect(res,cantIntersecciones, entry1, entry2);
 					
-					
-					//SE CALCULAN LAS RECTAS INICIALES ENTRE CADA entry CON CADA UNO DE SUS ADYACENTES EN CADA PATH
-					
-					
 					//Avanzar un nodo por cada camino si no se armo el poligono y mientras pueda seguir avanzando
 					while((cantIntersecciones < 2) && 
 							puedaAvanzarEnAlgunaDir(pathsNode1,pathsNode2,res,visitedNodes1,visitedNodes2,
@@ -106,15 +104,13 @@ public class PolygonsGenerator {
 						p1= (LinkedList<Long>) p.getFirst();
 						p2= (int) p.getSecond();
 						
-						//update de variables
+						//update variables
 						cantIntersecciones= p2;
 						res.addAll(p1);
 					}
 					
 					//SE OBTIENE UN NUEVO POLÍGONO
 					//Se agrega a la lista de poligonos obtenidos
-					
-					
 					if((cantIntersecciones == 2) && validIntersections(res)){
 						dimensiones= calculateDistances(res,distancesToNode1,distancesToNode2);
 						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
@@ -179,9 +175,11 @@ public class PolygonsGenerator {
 			LinkedList<AdyacencyInfo>[] pathsNode1,
 			LinkedList<AdyacencyInfo>[] pathsNode2,
 			LinkedList<Integer> dimensiones,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2,
+			Entry<Long, GraphNode> entry1,
+			Entry<Long, GraphNode> entry2,
 			LinkedList<Long> nuevoPoligono) {
+		
+		
 		long intersect_1, intersect_2;
 		int distanceTo1_int_1,distanceTo2_int_1,distanceTo1_int_2,distanceTo2_int_2;
 		LinkedList<AdyacencyInfo> camino_int1_1, camino_int1_2, camino_int2_1,camino_int2_2;
@@ -220,20 +218,26 @@ public class PolygonsGenerator {
 	
 	private int checkForInitialsIntersect(HashSet<Long> res,
 			int cantIntersecciones,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
-		for(int i=0;i<entry1.getValue().size();i++){
-			if(entry2.getValue().contains(entry1.getValue().get(i))){
+			Entry<Long, GraphNode> entry1,
+			Entry<Long, GraphNode> entry2) {
+		
+		LinkedList<AdyacencyInfo> adyacentsTo1, adyacentsTo2;
+		
+		adyacentsTo1= adyLst.get(entry1.getKey());
+		adyacentsTo2= adyLst.get(entry2.getKey());
+		
+		for(int i=0;i<adyacentsTo1.size();i++){
+			if(adyacentsTo2.contains(adyacentsTo1.get(i))){
 				cantIntersecciones++;
-				res.add(entry1.getValue().get(i).getAdyId());
+				res.add(adyacentsTo1.get(i).getAdyId());
 			}
 		}
 		return cantIntersecciones;
 	}
 
-	private void addEntryNodeAsVisited(LinkedList<Long>[] visitedNodes ,Map.Entry<Long, LinkedList<AdyacencyInfo>> entry) {
+	private void addEntryNodeAsVisited(LinkedList<Long>[] visitedNodes ,Entry<Long, GraphNode> entry1) {
 		for(int i=0;i<4;i++)
-			visitedNodes[i].add(entry.getKey());
+			visitedNodes[i].add(entry1.getKey());
 	}
 
 	private void agregar_K_esimosElementos(	long lastAdded, LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
@@ -304,16 +308,16 @@ public class PolygonsGenerator {
 		
 	}
 
-	private boolean theyAreSelectableNodes(Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+	private boolean theyAreSelectableNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		
 		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 		//y ademas no tiene que estar en la misma calle
-		return nodosDistintos(entry1, entry2) && esDeGrado4(entry1) && esDeGrado4(entry2) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
+		
+		return nodosDistintos(entry1, entry2) && esDeGrado(entry1.getKey(),4) && esDeGrado(entry2.getKey(),4) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
 	}
 
-	private boolean nodosDistintos(
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry1,
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+	private boolean nodosDistintos(	Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2)
+	{
 		return entry1.getKey() != entry2.getKey();
 	}
 
@@ -348,12 +352,14 @@ public class PolygonsGenerator {
 
 
 	private void addAdyacents(LinkedList<AdyacencyInfo>[] pathsNode,LinkedList<Long>[] visitedNodes,Map<Long,Integer> distancesToNode,
-								Map.Entry<Long, LinkedList<AdyacencyInfo>> entry) {
+								Entry<Long, GraphNode> entry1) {
 
 		AdyacencyInfo ady;
+		LinkedList<AdyacencyInfo> adyacents= adyLst.get(entry1.getKey());
+		
 		//Agrego los primeros adyacentes al nodo1
-		for(int i=0; i < entry.getValue().size(); i++){
-			ady= entry.getValue().get(i);
+		for(int i=0; i < adyacents.size(); i++){
+			ady= adyacents.get(i);
 			pathsNode[i].add(ady);
 			visitedNodes[i].add(ady.getAdyId());
 			distancesToNode.put(ady.getAdyId(),1); //distanci 1 al nodo
@@ -361,18 +367,6 @@ public class PolygonsGenerator {
 	}
 
 	
-	private int buscarDimensionMaximaEn(LinkedList<AdyacencyInfo>[] pathsNode) {
-		// Busca la maxima dimension en el pathnodes
-		int maxDim= pathsNode[0].size();
-		
-		for(int i=1; i < pathsNode.length; i++){
-			if(pathsNode[i].size() > maxDim)
-					maxDim= pathsNode[i].size();
-		}
-		
-		return maxDim;
-	}
-
 	private void initializePaths(LinkedList<AdyacencyInfo>[] pathsNode1,
 			LinkedList<AdyacencyInfo>[] pathsNode2) {
 		for(int i=0;i < 4; i++){
@@ -381,7 +375,7 @@ public class PolygonsGenerator {
 		}
 	}
 
-	private boolean noDirectPathBetween(Entry<Long, LinkedList<AdyacencyInfo>> entry1,Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+	private boolean noDirectPathBetween(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		// Se chequea que entry1 y entry2 no esten sobre una misma dirección (calle)
 		LinkedList<AdyacencyInfo> ady1,ady2;
 		Set streetNames1,streetNames2, namesIntersection;
@@ -389,8 +383,8 @@ public class PolygonsGenerator {
 		streetNames1= new HashSet<String>();
 		streetNames2= new HashSet<String>();
 		
-		ady1= entry1.getValue();
-		ady2= entry2.getValue();
+		ady1= adyLst.get(entry1.getKey());
+		ady2= adyLst.get(entry2.getKey());
 		
 		getStreetNames(ady1, streetNames1);
 		getStreetNames(ady2,streetNames2);
@@ -408,12 +402,13 @@ public class PolygonsGenerator {
 			streetNames.add(ady.get(i).getName());
 	}
 
-	private boolean theyAreNotNeighbors(Entry<Long, LinkedList<AdyacencyInfo>> entry1,Entry<Long, LinkedList<AdyacencyInfo>> entry2) {
+	private boolean theyAreNotNeighbors(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		// Metodo que devuelve true si entry1 y entry2 no son adyacentes entre si. 
 		LinkedList<AdyacencyInfo> adyacents1;
 		boolean res= false;
 		
-		adyacents1= entry1.getValue();
+		adyacents1= adyLst.get(entry1.getKey());
+		
 		//iterate over entry1 adyacents
 		for(int i=0;(i < adyacents1.size()) && !res;i++){
 			//Si hay un adyacente de entry1 que tenga el mismo id que entry2 (entonces serian vecinos)
@@ -424,8 +419,9 @@ public class PolygonsGenerator {
 		
 	}
 
-	private boolean esDeGrado4(Map.Entry<Long,LinkedList<AdyacencyInfo>> entry1) {
-		return entry1.getValue().size()==4;
+	private boolean esDeGrado(Long node_id,int grado) {
+		//return entry2.getValue().size()==grado;
+		return adyLst.get(node_id).size() == grado;
 	}
 
 	//Método encargado de limpiar los caminos en cada nueva iteración
@@ -475,8 +471,8 @@ public class PolygonsGenerator {
 		
 		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes1,distancesToNode1);
 		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes2, distancesToNode2);
-		return res1 && res2;
 		
+		return res1 && res2;
 	}
 
 	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, 
@@ -489,7 +485,7 @@ public class PolygonsGenerator {
 		int dist;
 		boolean puedeAvanzar= false;
 		AdyacencyInfo temp_last, ady;
-		
+		boolean test;
 		
 		for(int i=0;i < pathsNode.length;i++){
 			temp_last= pathsNode[i].getLast();
@@ -499,20 +495,18 @@ public class PolygonsGenerator {
 			
 			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
 			
-			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
-			//ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
-			
+			//ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
+			ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
-			
+				
 			//si encuentro adyacente en la misma direccion, avanzo
 			if(ady != null){
 				pathsNode[i].add(ady);
 				distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
 				puedeAvanzar= true;
 			}
-			
 		}
-		
+			
 		return puedeAvanzar;
 	}
 
@@ -537,39 +531,54 @@ public class PolygonsGenerator {
 		//calculo de la pendiente sobre la que estoy "parado"
 		node1= visitedNodes.get(visitedNodes.size() - 2);
 		node2= visitedNodes.getLast();
-			
-		m1= calculatePend(node1,node2);
-			
-		int i=0;
-		while(i < adyacents.size()){
-			ady_temp_id= adyacents.get(i).getAdyId(); //obtengo un adyacente
-			
-			//Calculo m2 de la recta entre lastNode y ady_temp
-			
-			m2= calculatePend(lastNode_id,ady_temp_id);
-			
-			//Calculo de angulo entre rectas con pendientes m1 y m2
-			angle= Math.abs(angleBetween(m1,m2));
-			
-			
-			//Actualizo el angulo "actual que cumple"
-			if( (0 < angle) && (angle < 45) && !visitedNodes.contains(ady_temp_id))
-				result= adyacents.get(i);
-			
-			i++;
-		}
 		
-		if((result != null) && (!visitedNodes.contains(result.getAdyId())) &&	(!res.contains(result.getAdyId()))){
-				//result= adyacents.get(i);
-				visitedNodes.add(result.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
+		//Si ambos nodos están dentro de los limites de la ciudad
+		if(adyacentInCity(node1) && adyacentInCity(node2)){
+		
+			m1= calculatePend(node1,node2);
 				
+			int i=0;
+			while(i < adyacents.size()){
+				
+				ady_temp_id= adyacents.get(i).getAdyId(); //obtengo un adyacente
+				
+				//Si el adyacente está dentro de los límites de la ciudad, procedo
+				if(adyacentInCity(ady_temp_id)){
+				
+					//Calculo m2 de la recta entre lastNode y ady_temp
+					
+					m2= calculatePend(lastNode_id,ady_temp_id);
+					
+					//Calculo de angulo entre rectas con pendientes m1 y m2
+					angle= Math.abs(angleBetween(m1,m2));
+					
+					
+					//Actualizo el angulo "actual que cumple"
+					//Considero aquellos nodos de grado 2 que pueden continuar por un path
+					if( ( ((0 < angle) && (angle < 20) && !visitedNodes.contains(ady_temp_id)) ) ||
+						( (esDeGrado(lastNode_id,2)) &&  ((0 < angle) && (angle < 65) && !visitedNodes.contains(ady_temp_id)))	)
+						result= adyacents.get(i);
+				}	
+				
+				i++;
+			}
+			
+			if((result != null) && (!visitedNodes.contains(result.getAdyId())) &&	(!res.contains(result.getAdyId()))){
+					//result= adyacents.get(i);
+					visitedNodes.add(result.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
+					
+			}
 		}
-		return result;	
 		
+		return result;	
 		
 	}
 
 	
+	private boolean adyacentInCity(long ady_temp_id) {
+		return nodes.containsKey(ady_temp_id);
+	}
+
 	private float angleBetween(double m1, double m2) {
 		
 		float betha;

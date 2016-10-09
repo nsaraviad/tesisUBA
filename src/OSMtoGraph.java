@@ -20,6 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParserException;
+
 import jscip.*;
 
 public class OSMtoGraph extends JFrame {
@@ -58,16 +59,16 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							//Scip scip= new Scip();
-							
+								
 							/* VISUALIZE */
 							
 							//JUNG Interface
 							//GraphVisualizer gv = new GraphVisualizer();
-		                	//gv.Visualize(p,nombre);
-						
+			                //gv.Visualize(p,nombre);
+							
 							//Operations with generated polygons
 							operateWithPolygons(p,gen.getPolygons());
-						
+							
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();
 						}
@@ -112,7 +113,7 @@ public class OSMtoGraph extends JFrame {
 				//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
 				Area polygon_area= calculatePolygonArea(poly, graph);
 				
-				//PARA TODO NODO DEL POLÍGONO
+				//Itero sobre los nodos del polígono
 				for(int pol=0;pol < poly.size();pol++){
 					node_id= poly.get(pol);
 					temp_node= graph.getNodes().get(node_id);
