@@ -494,9 +494,12 @@ public class PolygonsGenerator {
 			key_last= temp_last.getAdyId();
 			
 			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
+				
+			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
 			
-			//ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
-			ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
+			if(ady==null)
+				ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
+			
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 				
 			//si encuentro adyacente en la misma direccion, avanzo
@@ -505,6 +508,7 @@ public class PolygonsGenerator {
 				distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
 				puedeAvanzar= true;
 			}
+			
 		}
 			
 		return puedeAvanzar;
@@ -646,18 +650,21 @@ public class PolygonsGenerator {
 		AdyacencyInfo ady_temp;
 		adyacents= adyLst.get(key_last); //los adyacentes al nodo con id "key_last"
 		
-		if(nameStreet!=null){
-			int i= 0;
-			while(i < adyacents.size() && !found){
-				ady_temp= adyacents.get(i);
-				
-				if((ady_temp.getName() != null) && (ady_temp.getName().equals(nameStreet)) && (!i_visitedNodes.contains(ady_temp.getAdyId())) &&
-																(!resList.contains(ady_temp.getAdyId()))){
-					res= adyacents.get(i);
-					i_visitedNodes.add(res.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
-					found= true;
+		
+		if(adyacentInCity(key_last)){
+			if(nameStreet!=null){
+				int i= 0;
+				while(i < adyacents.size() && !found){
+					ady_temp= adyacents.get(i);
+					
+					if((ady_temp.getName() != null) && (ady_temp.getName().equals(nameStreet)) && (!i_visitedNodes.contains(ady_temp.getAdyId())) &&
+																	(!resList.contains(ady_temp.getAdyId()))){
+						res= adyacents.get(i);
+						i_visitedNodes.add(res.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
+						found= true;
+					}
+					i++;
 				}
-				i++;
 			}
 		}
 		return res;
