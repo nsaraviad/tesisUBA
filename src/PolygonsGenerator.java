@@ -495,10 +495,10 @@ public class PolygonsGenerator {
 			
 			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
 				
-			ady = buscarAdyacenteConDireccion(key_last,nameStreet, res, visitedNodes[i]); 
+			ady = buscarAdyacentePorNombreDeCalle(key_last,nameStreet, res, visitedNodes[i]); 
 			
 			if(ady==null)
-				ady= buscarAdyacenteEnMismaDireccion(pathsNode[i],res,visitedNodes[i]);
+				ady= buscarAdyacentePorAnguloEntreAristas(pathsNode[i],res,visitedNodes[i]);
 			
 			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 				
@@ -515,7 +515,7 @@ public class PolygonsGenerator {
 	}
 
 	
-	private AdyacencyInfo buscarAdyacenteEnMismaDireccion(LinkedList<AdyacencyInfo> path, 
+	private AdyacencyInfo buscarAdyacentePorAnguloEntreAristas(LinkedList<AdyacencyInfo> path, 
 														  Set res,
 														  LinkedList<Long> visitedNodes) 
 	{
@@ -642,7 +642,7 @@ public class PolygonsGenerator {
 	
 	
 	
-	private AdyacencyInfo buscarAdyacenteConDireccion(Long key_last,String nameStreet, Set resList, LinkedList i_visitedNodes) {
+	private AdyacencyInfo buscarAdyacentePorNombreDeCalle(Long key_last,String nameStreet, Set resList, LinkedList i_visitedNodes) {
 		//Metodo que se encarga de buscar entre todos los adyacentes al nodo key_last aquel con mismo nombre 
 		boolean found= false;
 		LinkedList<AdyacencyInfo> adyacents;
