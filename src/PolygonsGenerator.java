@@ -659,7 +659,7 @@ public class PolygonsGenerator {
 				int i= 0;
 				while(i < adyacents.size() && !found){
 					ady_temp= adyacents.get(i);
-					
+					  
 					if((ady_temp.getName() != null) && (ady_temp.getName().equals(nameStreet)) && (!i_visitedNodes.contains(ady_temp.getAdyId())) &&
 																	(!resList.contains(ady_temp.getAdyId()))){
 						res= adyacents.get(i);

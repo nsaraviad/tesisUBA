@@ -27,7 +27,7 @@ public class OSMtoGraph extends JFrame {
     private JButton boton;
     
     public OSMtoGraph() {
-        super("ParseOSMtoGraph	");
+        super("ParseOSMtoGraph");
         boton = new JButton("Abrir");
         add(boton, BorderLayout.NORTH);
         boton.setForeground(Color.WHITE);
@@ -81,8 +81,8 @@ public class OSMtoGraph extends JFrame {
 			    
 			    
 				//Calculo distancias recorridas y visualizacion de cada polígono
-				for(int i=0;i<polygons.size();i++){
-				//for(int i=0;i<5;i++){	
+				//for(int i=0;i<polygons.size();i++){
+				for(int i=0;i<5;i++){	
 					//i-esimo polígono
 					poly= polygons.get(i);
 					//calculatePolygonEdgesAndLenght(poly,p);
@@ -100,7 +100,7 @@ public class OSMtoGraph extends JFrame {
 				show(lista);
 			}
 
-			private int checkIfEdgeIsInPolygon(GraphNode node_1, GraphNode node_2, LinkedList<Long> polygon,ParseOSM p){
+			private int checkIfEdgeIsInPolygon(GraphNode extrNode_1, GraphNode extrNode_2, LinkedList<Long> polygon,ParseOSM p){
 		
 				int includedInPolygon= 0;
 				RoadGraph graph= p.getRoadGraph();
@@ -110,9 +110,9 @@ public class OSMtoGraph extends JFrame {
 				
 				//Se verifica si los dos extremos de la arista se encuentran incluídos en el polígono
 				//Si lo están entonces el eje está incluído en dicho polígono
-				if(nodeIsContainedInPolygon(node_1,polygon_area) && nodeIsContainedInPolygon(node_2,polygon_area))
+				if(nodeIsContainedInPolygon(extrNode_1,polygon_area) && nodeIsContainedInPolygon(extrNode_2,polygon_area))
 					includedInPolygon= 1;
-				
+				//1 si está incluído, 0 si no
 				return includedInPolygon;
 			}
 			
