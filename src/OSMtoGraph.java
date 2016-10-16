@@ -59,6 +59,8 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							//Scip scip= new Scip();
+							
+							//scip.createVar("n1", 0, 1, 1, SCIP_Vartype.SCIP_VARTYPE_BINARY);
 								
 							/* VISUALIZE */
 							
