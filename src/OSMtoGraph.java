@@ -58,10 +58,18 @@ public class OSMtoGraph extends JFrame {
 							//polygons generator algorithm
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
-							//Scip scip= new Scip();
 							
-							//scip.createVar("n1", 0, 1, 1, SCIP_Vartype.SCIP_VARTYPE_BINARY);
-								
+							
+							//SCIP SOLVER
+							System.loadLibrary("jscip");
+							
+							Scip scip= new Scip();
+							
+							scip.create("test");
+							
+							Variable x = scip.createVar("x", 2.0, 3.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_CONTINUOUS);
+						      	
+							
 							/* VISUALIZE */
 							
 							//JUNG Interface
