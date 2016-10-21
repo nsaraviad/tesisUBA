@@ -61,13 +61,13 @@ public class OSMtoGraph extends JFrame {
 							
 							
 							//SCIP SOLVER
-							System.loadLibrary("jscip");
+							//System.loadLibrary("jscip");
 							
-							Scip scip= new Scip();
+							//Scip scip= new Scip();
 							
-							scip.create("test");
+							//scip.create("test");
 							
-							Variable x = scip.createVar("x", 2.0, 3.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_CONTINUOUS);
+							//Variable x = scip.createVar("x", 2.0, 3.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_CONTINUOUS);
 						      	
 							
 							/* VISUALIZE */
