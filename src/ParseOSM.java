@@ -81,7 +81,7 @@ public class ParseOSM {
 			
 			//Nodo actual
 			actual= g.getNodes().get(entry.getKey());
-			visitedNodes.add(actual.getId());
+			visitedNodes.add(entry.getKey());
 			
 			//Lista de adyacentes
 			LinkedList<AdyacencyInfo> listValues= entry.getValue();
@@ -92,7 +92,7 @@ public class ParseOSM {
 				next= g.getNodes().get(adyItem.getAdyId());
 				
 				//Si los dos extremos no estan visitados, creo un eje que los une
-				if(!visitedNodes.contains(next.getId())){
+				if(!visitedNodes.contains(adyItem.getAdyId())){
 					//Creo eje
 					tempEdge = new DirectedEdge(actual, next,
 							adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
@@ -100,7 +100,7 @@ public class ParseOSM {
 					
 					edges.add(tempEdge);
 					
-					visitedNodes.add(next.getId());
+					visitedNodes.add(adyItem.getAdyId());
 				}
 			}
 	
