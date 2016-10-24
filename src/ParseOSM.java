@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.*;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class ParseOSM {
 		//generateNodes();
 		
 		//Se crean los ejes
-		//generateEdges();
+		generateEdges();
 		
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
@@ -70,6 +71,7 @@ public class ParseOSM {
 	//Método para generar ejes del grafo
 	private void generateEdges() {
 		GraphNode actual, next;
+		HashSet visitedNodes= new HashSet();
 		AdyacencyInfo adyItem;
 		DirectedEdge tempEdge;
 		
@@ -79,6 +81,8 @@ public class ParseOSM {
 			
 			//Nodo actual
 			actual= g.getNodes().get(entry.getKey());
+			visitedNodes.add(actual.getId());
+			
 			//Lista de adyacentes
 			LinkedList<AdyacencyInfo> listValues= entry.getValue();
 			
@@ -87,17 +91,26 @@ public class ParseOSM {
 				adyItem= listValues.get(i);
 				next= g.getNodes().get(adyItem.getAdyId());
 				
-				//Creo eje
-				tempEdge = new DirectedEdge(actual, next,
-						adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
-						adyItem.getName());
-				
-				edges.add(tempEdge);
+				//Si los dos extremos no estan visitados, creo un eje que los une
+				if(!visitedNodes.contains(next.getId())){
+					//Creo eje
+					tempEdge = new DirectedEdge(actual, next,
+							adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
+							adyItem.getName());
+					
+					edges.add(tempEdge);
+					
+					visitedNodes.add(next.getId());
+				}
 			}
 	
 		}		
 		
 	}
+	
+	 
+	
+	
 
 	private void filterGraph() {
 		filterOnlyNodesInCityPolygon();
@@ -118,7 +131,8 @@ public class ParseOSM {
 					ady= listValues.get(i);
 					//Si el adyacente no es nodo de la ciudad lo quito de la lista de adyacentes
 					if(!g.getNodes().containsKey(ady.getAdyId()))
-						listValues.remove(ady);
+						entry.getValue().remove(ady);
+						//listValues.remove(ady);
 				}
 			}else{
 				it.remove();
@@ -157,7 +171,7 @@ public class ParseOSM {
 	public void setNodes(LinkedList nodes) {
 		this.nodes = nodes;
 	}
-	public LinkedList<DirectedEdge> getEdges() {
+	public LinkedList<DirectedEdge> getf() {
 		return edges;
 	}
 	public void setEdges(LinkedList edges) {
@@ -203,6 +217,11 @@ public class ParseOSM {
 
 	public Area getBoundaryArea() {
 		return boundaryArea;
+	}
+
+	public LinkedList<DirectedEdge> getEdges() {
+		
+		return edges;
 	}
 			
 	
