@@ -81,6 +81,7 @@ public class ParseOSM {
 			
 			//Nodo actual
 			actual= g.getNodes().get(entry.getKey());
+			//se agrega como visitado
 			visitedNodes.add(entry.getKey());
 			
 			//Lista de adyacentes
@@ -100,7 +101,7 @@ public class ParseOSM {
 					
 					edges.add(tempEdge);
 					
-					visitedNodes.add(adyItem.getAdyId());
+					
 				}
 			}
 	
