@@ -101,7 +101,7 @@ public class ParseOSM {
 					
 					edges.add(tempEdge);
 					
-					
+					visitedNodes.add(adyItem.getAdyId());
 				}
 			}
 	
@@ -133,7 +133,7 @@ public class ParseOSM {
 					//Si el adyacente no es nodo de la ciudad lo quito de la lista de adyacentes
 					if(!g.getNodes().containsKey(ady.getAdyId()))
 						entry.getValue().remove(ady);
-						//listValues.remove(ady);
+						
 				}
 			}else{
 				it.remove();
