@@ -68,7 +68,30 @@ public class OSMtoGraph extends JFrame {
 							//scip.create("test");
 							
 							//Variable x = scip.createVar("x", 2.0, 3.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_CONTINUOUS);
-						      	
+						      
+							/*
+							 * PSEUDOCÓDIGO MODELO 
+							 * 
+							 * Obj min Sum xi
+							 * 
+							 * con xi = el i-ésimo polígono pertenece a la solución
+							 * 
+							 * 
+							 * VARIABLES
+							 * for(int i=0;i<Poligons.size();i++)
+							 * 		variable temp_var= var("x+i",0,1,INTEGER)
+							 * 		variables[i]= temp_var
+							 * 
+							 * 
+							 * RESTRICCIONES
+							 * 
+							 * for(int e=0;e<EDGES.size();e++)
+							 * 		for(int i=0;i<Poligons.size();i++)
+							 * 			edgeinpol= edgeInPol(EDGES(e),Poligons(i))
+							 * 			vals[i]= edgeinpol
+							 * 		
+							 * 		addConst(variables,vals)
+							 */
 							
 							/* VISUALIZE */
 							

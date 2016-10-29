@@ -11,12 +11,3 @@
 /GraphVisualizer.class
 /GraphWay.class
 /Main.class
-/NodeComparator.class
-/OSMtoGraph$1.class
-/OSMtoGraph.class
-/OsmConstants.class
-/Pair.class
-/ParseOSM.class
-/PolygonsGenerator.class
-/RoadGraph$OtherTags.class
-/RoadGraph.class
