@@ -66,8 +66,8 @@ public class OSMtoGraph extends JFrame {
 							
 							scip.create("solver");
 							
-							Variable[] vars = null;
-							double[] vals= null;
+							Variable[] vars = new Variable[gen.getPolygons().size()];
+							double[] vals= new double[gen.getPolygons().size()];
 							
  							Variable temp_var;
 							
