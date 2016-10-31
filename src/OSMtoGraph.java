@@ -59,16 +59,49 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
-							
 							//SCIP SOLVER
 							System.loadLibrary("jscip");
 							
 							Scip scip= new Scip();
 							
-							//scip.create("test");
+							scip.create("solver");
 							
-							//Variable x = scip.createVar("x", 2.0, 3.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_CONTINUOUS);
-						      
+							Variable[] vars = null;
+							double[] vals= null;
+							
+ 							Variable temp_var;
+							
+							//Se crean las variables del modelo
+							for(int i=0;i<gen.getPolygons().size();i++){
+								temp_var = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+								vars[i]= temp_var;
+							}
+							
+							//Restricciones
+						    double edgeInPolygon;  
+							
+						    for(int e=0;e<p.getEdges().size();e++){
+								for(int pol=0;pol<gen.getPolygons().size();pol++){
+									edgeInPolygon= checkIfEdgeIsInPolygon(p.getEdges().get(e),
+																		  gen.getPolygons().get(pol),
+																		  p);
+									vals[pol]= edgeInPolygon;
+								}
+								Constraint cons = scip.createConsLinear("allEdgesCovered", vars, vals,1.0,scip.infinity());
+								scip.addCons(cons);
+								
+							}
+							
+							scip.solve();
+							
+							// print all solutions
+  					        Solution[] allsols = scip.getSols();
+
+						    for( int s = 0; allsols != null && s < allsols.length; ++s )
+						         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
+						    	for(int i=0;i<gen.getPolygons().size();i++)
+						    		System.out.println("solution" + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
+							
 							/*
 							 * PSEUDOCÓDIGO MODELO 
 							 * 
@@ -94,7 +127,6 @@ public class OSMtoGraph extends JFrame {
 							 */
 							
 							/* VISUALIZE */
-							
 							//JUNG Interface
 							//GraphVisualizer gv = new GraphVisualizer();
 			                //gv.Visualize(p,nombre);
@@ -133,18 +165,20 @@ public class OSMtoGraph extends JFrame {
 				show(lista);
 			}
 
-			private int checkIfEdgeIsInPolygon(GraphNode extrNode_1, GraphNode extrNode_2, LinkedList<Long> polygon,ParseOSM p){
-		
-				int includedInPolygon= 0;
+			private double checkIfEdgeIsInPolygon(DirectedEdge e, LinkedList<Long> polygon,ParseOSM p){
+				GraphNode extrNode_1,extrNode_2;
+				double includedInPolygon= 0.0;
 				RoadGraph graph= p.getRoadGraph();
 				
 				//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
 				Area polygon_area= calculatePolygonArea(polygon, graph);
 				
+				extrNode_1= e.from();
+				extrNode_2= e.to();
 				//Se verifica si los dos extremos de la arista se encuentran incluídos en el polígono
 				//Si lo están entonces el eje está incluído en dicho polígono
 				if(nodeIsContainedInPolygon(extrNode_1,polygon_area) && nodeIsContainedInPolygon(extrNode_2,polygon_area))
-					includedInPolygon= 1;
+					includedInPolygon= 1.0;
 				//1 si está incluído, 0 si no
 				return includedInPolygon;
 			}
