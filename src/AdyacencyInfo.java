@@ -1,4 +1,5 @@
 
+
 public class AdyacencyInfo{
 
 	private final long adyacent_id;

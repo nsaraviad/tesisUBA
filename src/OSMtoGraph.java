@@ -59,6 +59,14 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
+							PolygonsOperator polOp= new PolygonsOperator();
+							polOp.operateWithPolygons(p, gen.getPolygons());
+							
+							//SystemSolver solv= new SystemSolver();
+							//solv.solve(gen.getPolygons(), p);
+							
+							
+							/*
 							//SCIP SOLVER
 							System.loadLibrary("jscip");
 							
@@ -101,30 +109,8 @@ public class OSMtoGraph extends JFrame {
 						         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
 						    	for(int i=0;i<gen.getPolygons().size();i++)
 						    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
+							*/
 							
-							/*
-							 * PSEUDOCÓDIGO MODELO 
-							 * 
-							 * Obj min Sum xi
-							 * 
-							 * con xi = el i-ésimo polígono pertenece a la solución
-							 * 
-							 * 
-							 * VARIABLES
-							 * for(int i=0;i<Poligons.size();i++)
-							 * 		variable temp_var= var("x+i",0,1,INTEGER)
-							 * 		variables[i]= temp_var
-							 * 
-							 * 
-							 * RESTRICCIONES
-							 * 
-							 * for(int e=0;e<EDGES.size();e++)
-							 * 		for(int i=0;i<Poligons.size();i++)
-							 * 			edgeinpol= edgeInPol(EDGES(e),Poligons(i))
-							 * 			vals[i]= edgeinpol
-							 * 		
-							 * 		addConst(variables,vals)
-							 */
 							
 							/* VISUALIZE */
 							//JUNG Interface
@@ -132,18 +118,17 @@ public class OSMtoGraph extends JFrame {
 			                //gv.Visualize(p,nombre);
 							
 							//Operations with generated polygons
-							operateWithPolygons(p,gen.getPolygons());
+							//operateWithPolygons(p,gen.getPolygons());
 							
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();
 						}
                     }
                 }
-            
+            /*
 			private void operateWithPolygons(ParseOSM p, LinkedList<LinkedList<Long>> polygons) {
 				LinkedList<Long> poly= new LinkedList<Long>();
 				double polygon_lenght; //longitud en km a recorrer dado un polígono
-			    
 			    
 				//Calculo distancias recorridas y visualizacion de cada polígono
 				//for(int i=0;i<polygons.size();i++){
@@ -347,6 +332,7 @@ public class OSMtoGraph extends JFrame {
 					lista.add(new Coordinate(latit,longit));
 				}
 			}
+			*/
         });  
     }
 
