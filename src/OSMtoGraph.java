@@ -80,16 +80,16 @@ public class OSMtoGraph extends JFrame {
 							//Restricciones
 						    double edgeInPolygon;  
 							
-						    for(int e=0;e<p.getEdges().size();e++){
-								for(int pol=0;pol<gen.getPolygons().size();pol++){
-									edgeInPolygon= checkIfEdgeIsInPolygon(p.getEdges().get(e),
-																		  gen.getPolygons().get(pol),
-																		  p);
-									vals[pol]= edgeInPolygon;
+						    for(int e=0;e < p.getEdges().size();e++){
+								for(int pol=0;pol < gen.getPolygons().size();pol++){
+										edgeInPolygon= checkIfEdgeIsInPolygon(p.getEdges().get(e),
+																			  gen.getPolygons().get(pol),
+																		      p);
+										
+										vals[pol]= edgeInPolygon;
 								}
-								Constraint cons = scip.createConsLinear("allEdgesCovered", vars, vals,1.0,scip.infinity());
+								Constraint cons = scip.createConsLinear("allEdgesCovered"+e, vars, vals,1.0,scip.infinity());
 								scip.addCons(cons);
-								
 							}
 							
 							scip.solve();
@@ -100,7 +100,7 @@ public class OSMtoGraph extends JFrame {
 						    for( int s = 0; allsols != null && s < allsols.length; ++s )
 						         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
 						    	for(int i=0;i<gen.getPolygons().size();i++)
-						    		System.out.println("solution" + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
+						    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
 							
 							/*
 							 * PSEUDOCÓDIGO MODELO 
@@ -167,7 +167,7 @@ public class OSMtoGraph extends JFrame {
 
 			private double checkIfEdgeIsInPolygon(DirectedEdge e, LinkedList<Long> polygon,ParseOSM p){
 				GraphNode extrNode_1,extrNode_2;
-				double includedInPolygon= 0.0;
+				double includedInPolygon= 0;
 				RoadGraph graph= p.getRoadGraph();
 				
 				//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
@@ -178,13 +178,11 @@ public class OSMtoGraph extends JFrame {
 				//Se verifica si los dos extremos de la arista se encuentran incluídos en el polígono
 				//Si lo están entonces el eje está incluído en dicho polígono
 				if(nodeIsContainedInPolygon(extrNode_1,polygon_area) && nodeIsContainedInPolygon(extrNode_2,polygon_area))
-					includedInPolygon= 1.0;
+					includedInPolygon= 1;
+				
 				//1 si está incluído, 0 si no
 				return includedInPolygon;
 			}
-			
-			
-			
 			
 			private Pair calculatePolygonEdgesAndLenght(LinkedList<Long> polygon, ParseOSM p) {
 				//Cálculo del conjunto de ejes incluídos en el polígono y longitud de recorrido 
