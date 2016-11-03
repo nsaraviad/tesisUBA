@@ -1,4 +1,6 @@
-/jscip/
-/SystemSolver.class
-/polygonsOperations/
-/PolygonsOperator.class
+/GraphComponents/
+/Parsing/
+/PolygonsOpers/
+/Visualizer/
+/Solver/
+/Main/
