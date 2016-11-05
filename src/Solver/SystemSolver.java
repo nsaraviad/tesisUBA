@@ -1,6 +1,8 @@
 package Solver;
 
 import java.util.LinkedList;
+
+import GraphComponents.DirectedEdge;
 import Parsing.ParseOSM;
 import PolygonsOpers.PolygonsOperator;
 import jscip.*;
@@ -21,29 +23,30 @@ public class SystemSolver {
 	Variable[] vars = new Variable[polSize];
 	double[] vals= new double[polSize];
 	
-	Variable temp_var;
+	
 	
 	//Se crean las variables del modelo
 	for(int i=0;i<polygons.size();i++){
-		temp_var = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
-		vars[i]= temp_var;
+		vars[i] = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
 	}
 	
 	//Restricciones
     double edgeInPolygon;
+    DirectedEdge temp_edge;
+    LinkedList<Long> temp_pol;
     
     PolygonsOperator pol_op= new PolygonsOperator();
 	
     for(int e=0;e < p.getEdges().size();e++){
+    	temp_edge= p.getEdges().get(e);
 		for(int pol=0;pol < polSize;pol++){
-				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(p.getEdges().get(e), polygons.get(pol), p);
+				temp_pol= polygons.get(pol);
+				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol , p);
 				vals[pol]= edgeInPolygon;
 		}
-		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1.0,scip.infinity());
+		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 		scip.addCons(cons);
-		scip.releaseCons(cons);
-	}
-	
+    }
 	scip.solve();
 	
 	// print all solutions
@@ -53,6 +56,5 @@ public class SystemSolver {
          //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
     	for(int i=0;i<polSize;i++)
     		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
-	
-		}
+	}
 }
