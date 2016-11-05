@@ -122,12 +122,12 @@ public class ParseOSM {
 
 	private void filterGraph() {
 		filterOnlyNodesInCityPolygon();
-		filterOnlyEdgesBetweenCityNodes();
+		filterOnlyCityAdyNodes();
 	}
 
-	private void filterOnlyEdgesBetweenCityNodes() {
+	private void filterOnlyCityAdyNodes() {
 		AdyacencyInfo ady;
-		//FILTRO LOS EJES. DEJO AQUELLOS QUE CONECTAN NODOS PERTENECIENTES A LA CIUDAD 
+		//FILTRO EN LA LISTA DE ADYACENCIAS DE CADA NODO LOS ADYACENTES PERTENECIENTES A LA CIUDAD 
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();

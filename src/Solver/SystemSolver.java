@@ -39,14 +39,15 @@ public class SystemSolver {
 				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(p.getEdges().get(e), polygons.get(pol), p);
 				vals[pol]= edgeInPolygon;
 		}
-		Constraint cons = scip.createConsLinear("allEdgesCovered"+e, vars, vals,1.0,scip.infinity());
+		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1.0,scip.infinity());
 		scip.addCons(cons);
+		scip.releaseCons(cons);
 	}
 	
 	scip.solve();
 	
 	// print all solutions
-      Solution[] allsols = scip.getSols();
+    Solution[] allsols = scip.getSols();
 
     for( int s = 0; allsols != null && s < allsols.length; ++s )
          //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
