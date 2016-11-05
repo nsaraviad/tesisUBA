@@ -47,7 +47,8 @@ public class SystemSolver {
 		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 		scip.addCons(cons);
     }
-	scip.solve();
+	
+    scip.solve();
 	
 	// print all solutions
     Solution[] allsols = scip.getSols();
