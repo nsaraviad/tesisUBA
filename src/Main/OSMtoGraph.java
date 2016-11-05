@@ -25,6 +25,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import Parsing.ParseOSM;
 import PolygonsOpers.PolygonsGenerator;
 import PolygonsOpers.PolygonsOperator;
+import Solver.SystemSolver;
 import jscip.*;
 
 public class OSMtoGraph extends JFrame {
@@ -66,8 +67,8 @@ public class OSMtoGraph extends JFrame {
 							PolygonsOperator polOp= new PolygonsOperator();
 							polOp.operateWithPolygons(p, gen.getPolygons());
 							
-							//SystemSolver solv= new SystemSolver();
-							//solv.solve(gen.getPolygons(), p);
+							SystemSolver solv= new SystemSolver();
+							solv.solve(gen.getPolygons(), p);
 							
 							/* VISUALIZE */
 							//JUNG Interface
