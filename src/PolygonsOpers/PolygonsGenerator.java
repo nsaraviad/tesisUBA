@@ -496,7 +496,7 @@ public class PolygonsGenerator {
 										Set res, LinkedList<Long>[] visitedNodes, 
 										Map distancesToNode) {
 
-		//Método encargado de avanzar (si es posible) un nodo en la misa dirección de cada camino del array pathNodes
+		//Método encargado de avanzar (si es posible) un nodo en la misma dirección de cada camino del array pathNodes
 		String nameStreet;
 		Long key_last;
 		int dist;
@@ -505,7 +505,7 @@ public class PolygonsGenerator {
 		boolean test;
 		
 		for(int i=0;i < pathsNode.length;i++){
-			//Ppor lo menos tiene adyacente en el path (para los nodos de grado 3 hay path vacío!)
+			//Por lo menos tiene adyacente en el path (para los nodos de grado 3 hay path vacío!)
 			if(pathsNode[i].size()>0){
 				temp_last= pathsNode[i].getLast();
 				nameStreet= temp_last.getName();

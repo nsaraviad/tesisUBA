@@ -24,7 +24,7 @@ public class SystemSolver {
 	int polSize= polygons.size();
 	Variable[] vars = new Variable[polSize];
 	double[] vals= new double[polSize];
-	
+	boolean esEje;
 	//Se crean las variables del modelo
 	for(int i=0;i<polygons.size();i++)
 		vars[i] = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
@@ -42,6 +42,10 @@ public class SystemSolver {
     	temp_edge= p.getEdges().get(e);
     	acum=0;
     	
+    	if((temp_edge.from().getId()==1856539688  && temp_edge.to().getId()==2490653943L) ||
+    			(temp_edge.to().getId()==1856539688  && temp_edge.from().getId()==2490653943L)){
+    		esEje=true;
+    	}
     	
     	for(int pol=0;pol < polSize;pol++){
 				temp_pol= polygons.get(pol);
