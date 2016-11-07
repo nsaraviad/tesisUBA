@@ -74,9 +74,7 @@ public class OSMtoGraph extends JFrame {
 							//JUNG Interface
 							//GraphVisualizer gv = new GraphVisualizer();
 			                //gv.Visualize(p,nombre);
-							
-							//Operations with generated polygons
-							//operateWithPolygons(p,gen.getPolygons());
+													
 							
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();

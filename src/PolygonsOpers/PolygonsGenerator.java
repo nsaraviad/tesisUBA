@@ -2,6 +2,7 @@ package PolygonsOpers;
 
 import GraphComponents.*;
 import Parsing.ParseOSM;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -315,11 +316,20 @@ public class PolygonsGenerator {
 	}
 
 	private boolean theyAreSelectableNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
-		
 		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 		//y ademas no tiene que estar en la misma calle
 		
-		return nodosDistintos(entry1, entry2) && esDeGrado(entry1.getKey(),4) && esDeGrado(entry2.getKey(),4) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
+		return nodosDistintos(entry1, entry2) &&
+				nodosDeGrado4o3(entry1,entry2) &&
+			   //(esDeGrado(entry1.getKey(),4) && esDeGrado(entry2.getKey(),4)) && 
+				theyAreNotNeighbors(entry1,entry2) && 
+				noDirectPathBetween(entry1,entry2);
+	}
+
+	
+	private boolean nodosDeGrado4o3(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
+		
+		return (esDeGrado(entry1.getKey(),3) || esDeGrado(entry1.getKey(),4)) && (esDeGrado(entry2.getKey(),3) || esDeGrado(entry2.getKey(),4));
 	}
 
 	private boolean nodosDistintos(	Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2)
@@ -411,23 +421,24 @@ public class PolygonsGenerator {
 	private boolean theyAreNotNeighbors(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		// Metodo que devuelve true si entry1 y entry2 no son adyacentes entre si. 
 		LinkedList<AdyacencyInfo> adyacents1;
-		boolean res= false;
+		boolean theyAreNeighbors= false;
 		
 		adyacents1= adyLst.get(entry1.getKey());
 		
 		//iterate over entry1 adyacents
-		for(int i=0;(i < adyacents1.size()) && !res;i++){
+		for(int i=0;(i < adyacents1.size()) && !theyAreNeighbors;i++){
 			//Si hay un adyacente de entry1 que tenga el mismo id que entry2 (entonces serian vecinos)
-			res= (adyacents1.get(i).getAdyId() == entry2.getKey());
+			theyAreNeighbors= (adyacents1.get(i).getAdyId() == entry2.getKey());
 		}
 		
-		return !res;
+		return !theyAreNeighbors;
 		
 	}
 
 	private boolean esDeGrado(Long node_id,int grado) {
-		//return entry2.getValue().size()==grado;
-		return adyLst.get(node_id).size() == grado;
+		//devuelve true cuando el grado del nodo es igual algrado especificado
+		int gradoNodo = adyLst.get(node_id).size();
+		return (gradoNodo == grado);
 	}
 
 	//Método encargado de limpiar los caminos en cada nueva iteración
@@ -568,8 +579,8 @@ public class PolygonsGenerator {
 					
 					//Actualizo el angulo "actual que cumple"
 					//Considero aquellos nodos de grado 2 que pueden continuar por un path
-					if( ( ((0 < angle) && (angle < 20) && !visitedNodes.contains(ady_temp_id)) ) ||
-						( (esDeGrado(lastNode_id,2)) &&  ((0 < angle) && (angle < 65) && !visitedNodes.contains(ady_temp_id)))	)
+					if( ( ((0 < angle) && (angle < 45) && !visitedNodes.contains(ady_temp_id)) ) ||
+						( (esDeGrado(lastNode_id,2)) &&  ((0 < angle) && (angle < 50) && !visitedNodes.contains(ady_temp_id)))	)
 						result= adyacents.get(i);
 				}	
 				

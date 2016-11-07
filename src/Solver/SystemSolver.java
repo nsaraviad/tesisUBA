@@ -1,6 +1,8 @@
 package Solver;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import GraphComponents.DirectedEdge;
 import Parsing.ParseOSM;
@@ -23,27 +25,34 @@ public class SystemSolver {
 	Variable[] vars = new Variable[polSize];
 	double[] vals= new double[polSize];
 	
-	
-	
 	//Se crean las variables del modelo
-	for(int i=0;i<polygons.size();i++){
+	for(int i=0;i<polygons.size();i++)
 		vars[i] = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
-	}
 	
 	//Restricciones
     double edgeInPolygon;
     DirectedEdge temp_edge;
     LinkedList<Long> temp_pol;
+    double acum;
+    Set ninguno= new HashSet<DirectedEdge>();
     
     PolygonsOperator pol_op= new PolygonsOperator();
 	
     for(int e=0;e < p.getEdges().size();e++){
     	temp_edge= p.getEdges().get(e);
-		for(int pol=0;pol < polSize;pol++){
+    	acum=0;
+    	
+    	
+    	for(int pol=0;pol < polSize;pol++){
 				temp_pol= polygons.get(pol);
 				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol , p);
+				acum =+ edgeInPolygon;
 				vals[pol]= edgeInPolygon;
 		}
+    	
+    	if (acum > 0 )
+    		ninguno.add(temp_edge);
+    	
 		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 		scip.addCons(cons);
     }

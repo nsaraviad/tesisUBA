@@ -77,7 +77,7 @@ public class ParseOSM {
 
 	//Método para generar ejes del grafo
 	private void generateEdges() {
-		GraphNode actual, next;
+		GraphNode actual, adyNode;
 		HashSet visitedNodes= new HashSet();
 		AdyacencyInfo adyItem;
 		DirectedEdge tempEdge;
@@ -97,12 +97,11 @@ public class ParseOSM {
 			
 			for(int i=0;i < listValues.size();i++){
 				adyItem= listValues.get(i);
-				next= g.getNodes().get(adyItem.getAdyId());
+				adyNode= g.getNodes().get(adyItem.getAdyId());
 				
-				//Si los dos extremos no estan visitados, creo un eje que los une
 				if(!visitedNodes.contains(adyItem.getAdyId())){
 					//Creo eje
-					tempEdge = new DirectedEdge(actual, next,
+					tempEdge = new DirectedEdge(actual, adyNode,
 							adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
 							adyItem.getName());
 					
@@ -137,10 +136,10 @@ public class ParseOSM {
 				LinkedList<AdyacencyInfo> listValues= entry.getValue();
 				for(int i=0;i < listValues.size();i++){
 					ady= listValues.get(i);
+					
 					//Si el adyacente no es nodo de la ciudad lo quito de la lista de adyacentes
 					if(!g.getNodes().containsKey(ady.getAdyId()))
 						entry.getValue().remove(ady);
-						
 				}
 			}else{
 				it.remove();
