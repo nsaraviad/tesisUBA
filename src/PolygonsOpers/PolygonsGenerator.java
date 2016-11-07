@@ -505,30 +505,32 @@ public class PolygonsGenerator {
 		boolean test;
 		
 		for(int i=0;i < pathsNode.length;i++){
-			temp_last= pathsNode[i].getLast();
-			nameStreet= temp_last.getName();
-			//Buscar adyacentes de temp_last enla misma direccion
-			key_last= temp_last.getAdyId();
-			
-			//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
+			//Ppor lo menos tiene adyacente en el path (para los nodos de grado 3 hay path vacío!)
+			if(pathsNode[i].size()>0){
+				temp_last= pathsNode[i].getLast();
+				nameStreet= temp_last.getName();
+				//Buscar adyacentes de temp_last enla misma direccion
+				key_last= temp_last.getAdyId();
 				
-			ady = buscarAdyacentePorNombreDeCalle(key_last,nameStreet, res, visitedNodes[i]); 
-			
-			//Si no se encuentra adyacente por nombre de calle (o porque hubo cambio de nombre o porque no se puede
-			//continuar avanzando por dicha calle). Para chequear si analizan los angulos.
-			if(ady==null)
-				ady= buscarAdyacentePorAnguloEntreAristas(pathsNode[i],res,visitedNodes[i]);
-			
-			dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
+				//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
+					
+				ady = buscarAdyacentePorNombreDeCalle(key_last,nameStreet, res, visitedNodes[i]); 
 				
-			//si encuentro adyacente en la misma direccion, avanzo. Caso contrario, no se puede continuar avanzando 
-			//en la dirección.
-			if(ady != null){
-				pathsNode[i].add(ady);
-				distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
-				puedeAvanzar= true;
+				//Si no se encuentra adyacente por nombre de calle (o porque hubo cambio de nombre o porque no se puede
+				//continuar avanzando por dicha calle). Para chequear si analizan los angulos.
+				if(ady==null)
+					ady= buscarAdyacentePorAnguloEntreAristas(pathsNode[i],res,visitedNodes[i]);
+				
+				dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
+					
+				//si encuentro adyacente en la misma direccion, avanzo. Caso contrario, no se puede continuar avanzando 
+				//en la dirección.
+				if(ady != null){
+					pathsNode[i].add(ady);
+					distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
+					puedeAvanzar= true;
+				}
 			}
-			
 		}
 			
 		return puedeAvanzar;
