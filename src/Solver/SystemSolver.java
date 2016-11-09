@@ -34,7 +34,7 @@ public class SystemSolver {
     DirectedEdge temp_edge;
     LinkedList<Long> temp_pol;
     double acum;
-    Set ninguno= new HashSet<DirectedEdge>();
+    LinkedList ninguno= new LinkedList<DirectedEdge>();
     
     PolygonsOperator pol_op= new PolygonsOperator();
 	
@@ -42,19 +42,19 @@ public class SystemSolver {
     	temp_edge= p.getEdges().get(e);
     	acum=0;
     	
-    	if((temp_edge.from().getId()==1856539688  && temp_edge.to().getId()==2490653943L) ||
-    			(temp_edge.to().getId()==1856539688  && temp_edge.from().getId()==2490653943L)){
+    	if((temp_edge.from().getId()==1856539688  && temp_edge.to().getId()==1837015402) ||
+    			(temp_edge.to().getId()==1856539688  && temp_edge.from().getId()==1837015402)){
     		esEje=true;
     	}
     	
     	for(int pol=0;pol < polSize;pol++){
 				temp_pol= polygons.get(pol);
 				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol , p);
-				acum =+ edgeInPolygon;
+				acum = acum +  edgeInPolygon;
 				vals[pol]= edgeInPolygon;
 		}
     	
-    	if (acum > 0 )
+     	if (acum == 0 )
     		ninguno.add(temp_edge);
     	
 		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
