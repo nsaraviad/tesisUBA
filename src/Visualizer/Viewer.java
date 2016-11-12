@@ -64,6 +64,7 @@ public class Viewer
 		
 		// Agregamos un polígono usando los marcadores
 		mapViewer.addMapPolygon(new MapPolygonImpl(lista));
+	
 		
 		// Centramos el mapa sobre los marcadores
 		mapViewer.setDisplayToFitMapMarkers();

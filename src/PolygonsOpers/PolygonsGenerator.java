@@ -319,21 +319,67 @@ public class PolygonsGenerator {
 		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 		//y ademas no tiene que estar en la misma calle
 		
-		return nodosDistintos(entry1, entry2) &&
-				nodosDeGrado4o3(entry1,entry2) &&
-			   //(esDeGrado(entry1.getKey(),4) && esDeGrado(entry2.getKey(),4)) && 
-				theyAreNotNeighbors(entry1,entry2) && 
+		return  nodosDistintos(entry1, entry2) &&
+				filtroGradoNodos(entry1,entry2) &&
+			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
 	}
 
 	
-	private boolean nodosDeGrado4o3(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
+	private boolean filtroGradoNodos(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		
-		return (esDeGrado(entry1.getKey(),3) || esDeGrado(entry1.getKey(),4)) && (esDeGrado(entry2.getKey(),3) || esDeGrado(entry2.getKey(),4));
+		//return (esDeGrado(entry1.getKey(),3) || esDeGrado(entry1.getKey(),4)) && (esDeGrado(entry2.getKey(),3) || esDeGrado(entry2.getKey(),4));
+		return deGrado234(entry1.getKey()) && deGrado234(entry2.getKey()); 
 	}
 
-	private boolean nodosDistintos(	Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2)
-	{
+	
+	private boolean deGrado234(Long nodeKey) {
+		
+		return (esDeGrado2Particular(nodeKey) || esDeGrado(nodeKey,3) || esDeGrado(nodeKey,4));
+	}
+
+	private boolean esDeGrado2Particular(Long nodeKey) {
+		//Retorna true si el nodo es de grado 2 y el angulo formado entre los ejes adyacentes esta proximo a los 90º
+		boolean result= false;
+		
+		if(esDeGrado(nodeKey,2))
+			ejesEntrantesEnAngulo(nodeKey);
+		
+		return result;
+	}
+
+	private boolean ejesEntrantesEnAngulo(Long nodeKey) {
+		// Método encargado de analizar el angulo entre los ejes entrantes al nodo 
+	
+		long ady1,ady2;
+		double m1,m2;
+		LinkedList<AdyacencyInfo> adyacents;
+		AdyacencyInfo result= null;
+		float angle;
+		boolean res= false;
+		
+		adyacents= adyLst.get(nodeKey); //los adyacentes al nodo (yo se que hay 2)
+		
+		//calculo de las 2 aristas (ady1,nod) y (ady2,nod)
+		
+		ady1= adyacents.getFirst().getAdyId();
+		ady2= adyacents.getLast().getAdyId();
+		
+		//Si ambos nodos adyacentes están dentro de los limites de la ciudad
+		if(adyacentInCity(ady1) && adyacentInCity(ady2)){
+			m1= calculatePend(nodeKey,ady1);
+			m2= calculatePend(nodeKey,ady2);
+		
+			//Calculo de angulo entre rectas con pendientes m1 y m2
+			angle= Math.abs(angleBetween(m1,m2));
+			res= (85<=angle) && (angle <= 95);
+		}	
+		
+		return res;
+	}
+		
+
+	private boolean nodosDistintos(	Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2){
 		return entry1.getKey() != entry2.getKey();
 	}
 
