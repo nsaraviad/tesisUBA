@@ -50,6 +50,7 @@ public class PolygonsGenerator {
 		LinkedList<Integer> dimensiones;
 		long[] resultado;
 		boolean esElpol;
+		boolean nodoPart;
 		
 		//Inicializo
 		distancesToNode1= new HashMap();
@@ -89,6 +90,13 @@ public class PolygonsGenerator {
 				
 				
 				if(theyAreSelectableNodes(entry1, entry2)){
+					
+					
+					if((entry1.getKey() == 1837015355 && entry2.getKey()==1837015458) ||
+					    (entry1.getKey()==1837015458 && entry2.getKey()==1837015355))
+							nodoPart= true;
+					
+					
 					
 					//Se agrega a los nodos como visitados 
 					addEntryNodeAsVisited(visitedNodes1, entry1);
@@ -535,7 +543,7 @@ public class PolygonsGenerator {
 		res1= avanzarCaminosNodo(pathsNode1, res, visitedNodes1,distancesToNode1);
 		res2= avanzarCaminosNodo(pathsNode2, res, visitedNodes2, distancesToNode2);
 		
-		return res1 && res2;
+		return res1 || res2;
 	}
 
 	private boolean avanzarCaminosNodo(LinkedList<AdyacencyInfo>[] pathsNode, 
@@ -547,8 +555,8 @@ public class PolygonsGenerator {
 		Long key_last;
 		int dist;
 		boolean puedeAvanzar= false;
+		boolean elNodo;
 		AdyacencyInfo temp_last, ady;
-		boolean test;
 		
 		for(int i=0;i < pathsNode.length;i++){
 			//Por lo menos tiene adyacente en el path (para los nodos de grado 3 hay path vacío!)
@@ -559,7 +567,7 @@ public class PolygonsGenerator {
 				key_last= temp_last.getAdyId();
 				
 				//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
-					
+				
 				ady = buscarAdyacentePorNombreDeCalle(key_last,nameStreet, res, visitedNodes[i]); 
 				
 				//Si no se encuentra adyacente por nombre de calle (o porque hubo cambio de nombre o porque no se puede
