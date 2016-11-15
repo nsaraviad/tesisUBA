@@ -42,11 +42,11 @@ public class SystemSolver {
     	temp_edge= p.getEdges().get(e);
     	covered=0;
     	
-    	if((temp_edge.from().getId() == 2490653947L && temp_edge.to().getId() == 1837015393) || 
-    		((temp_edge.to().getId() == 2490653947L) && (temp_edge.from().getId() == 1837015393)))
+    	if((temp_edge.from().getId() == 2490653913L && temp_edge.to().getId() == 2490653914L) || 
+    		((temp_edge.to().getId() == 2490653913L) && (temp_edge.from().getId() == 2490653914L)))
     			esEje= true;
     	
-    	for(int pol=0;pol < polSize;pol++){
+    	for(int pol=0;(pol < polSize) && (covered==0) ;pol++){
 				temp_pol= polygons.get(pol);
 				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol , p);
 				covered = covered +  edgeInPolygon;
@@ -54,9 +54,10 @@ public class SystemSolver {
 		}
 
     	//Solo se agregan las restricciones par aquellos ejes cubiertos por polígonos
-     	if (covered > 0 ){
-     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
-     		scip.addCons(cons);
+     	if (covered == 0 ){
+     		ninguno.add(temp_edge);
+     		//Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
+     		//scip.addCons(cons);
      	}
 		
     }
