@@ -46,7 +46,7 @@ public class SystemSolver {
     		((temp_edge.to().getId() == 2490653913L) && (temp_edge.from().getId() == 2490653914L)))
     			esEje= true;
     	
-    	for(int pol=0;(pol < polSize) && (covered==0) ;pol++){
+    	for(int pol=0;pol < polSize ;pol++){
 				temp_pol= polygons.get(pol);
 				edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol , p);
 				covered = covered +  edgeInPolygon;

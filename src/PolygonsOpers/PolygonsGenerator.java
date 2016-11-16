@@ -532,7 +532,6 @@ public class PolygonsGenerator {
 	}
 	
 	
-	
 	private boolean puedaAvanzarEnAlgunaDir(LinkedList<AdyacencyInfo>[] pathsNode1, LinkedList<AdyacencyInfo>[] pathsNode2, 
 											Set res, LinkedList<Long>[] visitedNodes1, LinkedList<Long>[] visitedNodes2,
 											Map distancesToNode1, Map distancesToNode2) {
@@ -567,7 +566,6 @@ public class PolygonsGenerator {
 				key_last= temp_last.getAdyId();
 				
 				//AÑADIR AL MÉTODO buscarAdyacente  LA FUNCIONALIDAD DE ANALISIS DE ANGULOS ENTRE LAS RECTAS 
-				
 				ady = buscarAdyacentePorNombreDeCalle(key_last,nameStreet, res, visitedNodes[i]); 
 				
 				//Si no se encuentra adyacente por nombre de calle (o porque hubo cambio de nombre o porque no se puede
