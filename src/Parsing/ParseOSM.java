@@ -18,11 +18,13 @@ import java.awt.List;
 
 import javax.swing.JFileChooser;
 
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import Visualizer.CoordinatesConversor;
+import Visualizer.Viewer;
 import GraphComponents.AdyacencyInfo;
 import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
@@ -58,20 +60,20 @@ public class ParseOSM {
 		generateQuadrants();
 		
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
-		filterGraph();
+		//filterGraph();
 		
 		//Se crean los nodos a visualizar
 		//generateNodes();
 		
 		//Se crean los ejes
-		generateEdges();
+		//generateEdges();
 		
-		System.out.println("Parsing ended at"+ LocalDateTime.now() );
-		System.out.println("Edges = "+edges.size());
-		System.out.println("Nodes = "+g.getNodes().size());
-		System.out.println("AdyList = "+g.getAdyLst().size());
+		//System.out.println("Parsing ended at"+ LocalDateTime.now() );
+		//System.out.println("Edges = "+edges.size());
+		//System.out.println("Nodes = "+g.getNodes().size());
+		//System.out.println("AdyList = "+g.getAdyLst().size());
 		
-		System.out.println("refBound = "+g.getRefBoundary().size());
+		//System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 
@@ -80,11 +82,12 @@ public class ParseOSM {
 		
 		//Tengo 4 puntos extremos (max_x,min_y),(max_x,max_y),(min_x,max_y),(min_x,min_y)
 		LinkedList quadrantsPoints= new LinkedList<LinkedList<Pair>>();
+		LinkedList<Pair> t_quad;
 		
 		//Calculo puntos intermedios
 		double mid_latit, mid_longit, latit, longit;
-		double[] xPoints= new double[4];
-		double[] yPoints= new double[4];
+		//double[] xPoints= new double[4];
+		//double[] yPoints= new double[4];
 		
 		mid_latit= (max_latit + min_latit)/2;
 		mid_longit= (max_longit + min_longit)/2;
@@ -93,31 +96,39 @@ public class ParseOSM {
 		prepareQuadrants(quadrantsPoints, mid_latit, mid_longit);
 		
 		//Conversión y calculo area de cada cuadrante
-		for(int i=0;i < 4; i++){
+		//for(int i=0;i < 4; i++){
 			//Cuadrante actual
-			LinkedList<Pair> temp_quad = (LinkedList<Pair>) quadrantsPoints.get(i);
+			//LinkedList<Pair> temp_quad = (LinkedList<Pair>) quadrantsPoints.get(i);
 			
-			for(int j=0;j<temp_quad.size();j++){
-				latit= (double) temp_quad.get(j).getFirst();
-				longit= (double) temp_quad.get(j).getSecond();
-				xPoints[j]= CoordinatesConversor.getTileNumberLat(latit);
-				yPoints[j]= CoordinatesConversor.getTileNumberLong(longit);
+			//lista.clear();
+			//for(int j=0;j<temp_quad.size();j++){
+			for(int j=0;j<quadrantsPoints.size();j++){
+				 t_quad = (LinkedList<Pair>) quadrantsPoints.get(j);
+				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
+				for(int i=0;i<t_quad.size();i++){
+					latit=   (double) t_quad.get(i).getFirst();
+					longit= (double) t_quad.get(i).getSecond();
+					lista.add(new Coordinate(latit,longit));
+				//xPoints[j]= CoordinatesConversor.getTileNumberLat(latit);
+				//yPoints[j]= CoordinatesConversor.getTileNumberLong(longit);
+				}
+			
+			Viewer v= new Viewer(lista);
+			v.mostrar();
 			}
-			
-			
 			//ARMADO DEL PERÍMETRO DEL CUADRANTE 
-			Path2D path= new Path2D.Double();
+			//Path2D path= new Path2D.Double();
 				
-			path.moveTo(xPoints[0], yPoints[0]);
-			for(int k=1;k < 4;k++)
-				path.lineTo(xPoints[k], yPoints[k]);
+			//path.moveTo(xPoints[0], yPoints[0]);
+			//for(int k=1;k < 4;k++)
+			//	path.lineTo(xPoints[k], yPoints[k]);
 						
 			//CALCULO AREA CUADRANTE
-			path.closePath();
-			final Area area= new Area(path);
-			cityQuadrants[i]= area;
+			//path.closePath();
+			//final Area area= new Area(path);
+			//cityQuadrants[i]= area;
 			
-		}
+		//}
 		
 	}
 
@@ -125,6 +136,12 @@ public class ParseOSM {
 		
 		LinkedList temp_quad= new LinkedList<Pair>();
 		
+		temp_quad.add(new Pair(min_latit,min_longit));
+		temp_quad.add(new Pair(min_latit,max_longit));
+		temp_quad.add(new Pair(max_latit,max_longit));
+		temp_quad.add(new Pair(max_latit,min_longit));
+		
+		/*
 		//Quad_1
 		temp_quad.add(new Pair(min_latit,max_longit));
 		temp_quad.add(new Pair(mid_latit,max_longit));
@@ -157,7 +174,7 @@ public class ParseOSM {
 		temp_quad.add(new Pair(max_latit,mid_longit));
 		temp_quad.add(new Pair(max_latit,min_longit));
 		temp_quad.add(new Pair(mid_latit,min_longit));
-				
+		*/		
 		quadrantsPoints.add(temp_quad);
 		
 	}
@@ -299,10 +316,10 @@ public class ParseOSM {
 		double conv_latit,conv_longit;
 
 		//Inicializo
-		latit_max= Double.MIN_VALUE;
-		latit_min= Double.MAX_VALUE;
-		longit_max= Double.MIN_VALUE;
-		longit_min= Double.MAX_VALUE;
+		latit_max= nodesB.get(0).getLat();
+		latit_min= nodesB.get(0).getLat();
+		longit_max= nodesB.get(0).getLon();
+		longit_min= nodesB.get(0).getLon();
 		
 		//Conversión (latitud,longitud) a puntos en el plano R2 (x,y)
 		for(int i=0;i < size; i++){

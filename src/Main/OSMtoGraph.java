@@ -61,14 +61,14 @@ public class OSMtoGraph extends JFrame {
                             p.ParseOSM(pathArchivo,nombre);
 							
 							//polygons generator algorithm
-							PolygonsGenerator gen= new PolygonsGenerator(p);
-							gen.generatePolygons();
+							//PolygonsGenerator gen= new PolygonsGenerator(p);
+							//gen.generatePolygons();
 							
 							//PolygonsOperator polOp= new PolygonsOperator();
 						    //polOp.operateWithPolygons(p, gen.getPolygons());
 							
-							SystemSolver solv= new SystemSolver();
-							solv.solve(gen.getPolygons(), p);
+							//SystemSolver solv= new SystemSolver();
+							//solv.solve(gen.getPolygons(), p);
 							
 							/* VISUALIZE */
 							//JUNG Interface
