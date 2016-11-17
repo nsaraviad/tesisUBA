@@ -83,17 +83,18 @@ public class ParseOSM {
 		//Tengo 4 puntos extremos (max_x,min_y),(max_x,max_y),(min_x,max_y),(min_x,min_y)
 		LinkedList quadrantsPoints= new LinkedList<LinkedList<Pair>>();
 		LinkedList<Pair> t_quad;
+		Pair midpoint;
 		
 		//Calculo puntos intermedios
 		double mid_latit, mid_longit, latit, longit;
-		//double[] xPoints= new double[4];
-		//double[] yPoints= new double[4];
+		double[] xPoints= new double[4];
+		double[] yPoints= new double[4];
 		
-		mid_latit= (max_latit + min_latit)/2;
-		mid_longit= (max_longit + min_longit)/2;
+		//geopunto medio
+		midpoint= midPoint(min_latit,min_longit,max_latit,max_longit);
 		
 		//Armado de Puntos para formar cuadrantes
-		prepareQuadrants(quadrantsPoints, mid_latit, mid_longit);
+		prepareQuadrants(quadrantsPoints, (double)midpoint.getFirst(), (double)midpoint.getSecond());
 		
 		//Conversión y calculo area de cada cuadrante
 		//for(int i=0;i < 4; i++){
@@ -113,8 +114,8 @@ public class ParseOSM {
 				//yPoints[j]= CoordinatesConversor.getTileNumberLong(longit);
 				}
 			
-			Viewer v= new Viewer(lista);
-			v.mostrar();
+				Viewer v= new Viewer(lista);
+				v.mostrar();
 			}
 			//ARMADO DEL PERÍMETRO DEL CUADRANTE 
 			//Path2D path= new Path2D.Double();
@@ -132,50 +133,66 @@ public class ParseOSM {
 		
 	}
 
+	private Pair midPoint(double lat1, double long1, double lat2, double long2) {
+	
+		double dLon= Math.toRadians(long2 - long1);
+		
+		//to radians
+		lat1= Math.toRadians(lat1);
+		lat2=Math.toRadians(lat2);
+		long1=Math.toRadians(long1);
+		long2= Math.toRadians(long2);
+		
+		double Bx= Math.cos(lat2)*Math.cos(dLon);
+		double By= Math.cos(lat2)*Math.sin(dLon);
+		
+		double lat3= Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1)+Bx)*(Math.cos(lat1)+Bx) + By*By));
+		double long3= long1 + Math.atan2(By, Math.cos(lat1)+Bx);
+		
+		return new Pair(Math.toDegrees(lat3),Math.toDegrees(long3));
+	}
+
 	private void prepareQuadrants(LinkedList quadrantsPoints,double mid_latit, double mid_longit) {
 		
-		LinkedList temp_quad= new LinkedList<Pair>();
+		//Quadrants creation
+		LinkedList quad1,quad2,quad3,quad4;
+		quad1= new LinkedList<Pair>();
+		quad2= new LinkedList<Pair>();
+		quad3= new LinkedList<Pair>();
+		quad4= new LinkedList<Pair>();
 		
-		temp_quad.add(new Pair(min_latit,min_longit));
-		temp_quad.add(new Pair(min_latit,max_longit));
-		temp_quad.add(new Pair(max_latit,max_longit));
-		temp_quad.add(new Pair(max_latit,min_longit));
-		
-		/*
 		//Quad_1
-		temp_quad.add(new Pair(min_latit,max_longit));
-		temp_quad.add(new Pair(mid_latit,max_longit));
-		temp_quad.add(new Pair(mid_latit,mid_longit));
-		temp_quad.add(new Pair(min_latit,mid_longit));
+		quad1.add(new Pair(max_latit,min_longit));
+		quad1.add(new Pair(max_latit,mid_longit));
+		quad1.add(new Pair(mid_latit,mid_longit));
+		quad1.add(new Pair(mid_latit,min_longit));
 		
-		quadrantsPoints.add(temp_quad);
-		temp_quad.clear();
+		quadrantsPoints.add(quad1);
 		
 		//Quad_2
-		temp_quad.add(new Pair(mid_latit,max_longit));
-		temp_quad.add(new Pair(max_latit,max_longit));
-		temp_quad.add(new Pair(max_latit,mid_longit));
-		temp_quad.add(new Pair(mid_latit,mid_longit));
+		quad2.add(new Pair(max_latit,mid_longit));
+		quad2.add(new Pair(max_latit,max_longit));
+		quad2.add(new Pair(mid_latit,max_longit));
+		quad2.add(new Pair(mid_latit,mid_longit));
 				
-		quadrantsPoints.add(temp_quad);
-		temp_quad.clear();
+		quadrantsPoints.add(quad2);
+		
 		
 		//Quad_3
-		temp_quad.add(new Pair(min_latit,mid_longit));
-		temp_quad.add(new Pair(mid_latit,mid_longit));
-		temp_quad.add(new Pair(mid_latit,min_longit));
-		temp_quad.add(new Pair(min_latit,min_longit));
+		quad3.add(new Pair(mid_latit,min_longit));
+		quad3.add(new Pair(mid_latit,mid_longit));
+		quad3.add(new Pair(min_latit,mid_longit));
+		quad3.add(new Pair(min_latit,min_longit));
 				
-		quadrantsPoints.add(temp_quad);
-		temp_quad.clear();
+		quadrantsPoints.add(quad3);
 		
 		//Quad_4
-		temp_quad.add(new Pair(mid_latit,mid_longit));
-		temp_quad.add(new Pair(max_latit,mid_longit));
-		temp_quad.add(new Pair(max_latit,min_longit));
-		temp_quad.add(new Pair(mid_latit,min_longit));
-		*/		
-		quadrantsPoints.add(temp_quad);
+		quad4.add(new Pair(mid_latit,mid_longit));
+		quad4.add(new Pair(mid_latit,max_longit));
+		quad4.add(new Pair(min_latit,max_longit));
+		quad4.add(new Pair(min_latit,mid_longit));
+			
+		quadrantsPoints.add(quad4);
 		
 	}
 
