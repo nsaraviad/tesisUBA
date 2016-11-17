@@ -87,50 +87,54 @@ public class ParseOSM {
 		
 		//Calculo puntos intermedios
 		double mid_latit, mid_longit, latit, longit;
-		double[] xPoints= new double[4];
-		double[] yPoints= new double[4];
+		double[] xPoints;
+		double[] yPoints;
 		
 		//geopunto medio
 		midpoint= midPoint(min_latit,min_longit,max_latit,max_longit);
 		
-		//Armado de Puntos para formar cuadrantes
+		//Creacion cuadrantes
 		prepareQuadrants(quadrantsPoints, (double)midpoint.getFirst(), (double)midpoint.getSecond());
 		
+		xPoints= new double[quadrantsPoints.size()];
+		yPoints= new double[quadrantsPoints.size()];
+		
 		//Conversión y calculo area de cada cuadrante
-		//for(int i=0;i < 4; i++){
-			//Cuadrante actual
-			//LinkedList<Pair> temp_quad = (LinkedList<Pair>) quadrantsPoints.get(i);
-			
-			//lista.clear();
-			//for(int j=0;j<temp_quad.size();j++){
-			for(int j=0;j<quadrantsPoints.size();j++){
-				 t_quad = (LinkedList<Pair>) quadrantsPoints.get(j);
+		calculateQuadrantsAreas(quadrantsPoints, xPoints, yPoints);
+	}
+
+	private void calculateQuadrantsAreas(LinkedList quadrantsPoints,double[] xPoints, double[] yPoints) {
+		LinkedList<Pair> t_quad;
+		double latit;
+		double longit;
+		
+		for(int j=0;j<quadrantsPoints.size();j++){
+				t_quad = (LinkedList<Pair>) quadrantsPoints.get(j);
 				LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
+				
 				for(int i=0;i<t_quad.size();i++){
 					latit=   (double) t_quad.get(i).getFirst();
 					longit= (double) t_quad.get(i).getSecond();
 					lista.add(new Coordinate(latit,longit));
-				//xPoints[j]= CoordinatesConversor.getTileNumberLat(latit);
-				//yPoints[j]= CoordinatesConversor.getTileNumberLong(longit);
+					xPoints[j]= CoordinatesConversor.getTileNumberLat(latit);
+					yPoints[j]= CoordinatesConversor.getTileNumberLong(longit);
 				}
 			
-				Viewer v= new Viewer(lista);
-				v.mostrar();
-			}
-			//ARMADO DEL PERÍMETRO DEL CUADRANTE 
-			//Path2D path= new Path2D.Double();
+				//Viewer v= new Viewer(lista);
+				//v.mostrar();
 				
-			//path.moveTo(xPoints[0], yPoints[0]);
-			//for(int k=1;k < 4;k++)
-			//	path.lineTo(xPoints[k], yPoints[k]);
-						
-			//CALCULO AREA CUADRANTE
-			//path.closePath();
-			//final Area area= new Area(path);
-			//cityQuadrants[i]= area;
-			
-		//}
-		
+				//ARMADO DEL PERÍMETRO DEL CUADRANTE 
+				Path2D path= new Path2D.Double();
+					
+				path.moveTo(xPoints[0], yPoints[0]);
+				for(int k=1;k < t_quad.size();k++)
+					path.lineTo(xPoints[k], yPoints[k]);
+							
+				//CALCULO AREA CUADRANTE
+				path.closePath();
+				final Area area= new Area(path);
+				cityQuadrants[j]= area;
+			}
 	}
 
 	private Pair midPoint(double lat1, double long1, double lat2, double long2) {
@@ -141,7 +145,6 @@ public class ParseOSM {
 		lat1= Math.toRadians(lat1);
 		lat2=Math.toRadians(lat2);
 		long1=Math.toRadians(long1);
-		long2= Math.toRadians(long2);
 		
 		double Bx= Math.cos(lat2)*Math.cos(dLon);
 		double By= Math.cos(lat2)*Math.sin(dLon);
