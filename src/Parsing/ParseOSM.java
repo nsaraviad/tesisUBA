@@ -66,7 +66,7 @@ public class ParseOSM {
 		//generateNodes();
 		
 		//Se crean los ejes
-		//generateEdges();
+		generateEdges();
 		
 		//System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		//System.out.println("Edges = "+edges.size());
@@ -229,17 +229,23 @@ public class ParseOSM {
 			
 			
 			for(int i=0;i < listValues.size();i++){
+				//nodo adyacente "actual"
 				adyItem= listValues.get(i);
 				adyNode= g.getNodes().get(adyItem.getAdyId());
 				
 				if(!visitedNodes.contains(adyItem.getAdyId())){
-					//Creo eje
+					
+					//Se obtiene el/los cuadrantes donde se encuentra el nuevo eje
+					LinkedList edgeQuads= getEdgeQuadrants(actual,adyNode);
+					
+					//Se crea el eje y se lo agrega a la colección de ejes de la ciudad
 					tempEdge = new DirectedEdge(actual, adyNode,
 							adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
-							adyItem.getName());
+							adyItem.getName(),edgeQuads);
 					
 					edges.add(tempEdge);
 					
+					//Se agrega el node a los visitados
 					visitedNodes.add(adyItem.getAdyId());
 				}
 			}
@@ -248,9 +254,49 @@ public class ParseOSM {
 		
 	}
 	
-	 
 	
+	private LinkedList getEdgeQuadrants(GraphNode fromNode, GraphNode toNode) {
 	
+	/*Analiza los extremos del futuro nuevo eje y verifica en que o en cuales cuadrantes entra
+	  Si ambos extremos pertenecen a un mismo cuadrante, se agrega a solo dicho cuadrante. Sino se agrega
+	  a ambos. */
+		int fromNodeQuadrant, toNodeQuadrant;
+		LinkedList<Integer> res= new LinkedList<Integer>();
+		
+		fromNodeQuadrant= getNodeQuadrant(fromNode);
+		toNodeQuadrant=  getNodeQuadrant(toNode);
+		
+		//mismo cuadrante
+		if(fromNodeQuadrant == toNodeQuadrant){
+			res.add(fromNodeQuadrant);
+		}
+		else{
+			res.add(fromNodeQuadrant);
+			res.add(toNodeQuadrant);
+		}
+			
+		return res;
+	}
+
+	private int getNodeQuadrant(GraphNode fromNode) {
+		// obtiene el cuadrante al que pertenece el nodo
+		Area quadrant;
+		int id_quad= -1;
+		
+		for(int i=0;(i==-1) && i < cityQuadrants.length;i++){
+			quadrant= cityQuadrants[i];
+			
+			if(nodeIsIncludedInQuadrant(fromNode,quadrant))
+				id_quad= i; //el íd del cuadrante al que pertenece
+		}
+		
+		return id_quad;
+	}
+
+	private boolean nodeIsIncludedInQuadrant(GraphNode fromNode, Area quadrant) {
+		
+		return areaContainsNode(fromNode,quadrant);
+	}
 
 	private void filterGraph() {
 		filterOnlyNodesInCityPolygon();
@@ -296,14 +342,11 @@ public class ParseOSM {
 	}
 		
 	private boolean nodeIsIncludedInCity(GraphNode value) {
-		double p1,p2;
-		p1= CoordinatesConversor.getTileNumberLat(value.getLat());
-		p2= CoordinatesConversor.getTileNumberLong(value.getLon());
 		
-		Point2D point= new Point2D.Double(p1,p2);
+		return areaContainsNode(value,this.getBoundaryArea());
 		
-		return (this.getBoundaryArea().contains(point));
 	}
+
 
 	public LinkedList<GraphNode> getNodes() {	
 		return nodes;
@@ -394,5 +437,15 @@ public class ParseOSM {
 		return edges;
 	}
 			
+	private boolean areaContainsNode(GraphNode value, Area area) {
+		
+		double p1,p2;
+		p1= CoordinatesConversor.getTileNumberLat(value.getLat());
+		p2= CoordinatesConversor.getTileNumberLong(value.getLon());
+		
+		Point2D point= new Point2D.Double(p1,p2);
+		
+		return (area.contains(point));
+	}
 	
 }

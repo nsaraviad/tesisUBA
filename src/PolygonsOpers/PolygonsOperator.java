@@ -41,7 +41,7 @@ public class PolygonsOperator {
 		//1 si está incluído, 0 si no
 		return includedInPolygon;
 	}
-	
+	/*
 	public Pair calculatePolygonEdgesAndLenght(LinkedList<Long> polygon, ParseOSM p) {
 		//Cálculo del conjunto de ejes incluídos en el polígono y longitud de recorrido 
 		AdyacencyInfo ady;
@@ -89,8 +89,8 @@ public class PolygonsOperator {
 		
 		return new Pair(polygonDistance,polygon_edges);
 	}
-
-	public void addEdgeToPolygonEdges(GraphNode temp_node,GraphNode ady_node, AdyacencyInfo ady, HashSet polygon_edges) {
+	 */
+	/*public void addEdgeToPolygonEdges(GraphNode temp_node,GraphNode ady_node, AdyacencyInfo ady, HashSet polygon_edges) {
 		//Dado dos nodos pertenecientes al polígono, se crea un eje y se lo agrega al conjunto de 
 		//ejes contenidos en el mismo
 		DirectedEdge newEdge; 
@@ -101,7 +101,7 @@ public class PolygonsOperator {
 		
 		polygon_edges.add(newEdge);
 	}
-
+*/
 	private boolean nodeIsContainedInPolygon(GraphNode temp_node,Area polygon_area) {
 		// Se chequea si dada la latitud y longitud del nodo, está contenida en el área del 
 		//polígono

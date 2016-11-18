@@ -1,5 +1,7 @@
 package GraphComponents;
 
+import java.util.LinkedList;
+
 public class DirectedEdge {
 	 
 	private final GraphNode startNode;
@@ -8,10 +10,11 @@ public class DirectedEdge {
     private boolean isOneway;
     private String type;
     private String name;
+    private LinkedList pert_quadrants;
     
     	
     public DirectedEdge(GraphNode startNode, GraphNode endNode, double length, boolean isOneway,
-    		String type, String name){//,  long way_id ) {
+    		String type, String name,LinkedList pquad){//,  long way_id ) {
         
         this.startNode = startNode;
         this.endNode = endNode;
@@ -19,6 +22,7 @@ public class DirectedEdge {
         this.length = length;
         this.type = type;
         this.name = name;
+        this.pert_quadrants= pquad;
     
     }
     
@@ -42,6 +46,7 @@ public class DirectedEdge {
         this.length = 0.00;
         this.type = null;
         this.name = null;
+        this.pert_quadrants= null;
 	}
 	
     public GraphNode from() {
@@ -61,6 +66,10 @@ public class DirectedEdge {
         return isOneway;
     }
     
+    public LinkedList getPertQuad(){
+    	return pert_quadrants;
+    }
+
     public void setType(String type){
 		this.type = type;
 	}
