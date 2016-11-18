@@ -60,7 +60,7 @@ public class ParseOSM {
 		generateQuadrants();
 		
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
-		//filterGraph();
+		filterGraph();
 		
 		//Se crean los nodos a visualizar
 		//generateNodes();
@@ -68,12 +68,12 @@ public class ParseOSM {
 		//Se crean los ejes
 		generateEdges();
 		
-		//System.out.println("Parsing ended at"+ LocalDateTime.now() );
-		//System.out.println("Edges = "+edges.size());
-		//System.out.println("Nodes = "+g.getNodes().size());
-		//System.out.println("AdyList = "+g.getAdyLst().size());
+		System.out.println("Parsing ended at"+ LocalDateTime.now() );
+		System.out.println("Edges = "+edges.size());
+		System.out.println("Nodes = "+g.getNodes().size());
+		System.out.println("AdyList = "+g.getAdyLst().size());
 		
-		//System.out.println("refBound = "+g.getRefBoundary().size());
+		System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 
@@ -116,8 +116,8 @@ public class ParseOSM {
 					latit=   (double) t_quad.get(i).getFirst();
 					longit= (double) t_quad.get(i).getSecond();
 					lista.add(new Coordinate(latit,longit));
-					xPoints[j]= CoordinatesConversor.getTileNumberLat(latit);
-					yPoints[j]= CoordinatesConversor.getTileNumberLong(longit);
+					xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
+					yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
 				}
 			
 				//Viewer v= new Viewer(lista);
@@ -214,6 +214,7 @@ public class ParseOSM {
 		HashSet visitedNodes= new HashSet();
 		AdyacencyInfo adyItem;
 		DirectedEdge tempEdge;
+		boolean esNodo;
 		
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
 		{
@@ -233,6 +234,9 @@ public class ParseOSM {
 				adyItem= listValues.get(i);
 				adyNode= g.getNodes().get(adyItem.getAdyId());
 				
+				if((adyNode.getId()==1837015312 && actual.getId()==2490653929L))
+						esNodo= true;
+				
 				if(!visitedNodes.contains(adyItem.getAdyId())){
 					
 					//Se obtiene el/los cuadrantes donde se encuentra el nuevo eje
@@ -246,7 +250,7 @@ public class ParseOSM {
 					edges.add(tempEdge);
 					
 					//Se agrega el node a los visitados
-					visitedNodes.add(adyItem.getAdyId());
+					visitedNodes.add(actual.getId());
 				}
 			}
 	
@@ -283,7 +287,7 @@ public class ParseOSM {
 		Area quadrant;
 		int id_quad= -1;
 		
-		for(int i=0;(i==-1) && i < cityQuadrants.length;i++){
+		for(int i=0;(id_quad == -1) && i < cityQuadrants.length;i++){
 			quadrant= cityQuadrants[i];
 			
 			if(nodeIsIncludedInQuadrant(fromNode,quadrant))
