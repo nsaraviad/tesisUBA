@@ -216,12 +216,15 @@ public class ParseOSM {
 		DirectedEdge tempEdge;
 		boolean esNodo;
 		
+		
+		try{
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
 			
 			//Nodo actual
 			actual= g.getNodes().get(entry.getKey());
+			
 			//se agrega como visitado
 			visitedNodes.add(entry.getKey());
 			
@@ -234,10 +237,8 @@ public class ParseOSM {
 				adyItem= listValues.get(i);
 				adyNode= g.getNodes().get(adyItem.getAdyId());
 				
-				if((adyNode.getId()==1837015312 && actual.getId()==2490653929L))
-						esNodo= true;
 				
-				if(!visitedNodes.contains(adyItem.getAdyId())){
+				if(!visitedNodes.contains(adyItem.getAdyId()) && adyNode != null){
 					
 					//Se obtiene el/los cuadrantes donde se encuentra el nuevo eje
 					LinkedList edgeQuads= getEdgeQuadrants(actual,adyNode);
@@ -248,14 +249,13 @@ public class ParseOSM {
 							adyItem.getName(),edgeQuads);
 					
 					edges.add(tempEdge);
-					
-					//Se agrega el node a los visitados
-					visitedNodes.add(actual.getId());
+
 				}
 			}
-	
-		}		
-		
+		}	
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -450,6 +450,7 @@ public class ParseOSM {
 		Point2D point= new Point2D.Double(p1,p2);
 		
 		return (area.contains(point));
+		
 	}
 	
 }
