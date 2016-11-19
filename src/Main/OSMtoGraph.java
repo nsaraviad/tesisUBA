@@ -22,7 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParserException;
 
-import Parsing.ParseOSM;
+import Parsing.OsmParserAndCustomizer;
 import PolygonsOpers.PolygonsGenerator;
 import PolygonsOpers.PolygonsOperator;
 import Solver.SystemSolver;
@@ -55,7 +55,7 @@ public class OSMtoGraph extends JFrame {
                         String pathArchivo = elegir.getSelectedFile().getPath(); //Obtiene path del archivo
                         String nombre = elegir.getSelectedFile().getName(); //obtiene nombre del archivo
                         
-                        ParseOSM p = new ParseOSM();
+                        OsmParserAndCustomizer p = new OsmParserAndCustomizer();
                 	    try {
                 	    	//Parse osm to graph
                             p.ParseOSM(pathArchivo,nombre);

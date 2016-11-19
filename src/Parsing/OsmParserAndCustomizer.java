@@ -31,7 +31,7 @@ import GraphComponents.GraphNode;
 import GraphComponents.Pair;
 import GraphComponents.RoadGraph;
 
-public class ParseOSM {
+public class OsmParserAndCustomizer {
 	LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
 	LinkedList<DirectedEdge> edges= new LinkedList<DirectedEdge>();
 	Area[] cityQuadrants= new Area[4];
@@ -56,7 +56,7 @@ public class ParseOSM {
 		//Armado del polígono de la ciudad
 		generateBoundaryAreaAndSetCityLimits();
 		
-		//Divide City in quadrants (4)
+		//Divide City in four quadrants 
 		generateQuadrants();
 		
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
@@ -214,10 +214,8 @@ public class ParseOSM {
 		HashSet visitedNodes= new HashSet();
 		AdyacencyInfo adyItem;
 		DirectedEdge tempEdge;
-		boolean esNodo;
 		
 		
-		try{
 		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
 		{
 			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
@@ -231,12 +229,10 @@ public class ParseOSM {
 			//Lista de adyacentes
 			LinkedList<AdyacencyInfo> listValues= entry.getValue();
 			
-			
 			for(int i=0;i < listValues.size();i++){
 				//nodo adyacente "actual"
 				adyItem= listValues.get(i);
 				adyNode= g.getNodes().get(adyItem.getAdyId());
-				
 				
 				if(!visitedNodes.contains(adyItem.getAdyId()) && adyNode != null){
 					
@@ -249,13 +245,10 @@ public class ParseOSM {
 							adyItem.getName(),edgeQuads);
 					
 					edges.add(tempEdge);
-
 				}
 			}
 		}	
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		
 	}
 	
 	
@@ -346,11 +339,8 @@ public class ParseOSM {
 	}
 		
 	private boolean nodeIsIncludedInCity(GraphNode value) {
-		
 		return areaContainsNode(value,this.getBoundaryArea());
-		
 	}
-
 
 	public LinkedList<GraphNode> getNodes() {	
 		return nodes;
@@ -405,7 +395,6 @@ public class ParseOSM {
 			if(longit > longit_max)
 				longit_max= longit;
 
-			
 			xPoints[i]= conv_latit;
 			yPoints[i]= conv_longit;
 		}

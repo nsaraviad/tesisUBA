@@ -1,7 +1,7 @@
 package PolygonsOpers;
 
 import GraphComponents.*;
-import Parsing.ParseOSM;
+import Parsing.OsmParserAndCustomizer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class PolygonsGenerator {
 	private LinkedList<LinkedList<Long>> polygons;
 	
 	//Constructor
-	public PolygonsGenerator(ParseOSM g) {
+	public PolygonsGenerator(OsmParserAndCustomizer g) {
 		this.rg= g.getRoadGraph();
 		this.nodes= rg.getNodes();
 		this.adyLst= rg.getAdyLst();

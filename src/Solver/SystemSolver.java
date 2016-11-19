@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import GraphComponents.DirectedEdge;
-import Parsing.ParseOSM;
+import Parsing.OsmParserAndCustomizer;
 import PolygonsOpers.PolygonsOperator;
 import jscip.*;
 
@@ -13,7 +13,7 @@ import jscip.*;
 
 public class SystemSolver {
 	
-	public void solve(LinkedList<LinkedList<Long>> polygons,ParseOSM p){
+	public void solve(LinkedList<LinkedList<Long>> polygons,OsmParserAndCustomizer p){
 	
 	System.loadLibrary("jscip");
 	

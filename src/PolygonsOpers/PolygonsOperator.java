@@ -13,7 +13,7 @@ import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
 import GraphComponents.Pair;
 import GraphComponents.RoadGraph;
-import Parsing.ParseOSM;
+import Parsing.OsmParserAndCustomizer;
 import Visualizer.CoordinatesConversor;
 import Visualizer.Viewer;
 
@@ -23,7 +23,7 @@ import Visualizer.Viewer;
 public class PolygonsOperator {
 
 	
-	public double checkIfEdgeIsInPolygon(DirectedEdge e, LinkedList<Long> polygon,ParseOSM p){
+	public double checkIfEdgeIsInPolygon(DirectedEdge e, LinkedList<Long> polygon,OsmParserAndCustomizer p){
 		GraphNode extrNode_1,extrNode_2;
 		double includedInPolygon= 0;
 		RoadGraph graph= p.getRoadGraph();
@@ -185,7 +185,7 @@ public class PolygonsOperator {
 	}
 
 	
-	public void operateWithPolygons(ParseOSM p, LinkedList<LinkedList<Long>> polygons) {
+	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<LinkedList<Long>> polygons) {
 		LinkedList<Long> poly= new LinkedList<Long>();
 		double polygon_lenght; //longitud en km a recorrer dado un polígono
 	    
@@ -200,7 +200,7 @@ public class PolygonsOperator {
 		
 	}
 
-	private void visualizePolygon(LinkedList<Long> poly,ParseOSM p) {
+	private void visualizePolygon(LinkedList<Long> poly,OsmParserAndCustomizer p) {
 		// Visualización de polígonos usando JMap Viewer
 		LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
 		
@@ -209,7 +209,7 @@ public class PolygonsOperator {
 		showPolygonInMap(lista);
 	}
 	
-	private void setCoordinatesToList(LinkedList<Long> poly, ParseOSM p,LinkedList<Coordinate> lista) {
+	private void setCoordinatesToList(LinkedList<Long> poly, OsmParserAndCustomizer p,LinkedList<Coordinate> lista) {
 		//Método encargado de setear las coordenadas del polygono a la lista  
 		HashMap<Long,GraphNode> nodes;
 		long keyPoint;
