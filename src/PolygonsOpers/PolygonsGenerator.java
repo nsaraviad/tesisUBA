@@ -1,5 +1,6 @@
 package PolygonsOpers;
 
+
 import GraphComponents.*;
 import Parsing.OsmParserAndCustomizer;
 
@@ -19,21 +20,26 @@ import org.omg.CORBA.DoubleSeqHelper;
 import Visualizer.CoordinatesConversor;
 
 
+
 public class PolygonsGenerator {
 	
 	//Miembros
 	private RoadGraph rg;
+	private OsmParserAndCustomizer p;
 	private  HashMap<Long,GraphNode> nodes;
 	private HashMap<Long,Pair> nodosInterseccionEnCaminos;
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
-	private LinkedList<LinkedList<Long>> polygons;
+	//private LinkedList<LinkedList<Long>> polygons;
+	private LinkedList<LinkedList<Long>>[] polygons;
 	
 	//Constructor
 	public PolygonsGenerator(OsmParserAndCustomizer g) {
 		this.rg= g.getRoadGraph();
+		this.p= g;
 		this.nodes= rg.getNodes();
 		this.adyLst= rg.getAdyLst();
-		this.polygons= new LinkedList();
+		//this.polygons= new LinkedList();
+		this.polygons= new LinkedList[4];
 		this.nodosInterseccionEnCaminos= new HashMap<Long,Pair>();
 	}
 	
@@ -53,6 +59,8 @@ public class PolygonsGenerator {
 		boolean nodoPart;
 		
 		//Inicializo
+		initializePolygonsArray();
+		
 		distancesToNode1= new HashMap();
 		distancesToNode2= new HashMap();
 		
@@ -90,14 +98,6 @@ public class PolygonsGenerator {
 				
 				
 				if(theyAreSelectableNodes(entry1, entry2)){
-					
-					
-					if((entry1.getKey() == 1837015355 && entry2.getKey()==1837015458) ||
-					    (entry1.getKey()==1837015458 && entry2.getKey()==1837015355))
-							nodoPart= true;
-					
-					
-					
 					//Se agrega a los nodos como visitados 
 					addEntryNodeAsVisited(visitedNodes1, entry1);
 					addEntryNodeAsVisited(visitedNodes2, entry2);
@@ -134,10 +134,40 @@ public class PolygonsGenerator {
 						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, nuevoPoligono);
 						
 						//SE AGREGA A LA COLECCIÓN RESULTADO
-						polygons.add(nuevoPoligono);
+						//polygons.add(nuevoPoligono);
+						
+						/*Se agrega el polígono al/los onjuntos e polígonos pertenecientes a cada caudrante
+						analizando sus "esquinas"*/
+						addNewPolygonToRespectiveQuadrants(nuevoPoligono);
+						
+						
 					}
 				}
 			}
+		}
+	}
+
+	private void initializePolygonsArray() {
+		for(int p=0;p<polygons.length;p++)
+			polygons[p]= new LinkedList();
+	}
+
+	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono) {
+		GraphNode poligonVertex;
+		HashSet polygonQuad= new HashSet();
+		int indexQuadrantPoligonVertex;
+		
+		//Se obtienen los cuadrantes a los que pertenecen las esquinas del poligono
+		for(int k=0;k<nuevoPoligono.size();k++){
+			poligonVertex= nodes.get(nuevoPoligono.get(k));
+			//indice del cuadrante al que pertenece el vertice
+			indexQuadrantPoligonVertex= p.getNodeQuadrant(poligonVertex);
+			polygonQuad.add(indexQuadrantPoligonVertex);
+		}
+		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
+		Iterator it= polygonQuad.iterator();
+		while(it.hasNext()){
+			polygons[(int) it.next()].add(nuevoPoligono);
 		}
 	}
 
@@ -745,8 +775,11 @@ public class PolygonsGenerator {
 	}
 	
 	//Obtengo el conjunto de polígonos generados
-	public LinkedList<LinkedList<Long>> getPolygons(){
+	/*public LinkedList<LinkedList<Long>> getPolygons(){
 		return polygons;
+	}*/
+	public LinkedList<LinkedList<Long>> getPolygonsFromIQuadrant(int indexQuadrant){
+		return polygons[indexQuadrant];
 	}
 	
 	

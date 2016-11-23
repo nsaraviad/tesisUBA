@@ -60,9 +60,12 @@ public class OSMtoGraph extends JFrame {
                 	    	//Parse osm to graph
                             p.ParseOSM(pathArchivo,nombre);
 							
-							//polygons generator algorithm
-							//PolygonsGenerator gen= new PolygonsGenerator(p);
-							//gen.generatePolygons();
+							//Polygons generator algorithm
+							PolygonsGenerator gen= new PolygonsGenerator(p);
+							gen.generatePolygons();
+							
+							
+							gen.getPolygonsFromIQuadrant(0);
 							
 							//PolygonsOperator polOp= new PolygonsOperator();
 						    //polOp.operateWithPolygons(p, gen.getPolygons());

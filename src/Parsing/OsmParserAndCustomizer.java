@@ -275,7 +275,7 @@ public class OsmParserAndCustomizer {
 		return res;
 	}
 
-	private int getNodeQuadrant(GraphNode fromNode) {
+	public int getNodeQuadrant(GraphNode fromNode) {
 		// obtiene el cuadrante al que pertenece el nodo
 		Area quadrant;
 		int id_quad= -1;
