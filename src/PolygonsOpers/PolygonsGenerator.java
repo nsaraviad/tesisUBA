@@ -2,6 +2,7 @@ package PolygonsOpers;
 
 
 import GraphComponents.*;
+import MapOptimizer.MapQuadrantsGenerator;
 import Parsing.OsmParserAndCustomizer;
 
 import java.util.Collection;

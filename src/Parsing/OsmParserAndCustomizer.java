@@ -30,17 +30,20 @@ import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
 import GraphComponents.Pair;
 import GraphComponents.RoadGraph;
+import MapOptimizer.MapQuadrantsGenerator;;
+
 
 public class OsmParserAndCustomizer {
-	LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
-	LinkedList<DirectedEdge> edges= new LinkedList<DirectedEdge>();
-	Area[] cityQuadrants= new Area[4];
-	RoadGraph g = new RoadGraph();
-	Area boundaryArea;
-	double max_latit;
-	double max_longit;
-	double min_latit;
-	double min_longit;
+	private LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
+	private LinkedList<DirectedEdge> edges= new LinkedList<DirectedEdge>();
+	public Area[] cityQuadrants= new Area[4];
+	private RoadGraph g = new RoadGraph();
+	private Area boundaryArea;
+	private double max_latit;
+	private double max_longit;
+	private double min_latit;
+	private double min_longit;
+	
  
 	public void ParseOSM (String pathToArchive, String nameArchives) throws FileNotFoundException, IOException, XmlPullParserException{
 		
@@ -57,7 +60,9 @@ public class OsmParserAndCustomizer {
 		generateBoundaryAreaAndSetCityLimits();
 		
 		//Divide City in four quadrants 
-		generateQuadrants();
+		//generateQuadrants();
+		MapQuadrantsGenerator mg= new MapQuadrantsGenerator(this);
+		mg.generateQuadrants();
 		
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
 		filterGraph();
@@ -77,7 +82,7 @@ public class OsmParserAndCustomizer {
 		
 	}
 
-	private void generateQuadrants() {
+	/*private void generateQuadrants() {
 		//Metodo encargado de subdividir el cuadrante principal que encierra a la ciudad entera en 4 subcuadrantes y los guarda en un array
 		
 		//Tengo 4 puntos extremos (max_x,min_y),(max_x,max_y),(min_x,max_y),(min_x,min_y)
@@ -198,7 +203,7 @@ public class OsmParserAndCustomizer {
 		quadrantsPoints.add(quad4);
 		
 	}
-
+	 */
 	private void generateNodes() {
 		for(Iterator<Entry<Long,GraphNode>> it= g.getNodes().entrySet().iterator(); it.hasNext();){
 			
@@ -442,4 +447,19 @@ public class OsmParserAndCustomizer {
 		
 	}
 	
+	public double getMaxLatit(){
+		return max_latit;
+	}
+	
+	public double getMinLatit(){
+		return min_latit;
+	}
+	
+	public double getMaxLongit(){
+		return max_longit;
+	}
+	
+	public double getMinLongit(){
+		return min_longit;
+	}
 }
