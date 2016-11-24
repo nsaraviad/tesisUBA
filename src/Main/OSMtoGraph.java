@@ -23,8 +23,8 @@ import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParserException;
 
 import Parsing.OsmParserAndCustomizer;
-import PolygonsOpers.PolygonsGenerator;
-import PolygonsOpers.PolygonsOperator;
+import Polygons.PolygonsGenerator;
+import Polygons.PolygonsOperator;
 import Solver.SystemSolver;
 import jscip.*;
 
@@ -69,8 +69,8 @@ public class OSMtoGraph extends JFrame {
 						    //polOp.operateWithPolygons(p, gen.getPolygons());
 
 							
-							SystemSolver solv= new SystemSolver();
-							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
+							//SystemSolver solv= new SystemSolver();
+							//solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
 							
 							/* VISUALIZE */
 							//JUNG Interface

@@ -4,21 +4,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
-
-
-
-
 import GraphComponents.DirectedEdge;
 import GraphComponents.Pair;
 import Parsing.OsmParserAndCustomizer;
-import PolygonsOpers.PolygonsOperator;
+import Polygons.PolygonsOperator;
 import jscip.*;
 
 //SYSTEM SOLVER CLASS
 
 public class SystemSolver {
 	
-	
+	/*
 	public void solve(LinkedList<Pair>[] polygons,int polygonsCount, OsmParserAndCustomizer p){
 	
 		//Variables decl
@@ -108,4 +104,5 @@ public class SystemSolver {
 	    	for(int i=0;i<polSize;i++)
 	    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
 		}
+		*/
 }

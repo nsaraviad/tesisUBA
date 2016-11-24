@@ -1,4 +1,4 @@
-package PolygonsOpers;
+package Polygons;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -185,7 +185,7 @@ public class PolygonsOperator {
 	}
 
 	
-	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<Pair> polygons) {
+	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<MapPolygon> polygons) {
 		LinkedList<Long> poly= new LinkedList<Long>();
 		double polygon_lenght; //longitud en km a recorrer dado un polígono
 	    
@@ -193,7 +193,7 @@ public class PolygonsOperator {
 		//for(int i=0;i<polygons.size();i++){
 		for(int i=0;i<5;i++){	
 			//i-esimo polígono
-			poly= (LinkedList<Long>) polygons.get(i).getFirst();
+			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);
 			visualizePolygon(poly,p);
 		}

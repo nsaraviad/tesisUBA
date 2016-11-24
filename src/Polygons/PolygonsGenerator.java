@@ -1,4 +1,4 @@
-package PolygonsOpers;
+package Polygons;
 
 
 import GraphComponents.*;
@@ -30,8 +30,7 @@ public class PolygonsGenerator {
 	private  HashMap<Long,GraphNode> nodes;
 	private HashMap<Long,Pair> nodosInterseccionEnCaminos;
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
-	//private LinkedList<LinkedList<Long>>[] polygons;
-	private LinkedList<Pair>[] polygons;
+	private LinkedList<MapPolygon>[] polygons;
 	private int polygons_counter;
 	
 	//Constructor
@@ -131,10 +130,11 @@ public class PolygonsGenerator {
 					//Se agrega a la lista de poligonos obtenidos
 					if((cantIntersecciones == 2) && validIntersections(res)){
 						dimensiones= calculateDistances(res,distancesToNode1,distancesToNode2);
-						LinkedList<Long> nuevoPoligono= new LinkedList<Long>();
+						
+						LinkedList<Long> nuevoPoligonoPoints= new LinkedList<Long>();
 						
 						//ARMADO DEL POLÍGONO
-						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, nuevoPoligono);
+						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, nuevoPoligonoPoints);
 						
 						//SE AGREGA A LA COLECCIÓN RESULTADO
 						//polygons.add(nuevoPoligono);
@@ -142,7 +142,7 @@ public class PolygonsGenerator {
 						/*Se agrega el polígono al/los conjuntos de polígonos pertenecientes a cada caudrante
 						analizando sus esquinas*/
 						
-						addNewPolygonToRespectiveQuadrants(nuevoPoligono,polygons_counter);
+						addNewPolygonToRespectiveQuadrants(nuevoPoligonoPoints,polygons_counter);
 						polygons_counter++;
 					}
 				}
@@ -171,7 +171,8 @@ public class PolygonsGenerator {
 		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
 		Iterator it= polygonQuad.iterator();
 		while(it.hasNext()){
-			polygons[(int) it.next()].add(new Pair(nuevoPoligono,idFromNewPolygon));
+			MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono);
+			polygons[(int) it.next()].add(newPolygon);
 		}
 	}
 
@@ -788,7 +789,7 @@ public class PolygonsGenerator {
 		return polygons[indexQuadrant];
 	}*/
 	
-	public LinkedList<Pair> getPolygonsFromIQuadrant(int indexQuadrant){
+	public LinkedList<MapPolygon> getPolygonsFromIQuadrant(int indexQuadrant){
 		return polygons[indexQuadrant];
 	}
 	
