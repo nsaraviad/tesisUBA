@@ -792,6 +792,11 @@ public class PolygonsGenerator {
 		return polygons[indexQuadrant];
 	}
 	
+	public int getPolygonsCount(){
+		return polygons_counter;
+	}
+	
+	
 	}
 
 

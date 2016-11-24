@@ -69,8 +69,8 @@ public class OSMtoGraph extends JFrame {
 						    //polOp.operateWithPolygons(p, gen.getPolygons());
 
 							
-							//SystemSolver solv= new SystemSolver();
-							//solv.solve(gen.getPolygons(), p);
+							SystemSolver solv= new SystemSolver();
+							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
 							
 							/* VISUALIZE */
 							//JUNG Interface
