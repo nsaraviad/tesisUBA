@@ -30,8 +30,9 @@ public class PolygonsGenerator {
 	private  HashMap<Long,GraphNode> nodes;
 	private HashMap<Long,Pair> nodosInterseccionEnCaminos;
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
-	//private LinkedList<LinkedList<Long>> polygons;
-	private LinkedList<LinkedList<Long>>[] polygons;
+	//private LinkedList<LinkedList<Long>>[] polygons;
+	private LinkedList<Pair>[] polygons;
+	private int polygons_counter;
 	
 	//Constructor
 	public PolygonsGenerator(OsmParserAndCustomizer g) {
@@ -39,7 +40,6 @@ public class PolygonsGenerator {
 		this.p= g;
 		this.nodes= rg.getNodes();
 		this.adyLst= rg.getAdyLst();
-		//this.polygons= new LinkedList();
 		this.polygons= new LinkedList[4];
 		this.nodosInterseccionEnCaminos= new HashMap<Long,Pair>();
 	}
@@ -59,6 +59,7 @@ public class PolygonsGenerator {
 		boolean esElpol;
 		boolean nodoPart;
 		
+		
 		//Inicializo
 		initializePolygonsArray();
 		
@@ -76,6 +77,7 @@ public class PolygonsGenerator {
 		initializeVisitedNodes(visitedNodes1,visitedNodes2);
 		
 		resultado= new long[4];
+		polygons_counter= 0;
 		
 		//Algoritmo busqueda de polygonos
 		for(Iterator<Entry<Long, GraphNode>> it_node_1= nodes.entrySet().iterator();
@@ -137,23 +139,24 @@ public class PolygonsGenerator {
 						//SE AGREGA A LA COLECCIÓN RESULTADO
 						//polygons.add(nuevoPoligono);
 						
-						/*Se agrega el polígono al/los onjuntos e polígonos pertenecientes a cada caudrante
-						analizando sus "esquinas"*/
-						addNewPolygonToRespectiveQuadrants(nuevoPoligono);
+						/*Se agrega el polígono al/los conjuntos de polígonos pertenecientes a cada caudrante
+						analizando sus esquinas*/
 						
-						
+						addNewPolygonToRespectiveQuadrants(nuevoPoligono,polygons_counter);
+						polygons_counter++;
 					}
 				}
 			}
 		}
 	}
 
+	
 	private void initializePolygonsArray() {
 		for(int p=0;p<polygons.length;p++)
 			polygons[p]= new LinkedList();
 	}
 
-	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono) {
+	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono,int idFromNewPolygon) {
 		GraphNode poligonVertex;
 		HashSet polygonQuad= new HashSet();
 		int indexQuadrantPoligonVertex;
@@ -168,7 +171,7 @@ public class PolygonsGenerator {
 		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
 		Iterator it= polygonQuad.iterator();
 		while(it.hasNext()){
-			polygons[(int) it.next()].add(nuevoPoligono);
+			polygons[(int) it.next()].add(new Pair(nuevoPoligono,idFromNewPolygon));
 		}
 	}
 
@@ -776,13 +779,18 @@ public class PolygonsGenerator {
 	}
 	
 	//Obtengo el conjunto de polígonos generados
-	/*public LinkedList<LinkedList<Long>> getPolygons(){
+	public LinkedList[] getPolygons(){
 		return polygons;
-	}*/
-	public LinkedList<LinkedList<Long>> getPolygonsFromIQuadrant(int indexQuadrant){
-		return polygons[indexQuadrant];
 	}
 	
+	//Los poligonos del iesimo cuadrante
+	/*public LinkedList<LinkedList<Long>> getPolygonsFromIQuadrant(int indexQuadrant){
+		return polygons[indexQuadrant];
+	}*/
+	
+	public LinkedList<Pair> getPolygonsFromIQuadrant(int indexQuadrant){
+		return polygons[indexQuadrant];
+	}
 	
 	}
 

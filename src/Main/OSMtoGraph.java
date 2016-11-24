@@ -64,11 +64,10 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
-							
-							gen.getPolygonsFromIQuadrant(0);
-							
-							//PolygonsOperator polOp= new PolygonsOperator();
+							PolygonsOperator polOp= new PolygonsOperator();
+							polOp.operateWithPolygons(p, gen.getPolygonsFromIQuadrant(0));
 						    //polOp.operateWithPolygons(p, gen.getPolygons());
+
 							
 							//SystemSolver solv= new SystemSolver();
 							//solv.solve(gen.getPolygons(), p);

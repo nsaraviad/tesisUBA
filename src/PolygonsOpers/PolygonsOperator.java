@@ -185,15 +185,15 @@ public class PolygonsOperator {
 	}
 
 	
-	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<LinkedList<Long>> polygons) {
+	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<Pair> polygons) {
 		LinkedList<Long> poly= new LinkedList<Long>();
 		double polygon_lenght; //longitud en km a recorrer dado un polígono
 	    
 		//Calculo distancias recorridas y visualizacion de cada polígono
 		//for(int i=0;i<polygons.size();i++){
-		for(int i=0;i<7;i++){	
+		for(int i=0;i<5;i++){	
 			//i-esimo polígono
-			poly= polygons.get(i);
+			poly= (LinkedList<Long>) polygons.get(i).getFirst();
 			//calculatePolygonEdgesAndLenght(poly,p);
 			visualizePolygon(poly,p);
 		}
