@@ -36,7 +36,7 @@ public class SystemSolver {
 		
 		//Se crean las variables del modelo (total de polígonos)
 		for(int i=0;i<polygonsCount;i++)
-			vars[i] = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
 		
 		//Restricciones
 		PolygonsOperator pol_op= new PolygonsOperator();
@@ -69,7 +69,6 @@ public class SystemSolver {
 	    	
 	    	//Restricciones para los ejes cubierto por al menos un nodo
 	     	if (covered > 0 ){
-	     		
 	     		
 	     		Variable[] varsConst= new Variable[coveredByPol.size()];
 	     		double[] valsConst= new double[coveredByPol.size()];
