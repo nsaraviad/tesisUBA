@@ -158,7 +158,7 @@ public class PolygonsGenerator {
 
 	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono,int idFromNewPolygon) {
 		GraphNode poligonVertex;
-		HashSet polygonQuad= new HashSet();
+		HashSet<Integer> polygonQuad= new HashSet<Integer>();
 		int indexQuadrantPoligonVertex;
 		
 		//Se obtienen los cuadrantes a los que pertenecen las esquinas del poligono
@@ -166,14 +166,17 @@ public class PolygonsGenerator {
 			poligonVertex= nodes.get(nuevoPoligono.get(k));
 			//indice del cuadrante al que pertenece el vertice
 			indexQuadrantPoligonVertex= p.getNodeQuadrant(poligonVertex);
-			polygonQuad.add(indexQuadrantPoligonVertex);
+			if(indexQuadrantPoligonVertex >= 0)
+				polygonQuad.add(indexQuadrantPoligonVertex);
 		}
+		
 		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
-		Iterator it= polygonQuad.iterator();
+		Iterator<Integer> it= polygonQuad.iterator();
 		while(it.hasNext()){
 			MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono);
-			polygons[(int) it.next()].add(newPolygon);
+			polygons[it.next()].add(newPolygon);
 		}
+		
 	}
 
 	private boolean validIntersections(HashSet<Long> res) {

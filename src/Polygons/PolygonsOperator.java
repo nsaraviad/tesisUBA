@@ -102,7 +102,7 @@ public class PolygonsOperator {
 		polygon_edges.add(newEdge);
 	}
 */
-	private boolean nodeIsContainedInPolygon(GraphNode temp_node,Area polygon_area) {
+	public boolean nodeIsContainedInPolygon(GraphNode temp_node,Area polygon_area) {
 		// Se chequea si dada la latitud y longitud del nodo, está contenida en el área del 
 		//polígono
 		double latit2D,longit2D,latit,longit;

@@ -30,7 +30,8 @@ import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
 import GraphComponents.Pair;
 import GraphComponents.RoadGraph;
-import MapOptimizer.MapQuadrantsGenerator;;
+import MapOptimizer.MapQuadrantsGenerator;
+import Polygons.PolygonsOperator;
 
 
 public class OsmParserAndCustomizer {
@@ -228,28 +229,30 @@ public class OsmParserAndCustomizer {
 			//Nodo actual
 			actual= g.getNodes().get(entry.getKey());
 			
-			//se agrega como visitado
-			visitedNodes.add(entry.getKey());
-			
-			//Lista de adyacentes
-			LinkedList<AdyacencyInfo> listValues= entry.getValue();
-			
-			for(int i=0;i < listValues.size();i++){
-				//nodo adyacente "actual"
-				adyItem= listValues.get(i);
-				adyNode= g.getNodes().get(adyItem.getAdyId());
+			if(nodeIsIncludedInCity(actual)){
+				//se agrega como visitado
+				visitedNodes.add(entry.getKey());
 				
-				if(!visitedNodes.contains(adyItem.getAdyId()) && adyNode != null){
+				//Lista de adyacentes
+				LinkedList<AdyacencyInfo> listValues= entry.getValue();
+				
+				for(int i=0;i < listValues.size();i++){
+					//nodo adyacente "actual"
+					adyItem= listValues.get(i);
+					adyNode= g.getNodes().get(adyItem.getAdyId());
 					
-					//Se obtiene el/los cuadrantes donde se encuentra el nuevo eje
-					LinkedList edgeQuads= getEdgeQuadrants(actual,adyNode);
-					
-					//Se crea el eje y se lo agrega a la colección de ejes de la ciudad
-					tempEdge = new DirectedEdge(actual, adyNode,
-							adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
-							adyItem.getName(),edgeQuads);
-					
-					edges.add(tempEdge);
+					if(!visitedNodes.contains(adyItem.getAdyId()) && adyNode != null && nodeIsIncludedInCity(adyNode)){
+						
+						//Se obtiene el/los cuadrantes donde se encuentra el nuevo eje
+						LinkedList edgeQuads= getEdgeQuadrants(actual,adyNode);
+						
+						//Se crea el eje y se lo agrega a la colección de ejes de la ciudad
+						tempEdge = new DirectedEdge(actual, adyNode,
+								adyItem.getLenght(),adyItem.getOneWay(), adyItem.getType(),
+								adyItem.getName(),edgeQuads);
+						
+						edges.add(tempEdge);
+					}
 				}
 			}
 		}	
@@ -296,7 +299,6 @@ public class OsmParserAndCustomizer {
 	}
 
 	private boolean nodeIsIncludedInQuadrant(GraphNode fromNode, Area quadrant) {
-		
 		return areaContainsNode(fromNode,quadrant);
 	}
 
@@ -343,7 +345,7 @@ public class OsmParserAndCustomizer {
 		}
 	}
 		
-	private boolean nodeIsIncludedInCity(GraphNode value) {
+	public boolean nodeIsIncludedInCity(GraphNode value) {
 		return areaContainsNode(value,this.getBoundaryArea());
 	}
 
@@ -437,14 +439,17 @@ public class OsmParserAndCustomizer {
 			
 	private boolean areaContainsNode(GraphNode value, Area area) {
 		
+		PolygonsOperator pg= new PolygonsOperator();
+		return pg.nodeIsContainedInPolygon(value,area);
+		/*
 		double p1,p2;
 		p1= CoordinatesConversor.getTileNumberLat(value.getLat());
 		p2= CoordinatesConversor.getTileNumberLong(value.getLon());
-		
+			
 		Point2D point= new Point2D.Double(p1,p2);
-		
+			
 		return (area.contains(point));
-		
+		*/
 	}
 	
 	public double getMaxLatit(){
