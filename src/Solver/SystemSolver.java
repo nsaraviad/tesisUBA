@@ -4,9 +4,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
+
 import GraphComponents.DirectedEdge;
 import GraphComponents.Pair;
 import Parsing.OsmParserAndCustomizer;
+import Polygons.MapPolygon;
 import Polygons.PolygonsOperator;
 import jscip.*;
 
@@ -14,22 +16,17 @@ import jscip.*;
 
 public class SystemSolver {
 	
-	/*
-	public void solve(LinkedList<Pair>[] polygons,int polygonsCount, OsmParserAndCustomizer p){
-	
+	public void solve(LinkedList<MapPolygon>[] polygons,int polygonsCount, OsmParserAndCustomizer p){
 		//Variables decl
-		//Variable[] vars = new Variable[polygonsCount];
-		//double[] vals= new double[polygonsCount];
+		Variable[] vars = new Variable[polygonsCount];
 		double edgeInPolygon;
 	    DirectedEdge temp_edge;
 	    LinkedList<Long> temp_pol;
 	    double covered;
-	    LinkedList ninguno= new LinkedList<DirectedEdge>();
-	    LinkedList edgequad;
-	    LinkedList<Pair> quadPolygons;
-	    Pair temp_pair;
+	    LinkedList<Integer> edgequad;
+	    LinkedList<MapPolygon> quadPolygons;
 	    int id_temp_polygon;
-	    Set coveredByPol= new HashSet<Integer>();
+	    HashSet<Integer> coveredByPol= new HashSet<Integer>();
 	    
 		
 	    //Model
@@ -38,8 +35,8 @@ public class SystemSolver {
 		scip.create("solver");
 		
 		//Se crean las variables del modelo (total de polígonos)
-		//for(int i=0;i<polygonsCount;i++)
-		//	vars[i] = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+		for(int i=0;i<polygonsCount;i++)
+			vars[i] = scip.createVar("x"+ i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
 		
 		//Restricciones
 		PolygonsOperator pol_op= new PolygonsOperator();
@@ -54,42 +51,43 @@ public class SystemSolver {
 	    	
 	    	//poligonos del/los cuadrante/s del eje
 	    	for(int q=0;q < edgequad.size();q++ ){
-	    		quadPolygons= polygons[(int) edgequad.get(q)];
+	    		quadPolygons= polygons[edgequad.get(q)];
 	    		
 	    		for(int pol=0;pol < quadPolygons.size() ;pol++){
-					temp_pair= quadPolygons.get(pol);
-					temp_pol= (LinkedList<Long>) temp_pair.getFirst();
-					id_temp_polygon= (int) temp_pair.getSecond();
+					//itero sobre cada polígono
+	    			temp_pol= quadPolygons.get(pol).getPolygonPoints();
+					id_temp_polygon=quadPolygons.get(pol).getPolygonId();
+					
 					//Verifico si el eje es cubierto por el poligono
-					edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol , p);
+					edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol,p);
 					covered = covered +  edgeInPolygon;
-					//vals[id_temp_polygon]= edgeInPolygon;
 					
 					if(edgeInPolygon == 1)
 						coveredByPol.add(id_temp_polygon);
-						
 	    		}
 			}
-	    	
 	    	
 	    	//Restricciones para los ejes cubierto por al menos un nodo
 	     	if (covered > 0 ){
 	     		
-	     		//VARSS
-	     		Variable[] vars = new Variable[coveredByPol.size()];
+	     		
+	     		Variable[] varsConst= new Variable[coveredByPol.size()];
+	     		double[] valsConst= new double[coveredByPol.size()];
+	     		
 	     		Iterator it= coveredByPol.iterator();
 	     		
+	     		//Se completan vars y vals
 	     		int i=0;
 	     		while(it.hasNext()){
 	     			int idPol= (int) it.next();
-	    			vars[i] = scip.createVar("x"+idPol, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+	    			varsConst[i] = scip.createVar("x"+idPol, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+	    			valsConst[i]= 1;
 	    			i++;
 	     		}
-	     		
-	     		//VALS
-	     		
-	     		//Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
-	     		//scip.addCons(cons);
+
+	     		//Add linear constraint
+	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, varsConst, valsConst,1,scip.infinity());
+	     		scip.addCons(cons);
 	     	}
 			
 	    }
@@ -101,8 +99,8 @@ public class SystemSolver {
 	
 	    for( int s = 0; allsols != null && s < allsols.length; ++s )
 	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
-	    	for(int i=0;i<polSize;i++)
+	    	for(int i=0;i<polygonsCount;i++)
 	    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
 		}
-		*/
+		
 }
