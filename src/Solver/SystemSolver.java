@@ -20,6 +20,7 @@ public class SystemSolver {
 	public void solve(LinkedList<MapPolygon>[] polygons,int totalPolygonsCount, OsmParserAndCustomizer p){
 		//Variables decl
 		Variable[] vars = new Variable[totalPolygonsCount];
+		double[] vals= new double[totalPolygonsCount];
 		double edgeInPolygon;
 	    DirectedEdge temp_edge;
 	    LinkedList<Long> temp_polPoints;
@@ -31,7 +32,7 @@ public class SystemSolver {
 	    boolean edgeIsCovered;
 	    MapPolygon actual_pol;
 	    Area temp_area;
-	    
+	    	    
 	    //Model
 		System.loadLibrary("jscip");
 		Scip scip= new Scip();
@@ -44,6 +45,7 @@ public class SystemSolver {
 		//Se crean las variables del modelo (total de polígonos)
 		for(int i=0;i<totalPolygonsCount;i++)
 			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+			
 		
 		//Restricciones
 		PolygonsOperator pol_op= new PolygonsOperator();
@@ -56,6 +58,7 @@ public class SystemSolver {
 	    	edgequad= temp_edge.getPertQuad();
 	    	covered=0; 
 	    	coveredByPol.clear();
+	    	clearInZeros(totalPolygonsCount, vals);
 	    	
 	    	//poligonos del/los cuadrante/s del eje
 	    	for(int q=0;q < edgequad.size();q++ ){
@@ -82,23 +85,19 @@ public class SystemSolver {
 	    	//Restricciones para los ejes cubierto por al menos un nodo
 	     	if (covered > 0 ){
 	     		
-	     		Variable[] varsConst= new Variable[coveredByPol.size()];
-	     		double[] valsConst= new double[coveredByPol.size()];
-	     		
 	     		Iterator it= coveredByPol.iterator();
-	     		
-	     		//Se completan vars y vals
 	     		int i=0;
+	     		
+	     		//Se pone en 1 aquellos coeficientes de polígonos en donde el eje es cubierto  
 	     		while(it.hasNext()){
-	     			int idPol= (int) it.next();
-	    			varsConst[i] = scip.createVar("x"+idPol, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
-	    			valsConst[i]= 1;
-	    			i++;
+	     			vals[(int) it.next()]= 1;
+	     			i++;
 	     		}
 
 	     		//Add linear constraint
-	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, varsConst, valsConst,1,scip.infinity());
+	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 	     		scip.addCons(cons);
+	     		scip.releaseCons(cons);
 	     	}
 			
 	    }
@@ -113,5 +112,10 @@ public class SystemSolver {
 	    	for(int i=0;i<totalPolygonsCount;i++)
 	    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
 		}
+
+	private void clearInZeros(int totalPolygonsCount, double[] vals) {
+		for(int k=0;k < totalPolygonsCount; k++)
+			vals[k]=0;
+	}
 		
 }
