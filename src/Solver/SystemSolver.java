@@ -16,9 +16,9 @@ import jscip.*;
 
 public class SystemSolver {
 	
-	public void solve(LinkedList<MapPolygon>[] polygons,int polygonsCount, OsmParserAndCustomizer p){
+	public void solve(LinkedList<MapPolygon>[] polygons,int totalPolygonsCount, OsmParserAndCustomizer p){
 		//Variables decl
-		Variable[] vars = new Variable[polygonsCount];
+		Variable[] vars = new Variable[totalPolygonsCount];
 		double edgeInPolygon;
 	    DirectedEdge temp_edge;
 	    LinkedList<Long> temp_pol;
@@ -35,7 +35,7 @@ public class SystemSolver {
 		scip.create("solver");
 		
 		//Se crean las variables del modelo (total de polígonos)
-		for(int i=0;i<polygonsCount;i++)
+		for(int i=0;i<totalPolygonsCount;i++)
 			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
 		
 		//Restricciones
@@ -98,7 +98,7 @@ public class SystemSolver {
 	
 	    for( int s = 0; allsols != null && s < allsols.length; ++s )
 	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
-	    	for(int i=0;i<polygonsCount;i++)
+	    	for(int i=0;i<totalPolygonsCount;i++)
 	    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
 		}
 		
