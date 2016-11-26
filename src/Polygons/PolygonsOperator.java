@@ -23,19 +23,18 @@ import Visualizer.Viewer;
 public class PolygonsOperator {
 
 	
-	public double checkIfEdgeIsInPolygon(DirectedEdge e, LinkedList<Long> polygon,OsmParserAndCustomizer p){
+	public double checkIfEdgeIsInPolygon(DirectedEdge e, Area polygonArea,OsmParserAndCustomizer p){
 		GraphNode extrNode_1,extrNode_2;
 		double includedInPolygon= 0;
 		RoadGraph graph= p.getRoadGraph();
 		
-		//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
-		Area polygon_area= calculatePolygonArea(polygon, graph);
-		
+		//Extremos del eje e
 		extrNode_1= e.from();
 		extrNode_2= e.to();
+
 		//Se verifica si los dos extremos de la arista se encuentran incluídos en el polígono
 		//Si lo están entonces el eje está incluído en dicho polígono
-		if(nodeIsContainedInPolygon(extrNode_1,polygon_area) && nodeIsContainedInPolygon(extrNode_2,polygon_area))
+		if(nodeIsContainedInPolygon(extrNode_1,polygonArea) && nodeIsContainedInPolygon(extrNode_2,polygonArea))
 			includedInPolygon= 1;
 		
 		//1 si está incluído, 0 si no
@@ -151,7 +150,7 @@ public class PolygonsOperator {
 		
 	}
 
-	private Area calculatePolygonArea(LinkedList<Long> poly,RoadGraph graph) {
+	public Area calculatePolygonArea(LinkedList<Long> poly,RoadGraph graph) {
 		int size= poly.size();
 		
 		double latit, longit;

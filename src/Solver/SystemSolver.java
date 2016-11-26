@@ -1,5 +1,6 @@
 package Solver;
 
+import java.awt.geom.Area;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,14 +22,16 @@ public class SystemSolver {
 		Variable[] vars = new Variable[totalPolygonsCount];
 		double edgeInPolygon;
 	    DirectedEdge temp_edge;
-	    LinkedList<Long> temp_pol;
+	    LinkedList<Long> temp_polPoints;
 	    double covered;
 	    LinkedList<Integer> edgequad;
 	    LinkedList<MapPolygon> quadPolygons;
 	    int id_temp_polygon;
 	    HashSet<Integer> coveredByPol= new HashSet<Integer>();
+	    boolean edgeIsCovered;
+	    MapPolygon actual_pol;
+	    Area temp_area;
 	    
-		
 	    //Model
 		System.loadLibrary("jscip");
 		Scip scip= new Scip();
@@ -48,6 +51,7 @@ public class SystemSolver {
 	    //para todo eje
 	    for(int e=0;e < p.getEdges().size();e++){
 	    	temp_edge= p.getEdges().get(e);
+	    	
 	    	//cuadrantes en donde se encuentra el eje
 	    	edgequad= temp_edge.getPertQuad();
 	    	covered=0; 
@@ -59,14 +63,18 @@ public class SystemSolver {
 	    		
 	    		for(int pol=0;pol < quadPolygons.size() ;pol++){
 					//itero sobre cada polígono
-	    			temp_pol= quadPolygons.get(pol).getPolygonPoints();
-					id_temp_polygon=quadPolygons.get(pol).getPolygonId();
-					
+	    			actual_pol = quadPolygons.get(pol);
+	    			id_temp_polygon= actual_pol.getPolygonId();
+					temp_area= actual_pol.getPolArea();
+				
 					//Verifico si el eje es cubierto por el poligono
-					edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_pol,p);
+					edgeInPolygon= pol_op.checkIfEdgeIsInPolygon(temp_edge,temp_area,p);
 					covered = covered +  edgeInPolygon;
 					
-					if(edgeInPolygon == 1)
+					edgeIsCovered= (edgeInPolygon == 1);
+					
+					//si el eje es cubierto por el poligono, se lo agrega al conjunto de poligonos que lo cubren
+					if(edgeIsCovered)
 						coveredByPol.add(id_temp_polygon);
 	    		}
 			}

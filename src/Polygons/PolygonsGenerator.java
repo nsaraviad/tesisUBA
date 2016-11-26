@@ -5,6 +5,7 @@ import GraphComponents.*;
 import MapOptimizer.MapQuadrantsGenerator;
 import Parsing.OsmParserAndCustomizer;
 
+import java.awt.geom.Area;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ public class PolygonsGenerator {
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
 	private LinkedList<MapPolygon>[] polygons;
 	private int polygons_counter;
+	private PolygonsOperator polygons_op= new PolygonsOperator();
 	
 	//Constructor
 	public PolygonsGenerator(OsmParserAndCustomizer g) {
@@ -166,17 +168,22 @@ public class PolygonsGenerator {
 			poligonVertex= nodes.get(nuevoPoligono.get(k));
 			//indice del cuadrante al que pertenece el vertice
 			indexQuadrantPoligonVertex= p.getNodeQuadrant(poligonVertex);
-			if(indexQuadrantPoligonVertex >= 0)
-				polygonQuad.add(indexQuadrantPoligonVertex);
+			polygonQuad.add(indexQuadrantPoligonVertex);
 		}
 		
 		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
 		Iterator<Integer> it= polygonQuad.iterator();
 		while(it.hasNext()){
-			MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono);
-			polygons[it.next()].add(newPolygon);
+			//Nuevo polígono
+			createAndAddNewPolygon(nuevoPoligono, idFromNewPolygon, it);
 		}
 		
+	}
+
+	private void createAndAddNewPolygon(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, Iterator<Integer> it) {
+		Area newPolArea= polygons_op.calculatePolygonArea(nuevoPoligono, rg);
+		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono,newPolArea);
+		polygons[it.next()].add(newPolygon);
 	}
 
 	private boolean validIntersections(HashSet<Long> res) {
