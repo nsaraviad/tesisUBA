@@ -34,6 +34,10 @@ public class SystemSolver {
 		Scip scip= new Scip();
 		scip.create("solver");
 		
+		/* FUNCION OBJETIVO
+		 Sum(0,cantPol -1) x_i donde x_i= 0 si el i-ésimo polígono pert sol, 0 si no
+		*/
+		
 		//Se crean las variables del modelo (total de polígonos)
 		for(int i=0;i<totalPolygonsCount;i++)
 			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
