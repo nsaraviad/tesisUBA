@@ -112,13 +112,14 @@ public class SystemSolver {
 	    scip.solve();
 		
 		// print all solutions
-	    Solution[] allsols = scip.getSols();
+	    //Solution[] allsols = scip.getSols();
+	    Solution sol= scip.getBestSol();
 	
-	    for( int s = 0; allsols != null && s < allsols.length; ++s )
+	    //for( int s = 0; allsols != null && s < allsols.length; ++s )
 	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
 	    	for(int i=0;i<totalPolygonsCount;i++)
-	    		if(scip.getSolVal(allsols[s],vars[i]) > 0)
-	    			System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
+	    		if(scip.getSolVal(sol,vars[i]) > 0)
+	    			System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
 		}
 
 	private void clearInZeros(int totalPolygonsCount, double[] vals) {
