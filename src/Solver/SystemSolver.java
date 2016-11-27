@@ -107,13 +107,9 @@ public class SystemSolver {
 			
 	    }
 		
-	    
-	    
 	    scip.solve();
 		
-		// print all solutions
-	    //Solution[] allsols = scip.getSols();
-	    Solution sol= scip.getBestSol();
+		Solution sol= scip.getBestSol();
 	
 	    //for( int s = 0; allsols != null && s < allsols.length; ++s )
 	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
