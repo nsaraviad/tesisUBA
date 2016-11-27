@@ -32,7 +32,8 @@ public class SystemSolver {
 	    boolean edgeIsCovered;
 	    MapPolygon actual_pol;
 	    Area temp_area;
-	    	    
+	    LinkedList<DirectedEdge> notConv= new LinkedList<DirectedEdge>();
+	    	   
 	    //Model
 		System.loadLibrary("jscip");
 		Scip scip= new Scip();
@@ -49,6 +50,7 @@ public class SystemSolver {
 		
 		//Restricciones
 		PolygonsOperator pol_op= new PolygonsOperator();
+		
 		
 	    //para todo eje
 	    for(int e=0;e < p.getEdges().size();e++){
@@ -83,8 +85,11 @@ public class SystemSolver {
 			}
 	    	
 	    	//Restricciones para los ejes cubierto por al menos un nodo
-	     	if (covered > 0 ){
-	     		
+	     	//if (covered == 0 )
+	     	//	notConv.add(temp_edge);//{
+	     	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
+	    	if(covered > 0){
+	     	
 	     		Iterator it= coveredByPol.iterator();
 	     		int i=0;
 	     		
@@ -102,6 +107,8 @@ public class SystemSolver {
 			
 	    }
 		
+	    
+	    
 	    scip.solve();
 		
 		// print all solutions
@@ -110,7 +117,8 @@ public class SystemSolver {
 	    for( int s = 0; allsols != null && s < allsols.length; ++s )
 	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
 	    	for(int i=0;i<totalPolygonsCount;i++)
-	    		System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
+	    		if(scip.getSolVal(allsols[s],vars[i]) > 0)
+	    			System.out.println("solution " + i + " = " + scip.getSolVal(allsols[s], vars[i] ) );
 		}
 
 	private void clearInZeros(int totalPolygonsCount, double[] vals) {
