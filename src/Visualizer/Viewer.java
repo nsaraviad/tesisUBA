@@ -18,13 +18,13 @@ public class Viewer
 	private JFrame _frame;
 	
 	// Constructores
-	public Viewer(LinkedList<Coordinate> lista)
+	public Viewer(LinkedList<LinkedList<Coordinate>> lista)
 	{
 		initialize(lista);
 	}
 
 	// Inicializa el mapa
-	private void initialize(LinkedList<Coordinate> lista)
+	private void initialize(LinkedList<LinkedList<Coordinate>> lista)
 	{
 		try
 		{
@@ -55,15 +55,18 @@ public class Viewer
 		_frame.getContentPane().add(mapViewer, BorderLayout.CENTER);
 		
 		// Agregamos varios marcadores
-		for(Coordinate c: lista)
-			mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
-		
+		for(int l=0;l<lista.size();l++){
+			for(Coordinate c: lista.get(l)){
+				mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
+				mapViewer.addMapPolygon(new MapPolygonImpl(lista.get(l)));
+			}
+		}
 		/* PRUEBAS */		
 		
 		//mapViewer.addMapMarker(new MapMarkerDot(-31.6792205,-63.8703698));
 		
 		// Agregamos un polígono usando los marcadores
-		mapViewer.addMapPolygon(new MapPolygonImpl(lista));
+		//mapViewer.addMapPolygon(new MapPolygonImpl(lista));
 	
 		
 		// Centramos el mapa sobre los marcadores

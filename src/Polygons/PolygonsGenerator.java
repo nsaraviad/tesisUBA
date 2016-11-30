@@ -138,9 +138,6 @@ public class PolygonsGenerator {
 						//ARMADO DEL POLÍGONO
 						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, nuevoPoligonoPoints);
 						
-						//SE AGREGA A LA COLECCIÓN RESULTADO
-						//polygons.add(nuevoPoligono);
-						
 						/*Se agrega el polígono al/los conjuntos de polígonos pertenecientes a cada caudrante
 						analizando sus esquinas*/
 						
@@ -163,13 +160,7 @@ public class PolygonsGenerator {
 		HashSet<Integer> polygonQuad= new HashSet<Integer>();
 		int indexQuadrantPoligonVertex;
 		
-		//Se obtienen los cuadrantes a los que pertenecen las esquinas del poligono
-		for(int k=0;k<nuevoPoligono.size();k++){
-			poligonVertex= nodes.get(nuevoPoligono.get(k));
-			//indice del cuadrante al que pertenece el vertice
-			indexQuadrantPoligonVertex= p.getNodeQuadrant(poligonVertex);
-			polygonQuad.add(indexQuadrantPoligonVertex);
-		}
+		getPolyonQuads(nuevoPoligono, polygonQuad);
 		
 		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
 		Iterator<Integer> it= polygonQuad.iterator();
@@ -178,6 +169,18 @@ public class PolygonsGenerator {
 			createAndAddNewPolygon(nuevoPoligono, idFromNewPolygon, it);
 		}
 		
+	}
+
+	private void getPolyonQuads(LinkedList<Long> nuevoPoligono,	HashSet<Integer> polygonQuad) {
+		GraphNode poligonVertex;
+		int indexQuadrantPoligonVertex;
+		//Se obtienen los cuadrantes a los que pertenecen las esquinas del poligono
+		for(int k=0;k<nuevoPoligono.size();k++){
+			poligonVertex= nodes.get(nuevoPoligono.get(k));
+			//indice del cuadrante al que pertenece el vertice
+			indexQuadrantPoligonVertex= p.getNodeQuadrant(poligonVertex);
+			polygonQuad.add(indexQuadrantPoligonVertex);
+		}
 	}
 
 	private void createAndAddNewPolygon(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, Iterator<Integer> it) {

@@ -26,7 +26,6 @@ public class PolygonsOperator {
 	public double checkIfEdgeIsInPolygon(DirectedEdge e, Area polygonArea,OsmParserAndCustomizer p){
 		GraphNode extrNode_1,extrNode_2;
 		double includedInPolygon= 0;
-		RoadGraph graph= p.getRoadGraph();
 		
 		//Extremos del eje e
 		extrNode_1= e.from();
@@ -186,26 +185,32 @@ public class PolygonsOperator {
 	
 	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<MapPolygon> polygons) {
 		LinkedList<Long> poly= new LinkedList<Long>();
-		double polygon_lenght; //longitud en km a recorrer dado un polígono
-	    
+		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
+		
 		//Calculo distancias recorridas y visualizacion de cada polígono
 		//for(int i=0;i<polygons.size();i++){
 		for(int i=0;i<5;i++){	
 			//i-esimo polígono
 			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);
-			visualizePolygon(poly,p);
+			addMapPolygonToViewer(poly,p, mapPols);
 		}
+		
+		showPolygonsInMap(mapPols);
+		
 		
 	}
 
-	private void visualizePolygon(LinkedList<Long> poly,OsmParserAndCustomizer p) {
+	private void addMapPolygonToViewer(LinkedList<Long> poly,OsmParserAndCustomizer p,
+											LinkedList<LinkedList<Coordinate>> listPols) {
 		// Visualización de polígonos usando JMap Viewer
 		LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
 		
 		//Iterate over the polygons collection
 		setCoordinatesToList(poly,p,lista);
-		showPolygonInMap(lista);
+		listPols.add(lista);
+		//showPolygonsInMap(lista);
+		
 	}
 	
 	private void setCoordinatesToList(LinkedList<Long> poly, OsmParserAndCustomizer p,LinkedList<Coordinate> lista) {
@@ -225,7 +230,7 @@ public class PolygonsOperator {
 	}	
 	
 	//SHOW POLYGON IN MAP
-	private void showPolygonInMap(LinkedList<Coordinate> lista) {
+	private void showPolygonsInMap(LinkedList<LinkedList<Coordinate>> lista) {
 		Viewer viewer = new Viewer(lista);
 		viewer.mostrar();
 	}

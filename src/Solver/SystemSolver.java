@@ -17,6 +17,12 @@ import jscip.*;
 
 public class SystemSolver {
 	
+	//Atributos
+	private LinkedList polygonsInSolution= new LinkedList<Integer>();
+	
+	
+	
+	//Métodos
 	public void solve(LinkedList<MapPolygon>[] polygons,int totalPolygonsCount, OsmParserAndCustomizer p){
 		//Variables decl
 		Variable[] vars = new Variable[totalPolygonsCount];
@@ -114,8 +120,10 @@ public class SystemSolver {
 	    //for( int s = 0; allsols != null && s < allsols.length; ++s )
 	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
 	    	for(int i=0;i<totalPolygonsCount;i++)
-	    		if(scip.getSolVal(sol,vars[i]) > 0)
+	    		if(scip.getSolVal(sol,vars[i]) > 0){
+	    			polygonsInSolution.add(i);
 	    			System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
+	    		}
 		}
 
 	private void clearInZeros(int totalPolygonsCount, double[] vals) {
