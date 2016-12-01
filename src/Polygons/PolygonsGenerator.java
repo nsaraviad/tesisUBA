@@ -33,6 +33,7 @@ public class PolygonsGenerator {
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
 	private LinkedList<MapPolygon>[] polygons;
 	private int polygons_counter;
+	private HashMap<Integer,MapPolygon> hashPolygons;
 	private PolygonsOperator polygons_op= new PolygonsOperator();
 	
 	//Constructor
@@ -43,6 +44,7 @@ public class PolygonsGenerator {
 		this.adyLst= rg.getAdyLst();
 		this.polygons= new LinkedList[4];
 		this.nodosInterseccionEnCaminos= new HashMap<Long,Pair>();
+		this.hashPolygons= new HashMap<Integer,MapPolygon>();
 	}
 	
 	//Método encargado de generar todos los polígonos a ser considerados
@@ -187,6 +189,14 @@ public class PolygonsGenerator {
 		Area newPolArea= polygons_op.calculatePolygonArea(nuevoPoligono, rg);
 		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono,newPolArea);
 		polygons[it.next()].add(newPolygon);
+		
+		//se agrega al mapa de poligonos general
+		addToHashMapPolygons(idFromNewPolygon, newPolygon);
+	}
+
+	private void addToHashMapPolygons(int idFromNewPolygon,
+			MapPolygon newPolygon) {
+		hashPolygons.put(idFromNewPolygon,newPolygon);
 	}
 
 	private boolean validIntersections(HashSet<Long> res) {
@@ -810,6 +820,9 @@ public class PolygonsGenerator {
 		return polygons_counter;
 	}
 	
+	public MapPolygon getPolygonWithId(int idPolygon){
+		return hashPolygons.get(idPolygon); 
+	}
 	
 	}
 

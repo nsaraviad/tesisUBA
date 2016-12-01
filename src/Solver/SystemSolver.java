@@ -130,5 +130,9 @@ public class SystemSolver {
 		for(int k=0;k < totalPolygonsCount; k++)
 			vals[k]=0;
 	}
+	
+	public LinkedList<Integer> getPolygonsInSolution(){
+		return polygonsInSolution;
+	}
 		
 }

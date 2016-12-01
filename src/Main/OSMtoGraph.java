@@ -23,6 +23,7 @@ import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.xmlpull.v1.XmlPullParserException;
 
 import Parsing.OsmParserAndCustomizer;
+import Polygons.MapPolygon;
 import Polygons.PolygonsGenerator;
 import Polygons.PolygonsOperator;
 import Solver.SystemSolver;
@@ -64,13 +65,22 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
-							//PolygonsOperator polOp= new PolygonsOperator();
-							//polOp.operateWithPolygons(p, gen.getPolygonsFromIQuadrant(0));
-						    //polOp.operateWithPolygons(p, gen.getPolygons());
-
 							
 							SystemSolver solv= new SystemSolver();
 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
+							
+							
+							//Preparar lista de poligonos en solucion
+							LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
+							extractPolygonsInSolutionToList(gen, solv,polygonsInSolution);
+							
+							//Visualize solution
+							PolygonsOperator polOp= new PolygonsOperator();
+							polOp.operateWithPolygons(p, polygonsInSolution);
+						    //polOp.operateWithPolygons(p, gen.getPolygons());
+
+							
+							
 							
 							/* VISUALIZE */
 							//JUNG Interface
@@ -83,6 +93,16 @@ public class OSMtoGraph extends JFrame {
 						}
                     }
                 }
+
+			private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList polygonsInSolution) {
+
+				int id_Pol;
+				
+				for(int s=0;s < solv.getPolygonsInSolution().size();s++){
+					id_Pol= solv.getPolygonsInSolution().get(s);
+					polygonsInSolution.add(gen.getPolygonWithId(id_Pol));
+				}
+			}
           });  
     }
 
