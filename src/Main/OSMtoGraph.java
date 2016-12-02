@@ -78,9 +78,6 @@ public class OSMtoGraph extends JFrame {
 							PolygonsOperator polOp= new PolygonsOperator();
 							polOp.operateWithPolygons(p, polygonsInSolution);
 						    //polOp.operateWithPolygons(p, gen.getPolygons());
-
-							
-							
 							
 							/* VISUALIZE */
 							//JUNG Interface

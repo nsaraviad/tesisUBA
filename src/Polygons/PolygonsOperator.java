@@ -189,7 +189,7 @@ public class PolygonsOperator {
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
 		//for(int i=0;i<polygons.size();i++){
-		for(int i=0;i<5;i++){	
+		for(int i=0;i<polygons.size();i++){	
 			//i-esimo polígono
 			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);

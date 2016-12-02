@@ -1,6 +1,7 @@
 package Solver;
 
 import java.awt.geom.Area;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ public class SystemSolver {
 		
 		//Se crean las variables del modelo (total de polígonos)
 		for(int i=0;i<totalPolygonsCount;i++)
-			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_INTEGER);
 			
 		
 		//Restricciones
@@ -66,7 +67,8 @@ public class SystemSolver {
 	    	edgequad= temp_edge.getPertQuad();
 	    	covered=0; 
 	    	coveredByPol.clear();
-	    	clearInZeros(totalPolygonsCount, vals);
+	    	Arrays.fill(vals, 0);
+	    	//clearInZeros(totalPolygonsCount, vals);
 	    	
 	    	//poligonos del/los cuadrante/s del eje
 	    	for(int q=0;q < edgequad.size();q++ ){
@@ -93,7 +95,8 @@ public class SystemSolver {
 	    	//Restricciones para los ejes cubierto por al menos un nodo
 	     	//if (covered == 0 )
 	     	//	notConv.add(temp_edge);//{
-	     	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
+	     	
+	    	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
 	    	if(covered > 0){
 	     	
 	     		Iterator it= coveredByPol.iterator();
@@ -108,7 +111,7 @@ public class SystemSolver {
 	     		//Add linear constraint
 	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 	     		scip.addCons(cons);
-	     		scip.releaseCons(cons);
+	     		//scip.releaseCons(cons);
 	     	}
 			
 	    }
@@ -122,14 +125,14 @@ public class SystemSolver {
 	    	for(int i=0;i<totalPolygonsCount;i++)
 	    		if(scip.getSolVal(sol,vars[i]) > 0){
 	    			polygonsInSolution.add(i);
-	    			System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
+	    			//System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
 	    		}
 		}
 
-	private void clearInZeros(int totalPolygonsCount, double[] vals) {
+	/*private void clearInZeros(int totalPolygonsCount, double[] vals) {
 		for(int k=0;k < totalPolygonsCount; k++)
 			vals[k]=0;
-	}
+	}*/
 	
 	public LinkedList<Integer> getPolygonsInSolution(){
 		return polygonsInSolution;
