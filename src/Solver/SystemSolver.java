@@ -99,14 +99,8 @@ public class SystemSolver {
 	    	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
 	    	if(covered > 0){
 	     	
-	     		Iterator it= coveredByPol.iterator();
-	     		int i=0;
-	     		
-	     		//Se pone en 1 aquellos coeficientes de polígonos en donde el eje es cubierto  
-	     		while(it.hasNext()){
-	     			vals[(int) it.next()]= 1;
-	     			i++;
-	     		}
+	     		//se setean en 1 los coeficientes de los polígonos en la sol. encontrada
+	    		setValsForPolygonsInSolution(vals, coveredByPol);
 
 	     		//Add linear constraint
 	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
@@ -120,14 +114,24 @@ public class SystemSolver {
 		
 		Solution sol= scip.getBestSol();
 	
-	    //for( int s = 0; allsols != null && s < allsols.length; ++s )
-	         //System.out.println("solution (x,y) = (" + scip.getSolVal(allsols[s], x) + ", " + scip.getSolVal(allsols[s], y) + ") with objective value " + scip.getSolOrigObj(allsols[s]));
-	    	for(int i=0;i<totalPolygonsCount;i++)
-	    		if(scip.getSolVal(sol,vars[i]) > 0){
-	    			polygonsInSolution.add(i);
-	    			//System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
-	    		}
+	   	for(int i=0;i<totalPolygonsCount;i++)
+	   		if(scip.getSolVal(sol,vars[i]) > 0){
+	   			polygonsInSolution.add(i);
+	   			//System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
+	   		}
+	}
+
+	private void setValsForPolygonsInSolution(double[] vals,
+			HashSet<Integer> coveredByPol) {
+		Iterator it= coveredByPol.iterator();
+		int i=0;
+		
+		//Se pone en 1 aquellos coeficientes de polígonos en donde el eje es cubierto  
+		while(it.hasNext()){
+			vals[(int) it.next()]= 1;
+			i++;
 		}
+	}
 
 	/*private void clearInZeros(int totalPolygonsCount, double[] vals) {
 		for(int k=0;k < totalPolygonsCount; k++)
