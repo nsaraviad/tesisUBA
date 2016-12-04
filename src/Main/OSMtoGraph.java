@@ -67,7 +67,7 @@ public class OSMtoGraph extends JFrame {
 							
 							
 							SystemSolver solv= new SystemSolver();
-							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
+ 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
 							
 							
 							//Preparar lista de poligonos en solucion

@@ -32,7 +32,8 @@ public class SystemSolver {
 	    DirectedEdge temp_edge;
 	    LinkedList<Long> temp_polPoints;
 	    double covered;
-	    LinkedList<Integer> edgequad;
+	    //LinkedList<Integer> edgequad;
+	    int edgequad;
 	    LinkedList<MapPolygon> quadPolygons;
 	    int id_temp_polygon;
 	    HashSet<Integer> coveredByPol= new HashSet<Integer>();
@@ -68,11 +69,11 @@ public class SystemSolver {
 	    	covered=0; 
 	    	coveredByPol.clear();
 	    	Arrays.fill(vals, 0);
-	    	//clearInZeros(totalPolygonsCount, vals);
 	    	
 	    	//poligonos del/los cuadrante/s del eje
-	    	for(int q=0;q < edgequad.size();q++ ){
-	    		quadPolygons= polygons[edgequad.get(q)];
+	    	//for(int q=0;q < edgequad.size();q++ ){
+	    		//quadPolygons= polygons[edgequad.get(q)];
+	    		quadPolygons= polygons[edgequad];
 	    		
 	    		for(int pol=0;pol < quadPolygons.size() ;pol++){
 					//itero sobre cada polígono
@@ -90,7 +91,7 @@ public class SystemSolver {
 					if(edgeIsCovered)
 						coveredByPol.add(id_temp_polygon);
 	    		}
-			}
+			//}
 	    	
 	    	//Restricciones para los ejes cubierto por al menos un nodo
 	     	//if (covered == 0 )
@@ -133,10 +134,6 @@ public class SystemSolver {
 		}
 	}
 
-	/*private void clearInZeros(int totalPolygonsCount, double[] vals) {
-		for(int k=0;k < totalPolygonsCount; k++)
-			vals[k]=0;
-	}*/
 	
 	public LinkedList<Integer> getPolygonsInSolution(){
 		return polygonsInSolution;

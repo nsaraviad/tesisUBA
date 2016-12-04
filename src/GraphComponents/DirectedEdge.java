@@ -10,11 +10,12 @@ public class DirectedEdge {
     private boolean isOneway;
     private String type;
     private String name;
-    private LinkedList pert_quadrants;
+    //private LinkedList pert_quadrants;
+    private int pert_quadrant;
     
     	
     public DirectedEdge(GraphNode startNode, GraphNode endNode, double length, boolean isOneway,
-    		String type, String name,LinkedList pquad){//,  long way_id ) {
+    		String type, String name,int pquad){//,  long way_id ) {
         
         this.startNode = startNode;
         this.endNode = endNode;
@@ -22,7 +23,7 @@ public class DirectedEdge {
         this.length = length;
         this.type = type;
         this.name = name;
-        this.pert_quadrants= pquad;
+        this.pert_quadrant= pquad;
     
     }
     
@@ -46,7 +47,7 @@ public class DirectedEdge {
         this.length = 0.00;
         this.type = null;
         this.name = null;
-        this.pert_quadrants= null;
+        this.pert_quadrant= (Integer) null;
 	}
 	
     public GraphNode from() {
@@ -66,8 +67,8 @@ public class DirectedEdge {
         return isOneway;
     }
     
-    public LinkedList getPertQuad(){
-    	return pert_quadrants;
+    public int getPertQuad(){
+    	return pert_quadrant;
     }
 
     public void setType(String type){

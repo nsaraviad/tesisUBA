@@ -269,7 +269,7 @@ public class PolygonsGenerator {
 		distanceTo1_int_2= dimensiones.get(2);
 		distanceTo2_int_2= dimensiones.get(3);
 		
-		//Los caminos
+		//Los caminos que intersecan en cada vértice intersección
 		camino_int1_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_1).getFirst())];
 		camino_int1_2= pathsNode2[(int) (nodosInterseccionEnCaminos.get(intersect_1).getSecond())];
 		camino_int2_1= pathsNode1[(int) (nodosInterseccionEnCaminos.get(intersect_2).getFirst())];
@@ -564,7 +564,7 @@ public class PolygonsGenerator {
 	
 	private Pair verificarSiHayInterseccionesYAgregarRef(LinkedList<Long>[] visitedNode1,LinkedList<Long>[] visitedNode2) {
 		//Metodo encargado de chequear si hay nodos compartidos entre caminos de path1 y path2. En el caso de haber se incrementa la 
-		//cantidad y se agraga dichas referencias al resultado
+		//cantidad y se agrega dichas referencias al resultado
 		LinkedList<Long> resRef= new LinkedList();
 		Long visitNode;
 		int resCountIntersect= 0;
@@ -578,7 +578,7 @@ public class PolygonsGenerator {
 							resCountIntersect++; 
 							resRef.add(visitNode);
 							nodosInterseccionEnCaminos.putIfAbsent(visitNode, new Pair(j,k)); 
-							//Camino 1, Camino 2 (caminos de nodo 1 y 2 que se intersecan en visitNode)
+							//Camino 1, Camino 2 (que caminos de nodo 1 y 2 se intersecan en visitNode)
 						}	 
 				 }
 			}	

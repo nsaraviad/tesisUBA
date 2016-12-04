@@ -8,7 +8,9 @@ import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
@@ -58,19 +60,14 @@ public class Viewer
 		for(int l=0;l<lista.size();l++){
 			for(Coordinate c: lista.get(l)){
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
-				mapViewer.addMapPolygon(new MapPolygonImpl(lista.get(l)));
+				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
+				//new_mpol.setBackColor(Color.BLUE);
+				mapViewer.addMapPolygon(new_mpol);
 			}
 		}
-		/* PRUEBAS */		
-		
-		//mapViewer.addMapMarker(new MapMarkerDot(-31.6792205,-63.8703698));
-		
-		// Agregamos un polígono usando los marcadores
-		//mapViewer.addMapPolygon(new MapPolygonImpl(lista));
-	
-		
+			
 		// Centramos el mapa sobre los marcadores
-		mapViewer.setDisplayToFitMapMarkers();
+		//mapViewer.setDisplayToFitMapMarkers();
 		mapViewer.setDisplayToFitMapPolygons();
 		mapViewer.setZoom(13);
 	}
