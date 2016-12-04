@@ -73,9 +73,9 @@ public class SystemSolver {
 	    	//poligonos del/los cuadrante/s del eje
 	    	//for(int q=0;q < edgequad.size();q++ ){
 	    		//quadPolygons= polygons[edgequad.get(q)];
-	    		quadPolygons= polygons[edgequad];
+	    	quadPolygons= polygons[edgequad];
 	    		
-	    		for(int pol=0;pol < quadPolygons.size() ;pol++){
+	    	for(int pol=0;pol < quadPolygons.size() ;pol++){
 					//itero sobre cada polígono
 	    			actual_pol = quadPolygons.get(pol);
 	    			id_temp_polygon= actual_pol.getPolygonId();
@@ -90,13 +90,9 @@ public class SystemSolver {
 					//si el eje es cubierto por el poligono, se lo agrega al conjunto de poligonos que lo cubren
 					if(edgeIsCovered)
 						coveredByPol.add(id_temp_polygon);
-	    		}
+	    	}
 			//}
 	    	
-	    	//Restricciones para los ejes cubierto por al menos un nodo
-	     	//if (covered == 0 )
-	     	//	notConv.add(temp_edge);//{
-	     	
 	    	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
 	    	if(covered > 0){
 	     	
@@ -106,7 +102,7 @@ public class SystemSolver {
 	     		//Add linear constraint
 	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 	     		scip.addCons(cons);
-	     		//scip.releaseCons(cons);
+	     		scip.releaseCons(cons);
 	     	}
 			
 	    }
