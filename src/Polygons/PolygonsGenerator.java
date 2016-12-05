@@ -159,41 +159,32 @@ public class PolygonsGenerator {
 
 	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, 
 														Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
-		HashSet<Integer> polygonQuad= new HashSet<Integer>();
+		int polQuad;
+		polQuad= getPolygonQuad(entry1);
 		
-		getPolygonQuads(entry1,entry2,polygonQuad);
-		
-		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
-		Iterator<Integer> it= polygonQuad.iterator();
-		while(it.hasNext()){
-			//Nuevo polígono
-			createAndAddNewPolygon(nuevoPoligono, idFromNewPolygon, it);
-		}
+		//Nuevo polígono
+		createAndAddNewPolygon(nuevoPoligono, idFromNewPolygon, polQuad);
 		
 	}
 
-	private void getPolygonQuads(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2, HashSet<Integer> polygonQuad) {
-		GraphNode polygonEntry1, polygonEntry2;
-		int indexQuadrantPoligonEntry1,indexQuadrantPoligonEntry2;
+	private int getPolygonQuad(Entry<Long, GraphNode> entry1) {
+		GraphNode polygonEntry1;
+		int indexQuadrantPoligonEntry1;
 		
-		//Se obtienen los cuadrantes a los que pertenecen las esquinas del poligono
-		//for(int k=0;k<nuevoPoligono.size();k++){
-			polygonEntry1= nodes.get(entry1.getKey());
-			polygonEntry2= nodes.get(entry2.getKey());
+		//Se obtiene el cuadrante al que pertenece la entrada 1
+		polygonEntry1= nodes.get(entry1.getKey());
 			
-			//indice del cuadrante al que pertenece el vertice
-			indexQuadrantPoligonEntry1= p.getNodeQuadrant(polygonEntry1);
-			indexQuadrantPoligonEntry2= p.getNodeQuadrant(polygonEntry2);
+		//indice del cuadrante al que pertenece el vertice
+		indexQuadrantPoligonEntry1= p.getNodeQuadrant(polygonEntry1);
 			
-			polygonQuad.add(indexQuadrantPoligonEntry1);
-			polygonQuad.add(indexQuadrantPoligonEntry2);
-		//}
+		return indexQuadrantPoligonEntry1;
+		
 	}
 
-	private void createAndAddNewPolygon(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, Iterator<Integer> it) {
+	private void createAndAddNewPolygon(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, int polygon_quad_index) {
 		Area newPolArea= polygons_op.calculatePolygonArea(nuevoPoligono, rg);
 		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono,newPolArea);
-		polygons[it.next()].add(newPolygon);
+		polygons[polygon_quad_index].add(newPolygon);
 		
 		//se agrega al mapa de poligonos general
 		addToHashMapPolygons(idFromNewPolygon, newPolygon);
