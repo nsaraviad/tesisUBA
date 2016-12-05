@@ -61,7 +61,6 @@ public class Viewer
 			for(Coordinate c: lista.get(l)){
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
 				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
-				//new_mpol.setBackColor(Color.BLUE);
 				mapViewer.addMapPolygon(new_mpol);
 			}
 		}

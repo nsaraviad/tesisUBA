@@ -143,7 +143,7 @@ public class PolygonsGenerator {
 						/*Se agrega el polígono al/los conjuntos de polígonos pertenecientes a cada caudrante
 						analizando sus esquinas*/
 						
-						addNewPolygonToRespectiveQuadrants(nuevoPoligonoPoints,polygons_counter);
+						addNewPolygonToRespectiveQuadrants(nuevoPoligonoPoints,polygons_counter,entry1,entry2);
 						polygons_counter++;
 					}
 				}
@@ -157,12 +157,11 @@ public class PolygonsGenerator {
 			polygons[p]= new LinkedList();
 	}
 
-	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono,int idFromNewPolygon) {
-		GraphNode poligonVertex;
+	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, 
+														Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
 		HashSet<Integer> polygonQuad= new HashSet<Integer>();
-		int indexQuadrantPoligonVertex;
 		
-		getPolyonQuads(nuevoPoligono, polygonQuad);
+		getPolygonQuads(entry1,entry2,polygonQuad);
 		
 		//Se agrega el nuevo poligono a los conjuntos obtenidos antes
 		Iterator<Integer> it= polygonQuad.iterator();
@@ -173,16 +172,22 @@ public class PolygonsGenerator {
 		
 	}
 
-	private void getPolyonQuads(LinkedList<Long> nuevoPoligono,	HashSet<Integer> polygonQuad) {
-		GraphNode poligonVertex;
-		int indexQuadrantPoligonVertex;
+	private void getPolygonQuads(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2, HashSet<Integer> polygonQuad) {
+		GraphNode polygonEntry1, polygonEntry2;
+		int indexQuadrantPoligonEntry1,indexQuadrantPoligonEntry2;
+		
 		//Se obtienen los cuadrantes a los que pertenecen las esquinas del poligono
-		for(int k=0;k<nuevoPoligono.size();k++){
-			poligonVertex= nodes.get(nuevoPoligono.get(k));
+		//for(int k=0;k<nuevoPoligono.size();k++){
+			polygonEntry1= nodes.get(entry1.getKey());
+			polygonEntry2= nodes.get(entry2.getKey());
+			
 			//indice del cuadrante al que pertenece el vertice
-			indexQuadrantPoligonVertex= p.getNodeQuadrant(poligonVertex);
-			polygonQuad.add(indexQuadrantPoligonVertex);
-		}
+			indexQuadrantPoligonEntry1= p.getNodeQuadrant(polygonEntry1);
+			indexQuadrantPoligonEntry2= p.getNodeQuadrant(polygonEntry2);
+			
+			polygonQuad.add(indexQuadrantPoligonEntry1);
+			polygonQuad.add(indexQuadrantPoligonEntry2);
+		//}
 	}
 
 	private void createAndAddNewPolygon(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, Iterator<Integer> it) {

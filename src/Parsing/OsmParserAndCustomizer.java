@@ -243,8 +243,8 @@ public class OsmParserAndCustomizer {
 					
 					if(!visitedNodes.contains(adyItem.getAdyId()) && adyNode != null && nodeIsIncludedInCity(adyNode)){
 						
-						//Se obtiene el/los cuadrantes donde se encuentra el nuevo eje
-						int edgeQuads= getEdgeQuadrants(actual,adyNode);
+						//Se obtiene el cuadrante donde se encuentra el nuevo eje (cuadrante del primer extremo)
+						int edgeQuads= getEdgeQuadrant(actual,adyNode);
 						
 						//Se crea el eje y se lo agrega a la colección de ejes de la ciudad
 						tempEdge = new DirectedEdge(actual, adyNode,
@@ -260,12 +260,10 @@ public class OsmParserAndCustomizer {
 	}
 	
 	
-	private int getEdgeQuadrants(GraphNode fromNode, GraphNode toNode) {
+	private int getEdgeQuadrant(GraphNode fromNode, GraphNode toNode) {
 	
-	/*Analiza los extremos del futuro nuevo eje y verifica en que o en cuales cuadrantes entra
-	  Si ambos extremos pertenecen a un mismo cuadrante, se agrega a solo dicho cuadrante. Sino se agrega
-	  a ambos. */
-		int fromNodeQuadrant, toNodeQuadrant;
+	/*Analiza el cuadrante al que pertenece el primer extremo del nuevo eje y lo setea como cuadrante del mismo */
+		int fromNodeQuadrant;
 		//LinkedList<Integer> res= new LinkedList<Integer>();
 		
 		fromNodeQuadrant= getNodeQuadrant(fromNode);

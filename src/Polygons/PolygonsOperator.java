@@ -188,7 +188,6 @@ public class PolygonsOperator {
 		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
-		//for(int i=0;i<polygons.size();i++){
 		for(int i=0;i<polygons.size();i++){	
 			//i-esimo polígono
 			poly= polygons.get(i).getPolygonPoints();
@@ -198,20 +197,16 @@ public class PolygonsOperator {
 		}
 		
 		//showPolygonsInMap(mapPols);
-		
-		
 	}
 
 	private void addMapPolygonToViewer(LinkedList<Long> poly,OsmParserAndCustomizer p,
 											LinkedList<LinkedList<Coordinate>> listPols) {
-		// Visualización de polígonos usando JMap Viewer
+		//Visualización de polígonos usando JMap Viewer
 		LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
 		
 		//Iterate over the polygons collection
 		setCoordinatesToList(poly,p,lista);
 		listPols.add(lista);
-		//showPolygonsInMap(lista);
-		
 	}
 	
 	private void setCoordinatesToList(LinkedList<Long> poly, OsmParserAndCustomizer p,LinkedList<Coordinate> lista) {
