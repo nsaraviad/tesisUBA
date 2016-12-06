@@ -65,10 +65,8 @@ public class OSMtoGraph extends JFrame {
 							PolygonsGenerator gen= new PolygonsGenerator(p);
 							gen.generatePolygons();
 							
-							
 							SystemSolver solv= new SystemSolver();
  							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
-							
 							
 							//Preparar lista de poligonos en solucion
 							LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
@@ -77,14 +75,7 @@ public class OSMtoGraph extends JFrame {
 							//Visualize solution
 							PolygonsOperator polOp= new PolygonsOperator();
 							polOp.operateWithPolygons(p, polygonsInSolution);
-						    //polOp.operateWithPolygons(p, gen.getPolygons());
-							
-							/* VISUALIZE */
-							//JUNG Interface
-							//GraphVisualizer gv = new GraphVisualizer();
-			                //gv.Visualize(p,nombre);
-													
-							
+						    
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();
 						}
