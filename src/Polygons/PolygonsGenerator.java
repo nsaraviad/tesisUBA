@@ -142,8 +142,7 @@ public class PolygonsGenerator {
 						
 						/*Se agrega el polígono al/los conjuntos de polígonos pertenecientes a cada caudrante
 						analizando sus esquinas*/
-						
-						addNewPolygonToRespectiveQuadrants(nuevoPoligonoPoints,polygons_counter,entry1,entry2);
+						addNewPolygonToRespectiveQuadrants(nuevoPoligonoPoints,polygons_counter,entry1);
 						polygons_counter++;
 					}
 				}
@@ -158,7 +157,7 @@ public class PolygonsGenerator {
 	}
 
 	private void addNewPolygonToRespectiveQuadrants(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, 
-														Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
+														Entry<Long, GraphNode> entry1) {
 		int polQuad;
 		polQuad= getPolygonQuad(entry1);
 		
@@ -181,17 +180,16 @@ public class PolygonsGenerator {
 		
 	}
 
-	private void createAndAddNewPolygon(LinkedList<Long> nuevoPoligono,int idFromNewPolygon, int polygon_quad_index) {
-		Area newPolArea= polygons_op.calculatePolygonArea(nuevoPoligono, rg);
-		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,nuevoPoligono,newPolArea);
+	private void createAndAddNewPolygon(LinkedList<Long> newPolygonPoints,int idFromNewPolygon, int polygon_quad_index) {
+		Area newPolArea= polygons_op.calculatePolygonArea(newPolygonPoints, rg);
+		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,newPolygonPoints,newPolArea);
 		polygons[polygon_quad_index].add(newPolygon);
 		
 		//se agrega al mapa de poligonos general
 		addToHashMapPolygons(idFromNewPolygon, newPolygon);
 	}
 
-	private void addToHashMapPolygons(int idFromNewPolygon,
-			MapPolygon newPolygon) {
+	private void addToHashMapPolygons(int idFromNewPolygon,MapPolygon newPolygon) {
 		hashPolygons.put(idFromNewPolygon,newPolygon);
 	}
 
