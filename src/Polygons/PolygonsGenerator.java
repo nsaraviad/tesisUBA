@@ -83,8 +83,7 @@ public class PolygonsGenerator {
 		polygons_counter= 0;
 		
 		//Algoritmo busqueda de polygonos
-		for(Iterator<Entry<Long, GraphNode>> it_node_1= nodes.entrySet().iterator();
-																					it_node_1.hasNext();){
+		for(Iterator<Entry<Long, GraphNode>> it_node_1= nodes.entrySet().iterator();it_node_1.hasNext();){
 			
 			Entry<Long, GraphNode> entry1= it_node_1.next();
 			
@@ -387,8 +386,6 @@ public class PolygonsGenerator {
 
 	
 	private boolean filtroGradoNodos(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
-		
-		//return (esDeGrado(entry1.getKey(),3) || esDeGrado(entry1.getKey(),4)) && (esDeGrado(entry2.getKey(),3) || esDeGrado(entry2.getKey(),4));
 		return deGrado234(entry1.getKey()) && deGrado234(entry2.getKey()); 
 	}
 
@@ -487,7 +484,6 @@ public class PolygonsGenerator {
 			distancesToNode.put(ady.getAdyId(),1); //distanci 1 al nodo
 		}
 	}
-
 	
 	private void initializePaths(LinkedList<AdyacencyInfo>[] pathsNode1,
 			LinkedList<AdyacencyInfo>[] pathsNode2) {
@@ -622,14 +618,14 @@ public class PolygonsGenerator {
 				
 				//Si no se encuentra adyacente por nombre de calle (o porque hubo cambio de nombre o porque no se puede
 				//continuar avanzando por dicha calle). Para chequear si analizan los angulos.
-				if(ady==null)
+				if(!adyacentFound(ady))
 					ady= buscarAdyacentePorAnguloEntreAristas(pathsNode[i],res,visitedNodes[i]);
 				
 				dist= (int) distancesToNode.get(key_last); //distancia desde el nodo a ultimo nodo (key_last)
 					
 				//si encuentro adyacente en la misma direccion, avanzo. Caso contrario, no se puede continuar avanzando 
 				//en la dirección.
-				if(ady != null){
+				if(adyacentFound(ady)){
 					pathsNode[i].add(ady);
 					distancesToNode.put(ady.getAdyId(),dist+1); //nueva distancia al adyacente (dist + 1)
 					puedeAvanzar= true;
@@ -638,6 +634,10 @@ public class PolygonsGenerator {
 		}
 			
 		return puedeAvanzar;
+	}
+
+	private boolean adyacentFound(AdyacencyInfo ady) {
+		return ady!=null;
 	}
 
 	
