@@ -676,12 +676,10 @@ public class PolygonsGenerator {
 				if(adyacentInCity(ady_temp_id)){
 				
 					//Calculo m2 de la recta entre lastNode y ady_temp
-					
 					m2= calculatePend(lastNode_id,ady_temp_id);
 					
 					//Calculo de angulo entre rectas con pendientes m1 y m2
 					angle= Math.abs(angleBetween(m1,m2));
-					
 					
 					//Actualizo el angulo "actual que cumple"
 					//Considero aquellos nodos de grado 2 que pueden continuar por un path
@@ -693,15 +691,11 @@ public class PolygonsGenerator {
 				i++;
 			}
 			
-			if((result != null) && (!visitedNodes.contains(result.getAdyId())) &&	(!res.contains(result.getAdyId()))){
-					//result= adyacents.get(i);
+			if((result != null) && (!visitedNodes.contains(result.getAdyId())) &&	(!res.contains(result.getAdyId())))
 					visitedNodes.add(result.getAdyId()); //se agrega a la lista de nodos visitados en esa dirección
-					
-			}
+			
 		}
-		
 		return result;	
-		
 	}
 
 	
@@ -710,7 +704,7 @@ public class PolygonsGenerator {
 	}
 
 	private float angleBetween(double m1, double m2) {
-		
+	//Cálculo de ángulo formado entre 2 rectas con pendientes m1 y m2
 		float betha;
 		double num, den, value;
 		
@@ -727,7 +721,6 @@ public class PolygonsGenerator {
 		double x1,y1,x2,y2;
 		double num,den;
 		
-		
 		//Pair(lat,long)
 		Pair p1= convertToR2(node1_id);
 		Pair p2= convertToR2(node2_id);
@@ -738,13 +731,12 @@ public class PolygonsGenerator {
 		x2= (double) p2.getFirst();
 		y2= (double) p2.getSecond();
 		
-		//numerator (y2 - y1)
+		//numerator 
 		num= y2 - y1;
 		
-		//deniminator (x2 - x1)
+		//denominator
 		den= x2 - x1;
 		
-		//y2 - y1 / x2 - x1
 		return (num/den);
 	}
 
@@ -802,22 +794,20 @@ public class PolygonsGenerator {
 	}
 	
 	//Los poligonos del iesimo cuadrante
-	/*public LinkedList<LinkedList<Long>> getPolygonsFromIQuadrant(int indexQuadrant){
-		return polygons[indexQuadrant];
-	}*/
-	
 	public LinkedList<MapPolygon> getPolygonsFromIQuadrant(int indexQuadrant){
 		return polygons[indexQuadrant];
 	}
 	
+	//La cantidad total de polígonos generados
 	public int getPolygonsCount(){
 		return polygons_counter;
 	}
 	
+	//Obtener el polígono dado id
 	public MapPolygon getPolygonWithId(int idPolygon){
 		return hashPolygons.get(idPolygon); 
 	}
 	
-	}
+}
 
 
