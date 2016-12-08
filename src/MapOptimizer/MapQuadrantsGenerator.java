@@ -13,7 +13,8 @@ import GraphComponents.Pair;
 public class MapQuadrantsGenerator {
 	
 	private double max_latit,max_longit,min_latit,min_longit;
-	private Area[] cityQuadrants= new Area[4];
+	//private Area[] cityQuadrants= new Area[4];
+	private Area[] cityQuadrants;
 	OsmParserAndCustomizer pars;
 	
 
@@ -25,6 +26,55 @@ public class MapQuadrantsGenerator {
 		pars= p;
 	}
 	
+	public void generateQuadrants() {
+	
+		double maxLat_temp, minLat_temp, maxLong_temp, minLong_temp;
+		double factorWidth, factorHeight;
+		double cityWidth, cityHeight;
+		int cellsWidthCount,cellsHeightCount;
+	
+		//Initialize
+		maxLat_temp= max_latit;
+		minLat_temp= min_latit;
+		maxLong_temp= max_longit;
+		minLong_temp= min_longit;
+		
+		//factors
+		factorWidth= 1.5;
+		factorHeight= 1.5;
+	
+		//calculate city height and widht
+		cityWidth= getCityWidhtDistance();
+		cityHeight= getCityHeightDistance();
+		
+		//calculo de bloques en alto y ancho
+		cellsWidthCount= (int) Math.rint(cityWidth / factorWidth);
+		cellsHeightCount= (int) Math.rint(cityHeight / factorHeight);
+		
+		
+		//create map grid
+		
+		
+		
+}
+	
+
+	private double getCityHeightDistance() {
+		// calculo de la distancia (en km) del alto total de la ciudad
+		return pars.getRoadGraph().getDistance(min_latit,min_longit,max_latit,min_longit);
+	}
+
+	private double getCityWidhtDistance() {
+		// calculo de la distancia (en km) del ancho total de la ciudad
+		return pars.getRoadGraph().getDistance(min_latit,min_longit,min_latit,max_longit);
+	}
+
+	
+	
+	
+	
+	
+	/*
 	public void generateQuadrants() {
 		//Metodo encargado de subdividir el cuadrante principal que encierra a la ciudad entera en 4 subcuadrantes y los guarda en un array
 		
@@ -52,6 +102,7 @@ public class MapQuadrantsGenerator {
 		
 		setResultsInOsmParser();
 	}
+*/
 
 
 private void setResultsInOsmParser() {
