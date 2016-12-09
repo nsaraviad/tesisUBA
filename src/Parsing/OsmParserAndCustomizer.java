@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.*;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -36,6 +37,7 @@ import Polygons.PolygonsOperator;
 
 public class OsmParserAndCustomizer {
 	private LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
+	
 	private LinkedList<DirectedEdge> edges= new LinkedList<DirectedEdge>();
 	public Area[] cityQuadrants;
 	private RoadGraph g = new RoadGraph();
@@ -45,6 +47,7 @@ public class OsmParserAndCustomizer {
 	private double min_latit;
 	private double min_longit;
 	
+	private HashMap<Long,Integer> quadNodes= new HashMap<Long,Integer>();
  
 	public void ParseOSM (String pathToArchive, String nameArchives) throws FileNotFoundException, IOException, XmlPullParserException{
 		
@@ -152,11 +155,18 @@ public class OsmParserAndCustomizer {
 		Area quadrant;
 		int id_quad= -1;
 		
-		for(int i=0;(id_quad == -1) && i < cityQuadrants.length;i++){
-			quadrant= cityQuadrants[i];
-			
-			if(nodeIsIncludedInQuadrant(fromNode,quadrant))
-				id_quad= i; //el íd del cuadrante al que pertenece
+		if(quadNodes.containsKey(fromNode.getId()))
+			id_quad= quadNodes.get(fromNode.getId());
+		else{
+			//se busca a que cuadrante pertenece
+			for(int i=0;(id_quad == -1) && i < cityQuadrants.length;i++){
+				quadrant= cityQuadrants[i];
+				
+				if(nodeIsIncludedInQuadrant(fromNode,quadrant)){
+					id_quad= i; //el íd del cuadrante al que pertenece
+					quadNodes.put(fromNode.getId(), id_quad);
+				}
+			}	
 		}
 		
 		return id_quad;

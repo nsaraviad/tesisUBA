@@ -28,7 +28,8 @@ public class PolygonsGenerator {
 	//Miembros
 	private RoadGraph rg;
 	private OsmParserAndCustomizer p;
-	private  HashMap<Long,GraphNode> nodes;
+	private HashMap<Long,GraphNode> nodes;
+	
 	private HashMap<Long,Pair> nodosInterseccionEnCaminos;
 	private Map<Long,LinkedList<AdyacencyInfo>> adyLst;
 	private LinkedList<MapPolygon>[] polygons;

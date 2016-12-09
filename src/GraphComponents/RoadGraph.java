@@ -218,15 +218,6 @@ public class RoadGraph {
 						adylst.get(keyActualNode).add(nextNodeAsNeighbor);
 						adylst.get(nextNode.getId()).add(actualNodeAsNeighbor);
 					}
-											
-					/*
-					//Agrego un eje
-					DirectedEdge tempEdge = new DirectedEdge(firstNode, nextNode,
-							len,way.getOneway(),way.getType(),
-							way.getName(),way.getId());
-					
-					edges.add(tempEdge);
-					*/
 					
 					nodes.putIfAbsent(keyActualNode, firstNode);
 					
