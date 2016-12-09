@@ -58,16 +58,16 @@ public class Viewer
 		
 		// Agregamos varios marcadores
 		for(int l=0;l<lista.size();l++){
-			//for(Coordinate c: lista.get(l))
-				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
+			for(Coordinate c: lista.get(l))
+				mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
 				
-				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
-				mapViewer.addMapPolygon(new_mpol);
+				//MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
+				//mapViewer.addMapPolygon(new_mpol);
 			
 		}
 			
 		// Centramos el mapa sobre los marcadores
-		//mapViewer.setDisplayToFitMapMarkers();
+		mapViewer.setDisplayToFitMapMarkers();
 		mapViewer.setDisplayToFitMapPolygons();
 		mapViewer.setZoom(13);
 	}

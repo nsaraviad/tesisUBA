@@ -8,6 +8,7 @@ import org.openstreetmap.gui.jmapviewer.Coordinate;
 
 import Parsing.OsmParserAndCustomizer;
 import Visualizer.CoordinatesConversor;
+import Visualizer.Viewer;
 import GraphComponents.Pair;
 
 public class MapQuadrantsGenerator {
@@ -51,6 +52,37 @@ public class MapQuadrantsGenerator {
 		cellsWidthCount= (int) Math.rint(cityWidth / factorWidth);
 		cellsHeightCount= (int) Math.rint(cityHeight / factorHeight);
 		
+		//earth radius
+		int R= 6378137;
+		
+		//Offsets
+		double offLat= cityHeight*1000/cellsHeightCount;
+		double offlong= cityWidth*1000/cellsWidthCount;
+		
+		//to radians
+		double dLat= offLat/R;
+		double dLong= offlong/(R*Math.cos(Math.PI*min_latit/180));
+		
+		//new postions
+		double newLat= min_latit + dLat*180/Math.PI;
+		double newlong= min_longit + dLong*180/Math.PI;
+		
+		//Prueba visualización 
+		LinkedList<LinkedList<Coordinate>> lista= new LinkedList<LinkedList<Coordinate>>();
+		
+		LinkedList<Coordinate> l= new LinkedList<Coordinate>();
+		
+		l.add(new Coordinate(min_latit,min_longit));
+		l.add(new Coordinate(min_latit,max_longit));
+		l.add(new Coordinate(max_latit,min_longit));
+		l.add(new Coordinate(max_latit,max_longit));
+		l.add(new Coordinate(min_latit,newlong));
+		l.add(new Coordinate(newLat,min_longit));
+		
+		lista.add(l);
+		
+		Viewer v= new Viewer(lista);
+		v.mostrar();
 		
 		//create map grid
 		

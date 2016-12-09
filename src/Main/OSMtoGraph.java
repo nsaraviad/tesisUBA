@@ -62,19 +62,19 @@ public class OSMtoGraph extends JFrame {
                             p.ParseOSM(pathArchivo,nombre);
 							
 							//Polygons generator algorithm
-							PolygonsGenerator gen= new PolygonsGenerator(p);
-							gen.generatePolygons();
+							//PolygonsGenerator gen= new PolygonsGenerator(p);
+							//gen.generatePolygons();
 							
-							SystemSolver solv= new SystemSolver();
- 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
+							//SystemSolver solv= new SystemSolver();
+ 							//solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
 							
 							//Preparar lista de poligonos en solucion
-							LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
-							extractPolygonsInSolutionToList(gen, solv,polygonsInSolution);
+							//LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
+							//extractPolygonsInSolutionToList(gen, solv,polygonsInSolution);
 							
 							//Visualize solution
-							PolygonsOperator polOp= new PolygonsOperator();
-							polOp.operateWithPolygons(p, polygonsInSolution);
+							//PolygonsOperator polOp= new PolygonsOperator();
+							//polOp.operateWithPolygons(p, polygonsInSolution);
 						    
                 	    } catch (IOException | XmlPullParserException e) {
 							e.printStackTrace();
