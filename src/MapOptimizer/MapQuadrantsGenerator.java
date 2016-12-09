@@ -33,8 +33,8 @@ public class MapQuadrantsGenerator {
 		double factorWidth, factorHeight;
 		double cityWidth, cityHeight;
 		int cellsWidthCount,cellsHeightCount;
-		LinkedList quadrantsPoints= new LinkedList<LinkedList<Pair>>();
-		
+		LinkedList<LinkedList<Pair>> quadrantsPoints= new LinkedList<LinkedList<Pair>>();
+		double[] xPoints,yPoints;
 	
 		//Initialize
 		maxLat_temp= max_latit;
@@ -70,50 +70,59 @@ public class MapQuadrantsGenerator {
 		//double newlong= min_longit + dLong*180/Math.PI;
 		
 		//create map grid
-		for(int i=1;i <= cellsHeightCount;i++){
-			for(int j=1;j <= cellsWidthCount;j++){
+		for(int i=0;i < cellsHeightCount;i++){
+			for(int j=0;j < cellsWidthCount;j++){
 				//Armado del Cuadrante actual
 				LinkedList quad_temp= new LinkedList<Pair>();
 				quad_temp.add(new Pair(maxLat_temp,minLong_temp));
-				quad_temp.add(new Pair(maxLat_temp,minLong_temp + j*(dLong*180/Math.PI)));
-				quad_temp.add(new Pair(maxLat_temp - i*(dLat*180/Math.PI), minLong_temp + j*(dLong*180/Math.PI)));
-				quad_temp.add(new Pair(maxLat_temp - i*(dLat*180/Math.PI),minLong_temp));
+				quad_temp.add(new Pair(maxLat_temp,minLong_temp + (dLong*180/Math.PI)));
+				quad_temp.add(new Pair(maxLat_temp - (dLat*180/Math.PI), minLong_temp + (dLong*180/Math.PI)));
+				quad_temp.add(new Pair(maxLat_temp - (dLat*180/Math.PI),minLong_temp));
 				
 				//se agrega el quad al resultado
 				quadrantsPoints.add(quad_temp);
 				
 				//muevo a lo ancho
-				minLong_temp= minLong_temp + j*(dLong*180/Math.PI);
+				minLong_temp= minLong_temp + (dLong*180/Math.PI);
 			}
 			
 			//muevo a lo alto
-			maxLat_temp= maxLat_temp - i*(dLat*180/Math.PI);
+			maxLat_temp= maxLat_temp - (dLat*180/Math.PI);
 			//vuelvo a posicionarme al comienzo de las cols
 			minLong_temp= min_longit;
 		}
 		
 		
-		/*
+		xPoints= new double[quadrantsPoints.size()];
+		yPoints= new double[quadrantsPoints.size()];
+		
+		//Conversión y calculo area de cada cuadrante
+		calculateQuadrantsAreas(quadrantsPoints, xPoints, yPoints);
+		
+		setResultsInOsmParser();
+		
+		
+		
+		
+		
+/*		
 		//Prueba visualización 
 		LinkedList<LinkedList<Coordinate>> lista= new LinkedList<LinkedList<Coordinate>>();
 		
 		LinkedList<Coordinate> l= new LinkedList<Coordinate>();
-		
-		l.add(new Coordinate(maxLat_temp,minLong_temp));
-		l.add(new Coordinate(maxLat_temp,minLong_temp + 2*dLong*180/Math.PI));
-		l.add(new Coordinate(maxLat_temp - dLat*180/Math.PI, minLong_temp + 2*dLong*180/Math.PI));
-		l.add(new Coordinate(maxLat_temp - dLat*180/Math.PI, minLong_temp));
-		//l.add(new Coordinate(min_latit,newlong));
-		//l.add(new Coordinate(newLat,min_longit));
+		LinkedList<Pair> temp_quad= (LinkedList) quadrantsPoints.get(1);
+			
+		l.add(new Coordinate((double) temp_quad.get(0).getFirst(),(double) temp_quad.get(0).getSecond()));
+		l.add(new Coordinate((double) temp_quad.get(1).getFirst(),(double) temp_quad.get(1).getSecond()));
+		l.add(new Coordinate((double) temp_quad.get(2).getFirst(),(double) temp_quad.get(2).getSecond()));
+		l.add(new Coordinate((double) temp_quad.get(3).getFirst(),(double) temp_quad.get(3).getSecond()));
+				
 		
 		lista.add(l);
 		
 		Viewer v= new Viewer(lista);
 		v.mostrar();
-		*/
-		
-		
-		
+*/	
 		
 }
 	
@@ -128,10 +137,6 @@ public class MapQuadrantsGenerator {
 		return pars.getRoadGraph().getDistance(min_latit,min_longit,min_latit,max_longit);
 	}
 
-	
-	
-	
-	
 	
 	/*
 	public void generateQuadrants() {
@@ -166,6 +171,8 @@ public class MapQuadrantsGenerator {
 
 private void setResultsInOsmParser() {
 		//Guarda los resultados en el parser
+		pars.cityQuadrants= new Area[cityQuadrants.length];
+		
 		for(int q=0;q < cityQuadrants.length; q++)
 			pars.cityQuadrants[q]= cityQuadrants[q];
 	}
@@ -174,6 +181,10 @@ private void calculateQuadrantsAreas(LinkedList quadrantsPoints,double[] xPoints
 	LinkedList<Pair> t_quad;
 	double latit;
 	double longit;
+	
+	//quadrants count
+	cityQuadrants = new Area[quadrantsPoints.size()];
+	
 	
 	for(int j=0;j<quadrantsPoints.size();j++){
 			t_quad = (LinkedList<Pair>) quadrantsPoints.get(j);

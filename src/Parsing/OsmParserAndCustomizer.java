@@ -37,7 +37,7 @@ import Polygons.PolygonsOperator;
 public class OsmParserAndCustomizer {
 	private LinkedList<GraphNode> nodes= new LinkedList<GraphNode>();
 	private LinkedList<DirectedEdge> edges= new LinkedList<DirectedEdge>();
-	public Area[] cityQuadrants= new Area[4];
+	public Area[] cityQuadrants;
 	private RoadGraph g = new RoadGraph();
 	private Area boundaryArea;
 	private double max_latit;
