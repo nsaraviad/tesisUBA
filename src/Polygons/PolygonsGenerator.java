@@ -42,7 +42,7 @@ public class PolygonsGenerator {
 		this.p= g;
 		this.nodes= rg.getNodes();
 		this.adyLst= rg.getAdyLst();
-		this.polygons= new LinkedList[4];
+		this.polygons= new LinkedList[g.cityQuadrants.length];
 		this.nodosInterseccionEnCaminos= new HashMap<Long,Pair>();
 		this.hashPolygons= new HashMap<Integer,MapPolygon>();
 	}

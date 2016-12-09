@@ -101,29 +101,6 @@ public class MapQuadrantsGenerator {
 		
 		setResultsInOsmParser();
 		
-		
-		
-		
-		
-/*		
-		//Prueba visualización 
-		LinkedList<LinkedList<Coordinate>> lista= new LinkedList<LinkedList<Coordinate>>();
-		
-		LinkedList<Coordinate> l= new LinkedList<Coordinate>();
-		LinkedList<Pair> temp_quad= (LinkedList) quadrantsPoints.get(1);
-			
-		l.add(new Coordinate((double) temp_quad.get(0).getFirst(),(double) temp_quad.get(0).getSecond()));
-		l.add(new Coordinate((double) temp_quad.get(1).getFirst(),(double) temp_quad.get(1).getSecond()));
-		l.add(new Coordinate((double) temp_quad.get(2).getFirst(),(double) temp_quad.get(2).getSecond()));
-		l.add(new Coordinate((double) temp_quad.get(3).getFirst(),(double) temp_quad.get(3).getSecond()));
-				
-		
-		lista.add(l);
-		
-		Viewer v= new Viewer(lista);
-		v.mostrar();
-*/	
-		
 }
 	
 
@@ -198,9 +175,6 @@ private void calculateQuadrantsAreas(LinkedList quadrantsPoints,double[] xPoints
 				yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
 			}
 		
-			//Viewer v= new Viewer(lista);
-			//v.mostrar();
-			
 			//ARMADO DEL PERÍMETRO DEL CUADRANTE 
 			Path2D path= new Path2D.Double();
 				
