@@ -33,6 +33,8 @@ public class MapQuadrantsGenerator {
 		double factorWidth, factorHeight;
 		double cityWidth, cityHeight;
 		int cellsWidthCount,cellsHeightCount;
+		LinkedList quadrantsPoints= new LinkedList<LinkedList<Pair>>();
+		
 	
 		//Initialize
 		maxLat_temp= max_latit;
@@ -64,27 +66,52 @@ public class MapQuadrantsGenerator {
 		double dLong= offlong/(R*Math.cos(Math.PI*min_latit/180));
 		
 		//new postions
-		double newLat= min_latit + dLat*180/Math.PI;
-		double newlong= min_longit + dLong*180/Math.PI;
+		//double newLat= max_latit - dLat*180/Math.PI;
+		//double newlong= min_longit + dLong*180/Math.PI;
 		
+		//create map grid
+		for(int i=1;i <= cellsHeightCount;i++){
+			for(int j=1;j <= cellsWidthCount;j++){
+				//Armado del Cuadrante actual
+				LinkedList quad_temp= new LinkedList<Pair>();
+				quad_temp.add(new Pair(maxLat_temp,minLong_temp));
+				quad_temp.add(new Pair(maxLat_temp,minLong_temp + j*(dLong*180/Math.PI)));
+				quad_temp.add(new Pair(maxLat_temp - i*(dLat*180/Math.PI), minLong_temp + j*(dLong*180/Math.PI)));
+				quad_temp.add(new Pair(maxLat_temp - i*(dLat*180/Math.PI),minLong_temp));
+				
+				//se agrega el quad al resultado
+				quadrantsPoints.add(quad_temp);
+				
+				//muevo a lo ancho
+				minLong_temp= minLong_temp + j*(dLong*180/Math.PI);
+			}
+			
+			//muevo a lo alto
+			maxLat_temp= maxLat_temp - i*(dLat*180/Math.PI);
+			//vuelvo a posicionarme al comienzo de las cols
+			minLong_temp= min_longit;
+		}
+		
+		
+		/*
 		//Prueba visualización 
 		LinkedList<LinkedList<Coordinate>> lista= new LinkedList<LinkedList<Coordinate>>();
 		
 		LinkedList<Coordinate> l= new LinkedList<Coordinate>();
 		
-		l.add(new Coordinate(min_latit,min_longit));
-		l.add(new Coordinate(min_latit,max_longit));
-		l.add(new Coordinate(max_latit,min_longit));
-		l.add(new Coordinate(max_latit,max_longit));
-		l.add(new Coordinate(min_latit,newlong));
-		l.add(new Coordinate(newLat,min_longit));
+		l.add(new Coordinate(maxLat_temp,minLong_temp));
+		l.add(new Coordinate(maxLat_temp,minLong_temp + 2*dLong*180/Math.PI));
+		l.add(new Coordinate(maxLat_temp - dLat*180/Math.PI, minLong_temp + 2*dLong*180/Math.PI));
+		l.add(new Coordinate(maxLat_temp - dLat*180/Math.PI, minLong_temp));
+		//l.add(new Coordinate(min_latit,newlong));
+		//l.add(new Coordinate(newLat,min_longit));
 		
 		lista.add(l);
 		
 		Viewer v= new Viewer(lista);
 		v.mostrar();
+		*/
 		
-		//create map grid
 		
 		
 		
