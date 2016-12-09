@@ -65,9 +65,6 @@ public class MapQuadrantsGenerator {
 		double dLat= offLat/R;
 		double dLong= offlong/(R*Math.cos(Math.PI*min_latit/180));
 		
-		//new postions
-		//double newLat= max_latit - dLat*180/Math.PI;
-		//double newlong= min_longit + dLong*180/Math.PI;
 		
 		//create map grid
 		for(int i=0;i < cellsHeightCount;i++){
