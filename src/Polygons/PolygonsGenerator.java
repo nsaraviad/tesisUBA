@@ -380,12 +380,18 @@ public class PolygonsGenerator {
 		//y ademas no tiene que estar en la misma calle
 		
 		return  nodosDistintos(entry1, entry2) &&
+				sameQuadrantNodes(entry1,entry2) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
 	}
 
 	
+	private boolean sameQuadrantNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
+		
+		return getPolygonQuad(entry1) == getPolygonQuad(entry2);
+	}
+
 	private boolean filtroGradoNodos(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		return deGrado234(entry1.getKey()) && deGrado234(entry2.getKey()); 
 	}
