@@ -379,14 +379,32 @@ public class PolygonsGenerator {
 		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 		//y ademas no tiene que estar en la misma calle
 		
-		return  nodosDistintos(entry1, entry2) &&
-				sameQuadrantNodes(entry1,entry2) &&
+		return  nodosDistintos(entry1, entry2) && 
+				//sameQuadrantNodes(entry1,entry2) &&
+				distanceBetweenNodesLessOrEqualHalfKm(entry1,entry2) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
 	}
 
 	
+	private boolean distanceBetweenNodesLessOrEqualHalfKm(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
+		
+		GraphNode node1, node2;
+		double distanceBetweenNodes;
+		double lat1,lat2,long1,long2;
+		
+		node1= rg.getNodes().get(entry1.getKey());
+		node2= rg.getNodes().get(entry2.getKey());
+		
+		lat1= node1.getLat();
+		lat2= node2.getLat();
+		long1= node1.getLon();
+		long2= node2.getLon();
+		
+		return rg.getDistance(lat1, long1, lat2, long2) <= 0.5;
+	}
+
 	private boolean sameQuadrantNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		
 		return getPolygonQuad(entry1) == getPolygonQuad(entry2);
