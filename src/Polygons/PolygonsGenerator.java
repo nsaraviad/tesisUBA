@@ -402,7 +402,7 @@ public class PolygonsGenerator {
 		long1= node1.getLon();
 		long2= node2.getLon();
 		
-		return  rg.getDistance(lat1, long1, lat2, long2) <= 1 && rg.getDistance(lat1, long1, lat2, long2) > 0.5 ;
+		return  rg.getDistance(lat1, long1, lat2, long2) <= 1 && rg.getDistance(lat1, long1, lat2, long2) > 0.4 ;
 	}
 
 	private boolean sameQuadrantNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {

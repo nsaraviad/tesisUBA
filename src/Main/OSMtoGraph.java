@@ -7,6 +7,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,6 +69,8 @@ public class OSMtoGraph extends JFrame {
 							SystemSolver solv= new SystemSolver();
  							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
 							
+ 							System.out.println("Problem solved at"+ LocalDateTime.now() );
+ 							
 							//Preparar lista de poligonos en solucion
 							LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
 							extractPolygonsInSolutionToList(gen, solv,polygonsInSolution);
