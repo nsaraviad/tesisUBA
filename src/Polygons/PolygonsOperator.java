@@ -193,10 +193,10 @@ public class PolygonsOperator {
 			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);
 			addMapPolygonToViewer(poly,p, mapPols);
-			showPolygonsInMap(mapPols);
+			//showPolygonsInMap(mapPols);
 		}
 		
-		//showPolygonsInMap(mapPols);
+		showPolygonsInMap(mapPols);
 	}
 
 	private void addMapPolygonToViewer(LinkedList<Long> poly,OsmParserAndCustomizer p,
