@@ -52,12 +52,10 @@ public class SystemSolver {
 		
 		//Se crean las variables del modelo (total de polígonos)
 		for(int i=0;i<totalPolygonsCount;i++)
-			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_INTEGER);
+			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
 			
-		
 		//Restricciones
 		PolygonsOperator pol_op= new PolygonsOperator();
-		
 		
 	    //para todo eje
 	    for(int e=0;e < p.getEdges().size();e++){
@@ -67,7 +65,7 @@ public class SystemSolver {
 	    	edgequad= temp_edge.getPertQuad();
 	    	covered=0; 
 	    	coveredByPol.clear();
-	    	Arrays.fill(vals, 0);
+	    	//Arrays.fill(vals, 0);
 	    	
 	    	quadPolygons= polygons[edgequad];
 	    		
@@ -87,18 +85,41 @@ public class SystemSolver {
 					if(edgeIsCovered)
 						coveredByPol.add(id_temp_polygon);
 	    	}
-			//}
-	    	
+			
 	    	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
 	    	if(covered > 0){
 	     	
 	     		//se setean en 1 los coeficientes de los polígonos en la sol. encontrada
-	    		setValsForPolygonsInSolution(vals, coveredByPol);
-
-	     		//Add linear constraint
+	    		//setValsForPolygonsInSolution(vals, coveredByPol);
+	    		
+	    		//Array con poligonos que cubren al eje actual
+	    		Variable[] inSol= new Variable[coveredByPol.size()];
+	    		double[] valsOnTrue= new double[coveredByPol.size()];
+	    		
+	    		Arrays.fill(valsOnTrue, 1);
+	    		Iterator<Integer> it= coveredByPol.iterator();
+	    		int polygon_id;
+	    		int index= 0;
+	    		
+	    		while(it.hasNext()){
+	    			polygon_id= it.next();
+	    			inSol[index]= vars[polygon_id];
+	    			index++;
+	    		}
+	    		
+	    		Constraint cons = scip.createConsLinear("edgeCovered" + e, inSol, valsOnTrue,1,scip.infinity());
+	    		scip.addCons(cons);
+	     		scip.releaseCons(cons);
+	    		
+	     		inSol= null;
+	     		valsOnTrue= null;
+	     		
+	     		/*
+	    		//Add linear constraint
 	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
 	     		scip.addCons(cons);
 	     		scip.releaseCons(cons);
+	     		*/
 	     	}
 			
 	    }
