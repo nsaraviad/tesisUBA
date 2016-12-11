@@ -32,7 +32,6 @@ public class SystemSolver {
 	    DirectedEdge temp_edge;
 	    LinkedList<Long> temp_polPoints;
 	    double covered;
-	    //LinkedList<Integer> edgequad;
 	    int edgequad;
 	    LinkedList<MapPolygon> quadPolygons;
 	    int id_temp_polygon;
@@ -64,15 +63,12 @@ public class SystemSolver {
 	    for(int e=0;e < p.getEdges().size();e++){
 	    	temp_edge= p.getEdges().get(e);
 	    	
-	    	//cuadrantes en donde se encuentra el eje
+	    	//cuadrante en donde se encuentra el eje
 	    	edgequad= temp_edge.getPertQuad();
 	    	covered=0; 
 	    	coveredByPol.clear();
 	    	Arrays.fill(vals, 0);
 	    	
-	    	//poligonos del/los cuadrante/s del eje
-	    	//for(int q=0;q < edgequad.size();q++ ){
-	    		//quadPolygons= polygons[edgequad.get(q)];
 	    	quadPolygons= polygons[edgequad];
 	    		
 	    	for(int pol=0;pol < quadPolygons.size() ;pol++){
@@ -112,10 +108,8 @@ public class SystemSolver {
 		Solution sol= scip.getBestSol();
 	
 	   	for(int i=0;i<totalPolygonsCount;i++)
-	   		if(scip.getSolVal(sol,vars[i]) > 0){
+	   		if(scip.getSolVal(sol,vars[i]) > 0)
 	   			polygonsInSolution.add(i);
-	   			//System.out.println("solution " + i + " = " + scip.getSolVal(sol, vars[i] ) );
-	   		}
 	}
 
 	private void setValsForPolygonsInSolution(double[] vals,

@@ -381,14 +381,14 @@ public class PolygonsGenerator {
 		
 		return  nodosDistintos(entry1, entry2) && 
 				//sameQuadrantNodes(entry1,entry2) &&
-				distanceBetweenNodesLessOrEqualHalfKm(entry1,entry2) &&
+				distanceBetweenNodesInRange(entry1,entry2) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
 	}
 
 	
-	private boolean distanceBetweenNodesLessOrEqualHalfKm(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
+	private boolean distanceBetweenNodesInRange(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
 		
 		GraphNode node1, node2;
 		double distanceBetweenNodes;
