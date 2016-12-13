@@ -114,7 +114,7 @@ public class PolygonsOperator {
 		longit= temp_node.getLon();
 		
 		//Verifico si me expando "un poco" en cada dirección el punto se encuentra contenido
-		//Para detectar nodos del borde del polígono
+		//Para detectar nodos del borde del polígono (detección de casos bordes)
 		latit_right= latit + move;
 		latit_left= latit - move;
 		longit_up= longit + move;

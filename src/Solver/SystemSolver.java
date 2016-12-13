@@ -88,10 +88,7 @@ public class SystemSolver {
 			
 	    	//Solo se agregan restricciones para los ejes cubiertos por al menos un polígono
 	    	if(covered > 0){
-	     	
-	     		//se setean en 1 los coeficientes de los polígonos en la sol. encontrada
-	    		//setValsForPolygonsInSolution(vals, coveredByPol);
-	    		
+	     		
 	    		//Array con poligonos que cubren al eje actual
 	    		Variable[] inSol= new Variable[coveredByPol.size()];
 	    		double[] valsOnTrue= new double[coveredByPol.size()];
@@ -133,17 +130,6 @@ public class SystemSolver {
 	   			polygonsInSolution.add(i);
 	}
 
-	private void setValsForPolygonsInSolution(double[] vals,
-			HashSet<Integer> coveredByPol) {
-		Iterator it= coveredByPol.iterator();
-		int i=0;
-		
-		//Se pone en 1 aquellos coeficientes de polígonos en donde el eje es cubierto  
-		while(it.hasNext()){
-			vals[(int) it.next()]= 1;
-			i++;
-		}
-	}
 
 	
 	public LinkedList<Integer> getPolygonsInSolution(){
