@@ -63,7 +63,6 @@ public class PolygonsGenerator {
 		boolean esElpol;
 		boolean nodoPart;
 		
-		
 		//Inicializo
 		initializePolygonsArray();
 		
@@ -406,7 +405,6 @@ public class PolygonsGenerator {
 	}
 
 	private boolean sameQuadrantNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
-		
 		return getPolygonQuad(entry1) == getPolygonQuad(entry2);
 	}
 
@@ -416,7 +414,6 @@ public class PolygonsGenerator {
 
 	
 	private boolean deGrado234(Long nodeKey) {
-		
 		return (esDeGrado2Particular(nodeKey) || esDeGrado(nodeKey,3) || esDeGrado(nodeKey,4));
 	}
 
