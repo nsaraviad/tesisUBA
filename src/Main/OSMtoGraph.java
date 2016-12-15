@@ -26,6 +26,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import Parsing.OsmParserAndCustomizer;
 import Polygons.MapPolygon;
 import Polygons.PolygonsGenerator;
+import Polygons.MyPolygonsGenerator;
 import Polygons.PolygonsOperator;
 import Solver.SystemSolver;
 import jscip.*;
@@ -63,7 +64,7 @@ public class OSMtoGraph extends JFrame {
                             p.ParseOSM(pathArchivo,nombre);
 							
 							//Polygons generator algorithm
-							PolygonsGenerator gen= new PolygonsGenerator(p);
+							PolygonsGenerator gen= new MyPolygonsGenerator(p);
 							gen.generatePolygons();
 							
 							SystemSolver solv= new SystemSolver();
