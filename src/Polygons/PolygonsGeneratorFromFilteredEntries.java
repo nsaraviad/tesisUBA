@@ -91,17 +91,18 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 																					it_node_2.hasNext();){
 				Entry<Long, GraphNode> entry2= it_node_2.next();
 				
-				//RESETEO VARIABLES
-				cantIntersecciones= 0;
-				clearLists(pathsNode1, pathsNode2);
-				res.clear();
-				clearLists(visitedNodes1,visitedNodes2);
-				distancesToNode1.clear();
-				distancesToNode2.clear();
-				nodosInterseccionEnCaminos.clear();
-				
-				
+				//si cumplen la condiciones de selección
 				if(theyAreSelectableNodes(entry1, entry2)){
+					
+					//RESETEO VARIABLES
+					cantIntersecciones= 0;
+					clearLists(pathsNode1, pathsNode2);
+					res.clear();
+					clearLists(visitedNodes1,visitedNodes2);
+					distancesToNode1.clear();
+					distancesToNode2.clear();
+					nodosInterseccionEnCaminos.clear();
+					
 					//Se agrega a los nodos como visitados 
 					addEntryNodeAsVisited(visitedNodes1, entry1);
 					addEntryNodeAsVisited(visitedNodes2, entry2);
