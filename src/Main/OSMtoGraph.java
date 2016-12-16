@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import Parsing.OsmParserAndCustomizer;
 import Polygons.MapPolygon;
 import Polygons.PolygonsGenerator;
-import Polygons.MyPolygonsGenerator;
+import Polygons.PolygonsGeneratorFromFilteredEntries;
 import Polygons.PolygonsOperator;
 import Solver.SystemSolver;
 import jscip.*;
@@ -64,13 +64,13 @@ public class OSMtoGraph extends JFrame {
                             p.ParseOSM(pathArchivo,nombre);
 							
 							//Polygons generator algorithm
-							PolygonsGenerator gen= new MyPolygonsGenerator(p);
+							PolygonsGenerator gen= new PolygonsGeneratorFromFilteredEntries(p);
 							gen.generatePolygons();
 							
 							SystemSolver solv= new SystemSolver();
  							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
 							
- 							System.out.println("Problem solved at"+ LocalDateTime.now() );
+ 							System.out.println("Problem solved at "+ LocalDateTime.now() );
  							
 							//Preparar lista de poligonos en solucion
 							LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();

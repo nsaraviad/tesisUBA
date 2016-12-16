@@ -23,7 +23,7 @@ import Visualizer.CoordinatesConversor;
 
 
 
-public class MyPolygonsGenerator extends PolygonsGenerator {
+public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 	
 	//Members
 	private RoadGraph rg;
@@ -37,7 +37,7 @@ public class MyPolygonsGenerator extends PolygonsGenerator {
 	private PolygonsOperator polygons_op= new PolygonsOperator();
 	
 	//Constructor
-	public MyPolygonsGenerator(OsmParserAndCustomizer g) {
+	public PolygonsGeneratorFromFilteredEntries(OsmParserAndCustomizer g) {
 		this.rg= g.getRoadGraph();
 		this.p= g;
 		this.nodes= rg.getNodes();
