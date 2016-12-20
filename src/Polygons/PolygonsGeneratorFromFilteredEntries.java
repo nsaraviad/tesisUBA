@@ -91,6 +91,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 																					it_node_2.hasNext();){
 				Entry<Long, GraphNode> entry2= it_node_2.next();
 				
+				
 				//si cumplen la condiciones de selección
 				if(theyAreSelectableNodes(entry1, entry2)){
 					
@@ -380,14 +381,15 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		
 		return  nodosDistintos(entry1, entry2) && 
 				//sameQuadrantNodes(entry1,entry2) &&
-				distanceBetweenNodesInRange(entry1,entry2) &&
+				distanceBetweenNodesInRange(entry1,entry2,0.6,1.2) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
 	}
 
 	
-	private boolean distanceBetweenNodesInRange(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2) {
+	private boolean distanceBetweenNodesInRange(Entry<Long, GraphNode> entry1, Entry<Long, GraphNode> entry2,
+												double minDist, double maxDist) {
 		
 		GraphNode node1, node2;
 		double distanceBetweenNodes;
@@ -401,7 +403,8 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		long1= node1.getLon();
 		long2= node2.getLon();
 		
-		return  rg.getDistance(lat1, long1, lat2, long2) <= 1 && rg.getDistance(lat1, long1, lat2, long2) > 0.5 ;
+		return  rg.getDistance(lat1, long1, lat2, long2) <= maxDist && 
+				rg.getDistance(lat1, long1, lat2, long2) > minDist ;
 	}
 
 	private boolean sameQuadrantNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
