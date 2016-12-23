@@ -42,7 +42,7 @@ public class MapQuadrantsGenerator {
 		maxLong_temp= max_longit;
 		minLong_temp= min_longit;
 		
-		//factors
+		//factors Km
 		factorWidth= 1.5;
 		factorHeight= 1.5;
 	
