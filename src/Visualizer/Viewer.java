@@ -56,22 +56,38 @@ public class Viewer
 		JMapViewer mapViewer = new JMapViewer();
 		_frame.getContentPane().add(mapViewer, BorderLayout.CENTER);
 		
+		
+		Color[] colors= new Color[7];
+		initializeColorsArray(colors);
+		
+		
 		// Agregamos varios marcadores
 		for(int l=0;l<lista.size();l++){
 			//for(Coordinate c: lista.get(l))
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
 				
 				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
+				new_mpol.setColor(colors[(lista.get(l).size() % 7)]);
 				mapViewer.addMapPolygon(new_mpol);
 			
 		}
 			
 		// Centramos el mapa sobre los marcadores
-		mapViewer.setDisplayToFitMapMarkers();
+		//mapViewer.setDisplayToFitMapMarkers();
 		mapViewer.setDisplayToFitMapPolygons();
 		mapViewer.setZoom(13);
 	}
 	
+	private void initializeColorsArray(Color[] colors) {
+		colors[0]= Color.RED;
+		colors[1]= Color.BLUE;
+		colors[2]= Color.CYAN;
+		colors[3]= Color.GREEN;
+		colors[4]= Color.YELLOW;
+		colors[5]= Color.ORANGE;
+		colors[6]= Color.MAGENTA;
+	}
+
 	// Muestra el frame
 	public void mostrar()
 	{
