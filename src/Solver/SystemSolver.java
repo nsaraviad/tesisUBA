@@ -74,7 +74,6 @@ public class SystemSolver {
 	    	edgequad= temp_edge.getPertQuad();
 	    	covered=0; 
 	    	coveredByPol.clear();
-	    	//Arrays.fill(vals, 0);
 	    	
 	    	quadPolygons= polygons[edgequad];
 	    		
@@ -120,7 +119,7 @@ public class SystemSolver {
 	     		inSol= null;
 	     		valsOnTrue= null;
 	     	
-	     		if(optionActivated){
+	     		if(optionActivated && covered > 1){
 		     		//RESTRICCIÓN 2 (LÍMITE EN COBERTURA PARA CADA ARISTA)
 			    	Variable[] y_cons= new Variable[1];
 			    	double[] vals_sol= new double[1];

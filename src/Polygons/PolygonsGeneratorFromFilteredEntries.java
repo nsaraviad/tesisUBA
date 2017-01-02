@@ -432,7 +432,6 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 
 	private boolean ejesEntrantesEnAngulo(Long nodeKey) {
 		// Método encargado de analizar el angulo entre los ejes entrantes al nodo 
-	
 		long ady1,ady2;
 		double m1,m2;
 		LinkedList<AdyacencyInfo> adyacents;
