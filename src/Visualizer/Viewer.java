@@ -67,6 +67,8 @@ public class Viewer
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
 				
 				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
+				
+				//coloreo de polígonos
 				new_mpol.setColor(colors[(lista.get(l).size() % 7)]);
 				mapViewer.addMapPolygon(new_mpol);
 			

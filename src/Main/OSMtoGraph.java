@@ -68,7 +68,7 @@ public class OSMtoGraph extends JFrame {
 							gen.generatePolygons();
 							
 							SystemSolver solv= new SystemSolver();
- 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p);
+ 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,false,4);
 							
  							System.out.println("Problem solved at "+ LocalDateTime.now() );
  							

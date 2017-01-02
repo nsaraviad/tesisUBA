@@ -24,9 +24,12 @@ public class SystemSolver {
 	
 	
 	//Métodos
-	public void solve(LinkedList<MapPolygon>[] polygons,int totalPolygonsCount, OsmParserAndCustomizer p){
+	public void solve(LinkedList<MapPolygon>[] polygons,int totalPolygonsCount, OsmParserAndCustomizer p,
+			boolean optionActivated, int maxOverlapping){
 		//Variables decl
 		Variable[] vars = new Variable[totalPolygonsCount];
+		Variable[] varsEdges= new Variable[p.getEdges().size()];
+		
 		double[] vals= new double[totalPolygonsCount];
 		double edgeInPolygon;
 	    DirectedEdge temp_edge;
@@ -53,7 +56,13 @@ public class SystemSolver {
 		//Se crean las variables del modelo (total de polígonos)
 		for(int i=0;i<totalPolygonsCount;i++)
 			vars[i] = scip.createVar("x_"+i, 0.0, 1.0, 1.0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
-			
+	
+		if(optionActivated){
+			//variable para la cobertura de aristas
+			for(int a=0;a<p.getEdges().size();a++)
+				varsEdges[a]= scip.createVar("y_"+a, 0.0, 1.0, 0.01, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+		}	
+		
 		//Restricciones
 		PolygonsOperator pol_op= new PolygonsOperator();
 		
@@ -103,22 +112,28 @@ public class SystemSolver {
 	    			inSol[index]= vars[polygon_id];
 	    			index++;
 	    		}
-	    		
-	    		Constraint cons = scip.createConsLinear("edgeCovered" + e, inSol, valsOnTrue,1,scip.infinity());
-	    		scip.addCons(cons);
-	     		scip.releaseCons(cons);
+	    		//RESTRICCIÓN 1 (TODAS LAS ARISTAS CUBIERTAS)
+	    		Constraint cons_1 = scip.createConsLinear("edgeCovered" + e, inSol, valsOnTrue,1,scip.infinity());
+	    		scip.addCons(cons_1);
+	     		scip.releaseCons(cons_1);
 	    		
 	     		inSol= null;
 	     		valsOnTrue= null;
-	     		
-	     		/*
-	    		//Add linear constraint
-	     		Constraint cons = scip.createConsLinear("edgeCovered" + e, vars, vals,1,scip.infinity());
-	     		scip.addCons(cons);
-	     		scip.releaseCons(cons);
-	     		*/
+	     	
+	     		if(optionActivated){
+		     		//RESTRICCIÓN 2 (LÍMITE EN COBERTURA PARA CADA ARISTA)
+			    	Variable[] y_cons= new Variable[1];
+			    	double[] vals_sol= new double[1];
+			    	
+			    	y_cons[0]= varsEdges[e];
+			    	vals_sol[0]= maxOverlapping - 1; //k = #máxima de superposiciones permitidas
+			    	
+		     		Constraint cons_2 = scip.createConsLinear("maxCov" + e,y_cons,vals_sol,covered -1,scip.infinity());
+			    	scip.addCons(cons_2);
+			    	scip.releaseCons(cons_2);
+			    }
 	     	}
-			
+	    	
 	    }
 		
 	    scip.solve();
