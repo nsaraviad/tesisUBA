@@ -1,5 +1,8 @@
-/Solver/
-/MapOptimizer/
-/Polygons/
-/Visualizer/
+/GraphComponents/
 /Main/
+/MapOptimizer/
+/Parsing/
+/Polygons/
+/Solver/
+/Visualizer/
+/jscip/

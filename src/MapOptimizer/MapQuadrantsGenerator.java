@@ -43,8 +43,8 @@ public class MapQuadrantsGenerator {
 		minLong_temp= min_longit;
 		
 		//factors Km
-		factorWidth= 1.5;
-		factorHeight= 1.5;
+		factorWidth= 2;
+		factorHeight= 2;
 	
 		//calculate city height and widht
 		cityWidth= getCityWidhtDistance();
