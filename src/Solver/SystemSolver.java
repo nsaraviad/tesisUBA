@@ -21,8 +21,6 @@ public class SystemSolver {
 	//Atributos
 	private LinkedList polygonsInSolution= new LinkedList<Integer>();
 	
-	
-	
 	//Métodos
 	public void solve(LinkedList<MapPolygon>[] polygons,int totalPolygonsCount, OsmParserAndCustomizer p,
 			boolean optionActivated, int maxOverlapping){
@@ -135,7 +133,7 @@ public class SystemSolver {
 	     			//Coeficients
 	     			Arrays.fill(quadcoefs, 1);
 	     			quadcoefs[valsOnTrue.length]= -1;
-	     			
+	     		
 	     			//Add constraint 2
 	     			Constraint cons_2= scip.createConsQuadratic("quadcons", quadvars1, quadvars2, quadcoefs, null, null, -scip.infinity(), 1);
 			    	
@@ -148,22 +146,19 @@ public class SystemSolver {
 			    }
 	     		inSol= null;
 	     		valsOnTrue= null;
+	     		
 	     	}
 	    }
-		
+		//set limits time param
+	    scip.setRealParam("limits/time", 60);
 	    scip.solve();
 		
 		Solution sol= scip.getBestSol();
-	
+		
 	   	for(int i=0;i<totalPolygonsCount;i++)
 	   		if(scip.getSolVal(sol,vars[i]) > 0)
 	   			polygonsInSolution.add(i);
 	}
-
-
-
-
-
 
 	private void createQuadVars2Array(int maxOverlapping, Scip scip,
 			double[] valsOnTrue, Variable[] quadvars2) {
@@ -172,11 +167,6 @@ public class SystemSolver {
 		
 		quadvars2[valsOnTrue.length]= scip.createVar("final", maxOverlapping -1 ,maxOverlapping -1, 0, SCIP_Vartype.SCIP_VARTYPE_INTEGER);
 	}
-
-
-
-
-
 
 	private void createQuadVars1Array(Variable[] varsEdges, int e, Variable[] inSol,
 			Variable[] quadvars1) {
@@ -187,12 +177,7 @@ public class SystemSolver {
 		quadvars1[inSol.length]= varsEdges[e];
 	}
 
-
-	
-	
-
-
-	public LinkedList<Integer> getPolygonsInSolution(){
+    public LinkedList<Integer> getPolygonsInSolution(){
 		return polygonsInSolution;
 	}
 		
