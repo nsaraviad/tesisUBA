@@ -21,6 +21,6 @@
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/libs/jung/wstx-asl-3.2.6.jar"/>
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/libs/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/libs/JMap/JMapViewer.jar"/>
-	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/JSCIP/JSOpt/lib/scip.jar"/>
+	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/JSCIP/JScipOpt/lib/scip.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

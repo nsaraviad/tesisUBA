@@ -11,7 +11,7 @@ public class Scip
       assert(retcode == SCIP_Retcode.SCIP_OKAY);
    }
 
-   /** default constructor *
+   /** default constructor */
    public Scip()
    {
       _scipptr = null;
@@ -53,7 +53,7 @@ public class Scip
    {
       CHECK_RETCODE( SCIPJNI.SCIPreadProb(_scipptr, filename, null) );
    }
-   
+
    /** wraps SCIPreadParams() */
    public void readParams(String filename)
    {
@@ -68,37 +68,37 @@ public class Scip
       else
          CHECK_RETCODE( SCIPJNI.SCIPsetBoolParam(_scipptr, name, 0) );
    }
-   
+
    /** wraps SCIPsetIntParam() */
    public void setIntParam(String name, int value)
    {
       CHECK_RETCODE( SCIPJNI.SCIPsetIntParam(_scipptr, name, value) );
    }
-   
+
    /** wraps SCIPsetLongintParam() */
    public void setLongintParam(String name, int value)
    {
       CHECK_RETCODE( SCIPJNI.SCIPsetLongintParam(_scipptr, name, value) );
    }
-   
+
    /** wraps SCIPsetRealParam() */
    public void setRealParam(String name, double value)
    {
       CHECK_RETCODE( SCIPJNI.SCIPsetRealParam(_scipptr, name, value) );
    }
-   
+
    /** wraps SCIPsetCharParam() */
    public void setCharParam(String name, char value)
    {
       CHECK_RETCODE( SCIPJNI.SCIPsetCharParam(_scipptr, name, value) );
    }
-   
+
    /** wraps SCIPsetStringParam() */
    public void setStringParam(String name, String value)
    {
       CHECK_RETCODE( SCIPJNI.SCIPsetStringParam(_scipptr, name, value) );
    }
-   
+
    /** wraps SCIPwriteOrigProblem() */
    public void writeOrigProblem(String filename)
    {

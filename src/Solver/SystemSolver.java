@@ -127,7 +127,6 @@ public class SystemSolver {
 	     			
 	     			//ARMO LOS ARRAYS DE VARS
 	     			createQuadVars1Array(varsEdges, e, inSol, quadvars1);
-	     			
 	     			createQuadVars2Array(maxOverlapping, scip, valsOnTrue,quadvars2);
 			    
 	     			//Coeficients
@@ -149,8 +148,9 @@ public class SystemSolver {
 	     		
 	     	}
 	    }
-		//set limits time param
-	    //scip.setRealParam("limits/time",120);
+
+	    //set limits time param
+	    scip.setRealParam("limits/time",120.0);
 	    scip.solve();
 		
 		Solution sol= scip.getBestSol();
