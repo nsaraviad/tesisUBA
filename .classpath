@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/nicolas/Documentos/tesis/JSCIP/JSCIPOpt/lib"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/nicolas/Documentos/tesis/JSCIP/JScipOpt/lib"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/jgrapht-0.9.2/lib/jgraph-5.13.0.0.jar"/>
@@ -21,6 +21,6 @@
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/libs/jung/wstx-asl-3.2.6.jar"/>
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/libs/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/libs/JMap/JMapViewer.jar"/>
-	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/JSCIP/JSOpt/lib/scip.jar"/>
+	<classpathentry kind="lib" path="/home/nicolas/Documentos/tesis/JSCIP/JScipOpt/lib/scip.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
