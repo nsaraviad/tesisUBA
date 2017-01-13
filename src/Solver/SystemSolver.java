@@ -28,10 +28,8 @@ public class SystemSolver {
 		Variable[] vars = new Variable[totalPolygonsCount];
 		Variable[] varsEdges= new Variable[p.getEdges().size()];
 		
-		double[] vals= new double[totalPolygonsCount];
 		double edgeInPolygon;
 	    DirectedEdge temp_edge;
-	    LinkedList<Long> temp_polPoints;
 	    double covered;
 	    int edgequad;
 	    LinkedList<MapPolygon> quadPolygons;
@@ -40,7 +38,6 @@ public class SystemSolver {
 	    boolean edgeIsCovered;
 	    MapPolygon actual_pol;
 	    Area temp_area;
-	    LinkedList<DirectedEdge> notConv= new LinkedList<DirectedEdge>();
 	    	   
 	    //Model
 		System.loadLibrary("jscip");
@@ -110,46 +107,42 @@ public class SystemSolver {
 	    			index++;
 	    		}
 	    		
+	    		
 	    		//RESTRICCIÓN 1 (TODAS LAS ARISTAS CUBIERTAS)
 	    		Constraint cons_1 = scip.createConsLinear("edgeCovered" + e, inSol, valsOnTrue,1,scip.infinity());
 	    		scip.addCons(cons_1);
 	     		scip.releaseCons(cons_1);
 	    		
 	     		
-	     		if(optionActivated && covered > 1){
+	     		if(optionActivated && covered > 0){
 		     		
 	     			//RESTRICCIÓN 2 (LÍMITE EN COBERTURA PARA CADA ARISTA)
 			    	
-	     			Variable[] quadvars1= new Variable[inSol.length + 1];
-	     			Variable[] quadvars2= new Variable[valsOnTrue.length + 1];
-	     			double[] quadcoefs= new double[valsOnTrue.length + 1];
-	     			
+	     			Variable[] multipleVars= new Variable[valsOnTrue.length + 1];
+	     			double[] coefs= new double[valsOnTrue.length + 1];
 	     			
 	     			//ARMO LOS ARRAYS DE VARS
-	     			createQuadVars1Array(varsEdges, e, inSol, quadvars1);
-	     			createQuadVars2Array(maxOverlapping, scip, valsOnTrue,quadvars2);
-			    
-	     			//Coeficients
-	     			Arrays.fill(quadcoefs, 1);
-	     			quadcoefs[valsOnTrue.length]= -1;
+	     			createMultipleVariablesArray(varsEdges, e, inSol, multipleVars);
+	     			
+	     			//Coeficients filling
+	     			fillingCoeficientsArray(maxOverlapping, valsOnTrue, coefs);
 	     		
 	     			//Add constraint 2
-	     			Constraint cons_2= scip.createConsQuadratic("quadcons", quadvars1, quadvars2, quadcoefs, null, null, -scip.infinity(), 1);
-			    	
-			    	scip.addCons(cons_2);
+	     			Constraint cons_2 = scip.createConsLinear("constraint_2" + e, multipleVars, coefs,-scip.infinity(),1);
+	     			scip.addCons(cons_2);
 			    	scip.releaseCons(cons_2);
 			    	
-			    	quadvars1= null;
-			    	quadvars2= null;
-			    	quadcoefs= null;
+			    	//Free memory
+			    	multipleVars= null;
+			    	coefs= null;
+			    	inSol=null;
+			    	valsOnTrue=null;
 			    }
-	     		inSol= null;
-	     		valsOnTrue= null;
-	     		
+	     	
 	     	}
 	    }
 
-	    //set limits time param
+	    //set limits time param (in seconds)
 	    scip.setRealParam("limits/time",120.0);
 	    scip.solve();
 		
@@ -160,21 +153,32 @@ public class SystemSolver {
 	   			polygonsInSolution.add(i);
 	}
 
+	private void fillingCoeficientsArray(int maxOverlapping,
+			double[] valsOnTrue, double[] coefs) {
+		Arrays.fill(coefs, 1);
+		coefs[valsOnTrue.length]= 1 - maxOverlapping;
+	}
+
 	private void createQuadVars2Array(int maxOverlapping, Scip scip,
 			double[] valsOnTrue, Variable[] quadvars2) {
+		
 		for(int j=0;j<valsOnTrue.length;j++)
-			quadvars2[j]= scip.createVar("const"+j, 1, 1, 0, SCIP_Vartype.SCIP_VARTYPE_INTEGER);
+			quadvars2[j]= scip.createVar("const"+j, 1, 1, 0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
+		
 		
 		quadvars2[valsOnTrue.length]= scip.createVar("final", maxOverlapping -1 ,maxOverlapping -1, 0, SCIP_Vartype.SCIP_VARTYPE_INTEGER);
 	}
 
-	private void createQuadVars1Array(Variable[] varsEdges, int e, Variable[] inSol,
+	private void createMultipleVariablesArray(Variable[] varsEdges, int e, Variable[] inSol,
 			Variable[] quadvars1) {
+		
+		//copia del array inSol 
 		for(int j=0; j < inSol.length;j++)
 			quadvars1[j]= inSol[j];
 		
 		//en la última posición guardo la variable yi
 		quadvars1[inSol.length]= varsEdges[e];
+		
 	}
 
     public LinkedList<Integer> getPolygonsInSolution(){
