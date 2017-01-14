@@ -121,14 +121,14 @@ public class PolygonsOperator {
 		longit_down= longit - move;
 		
 		//Punto real
-		latit2D= CoordinatesConversor.getTileNumberLat(latit);
-		longit2D= CoordinatesConversor.getTileNumberLong(longit);
+		latit2D= CoordinatesConversor.getConvertedNumberLat(latit);
+		longit2D= CoordinatesConversor.getConvertedNumberLong(longit);
 		
 		//Direcciones desplazadas
-		latit_right_2D= CoordinatesConversor.getTileNumberLat(latit_right);
-		latit_left_2D= CoordinatesConversor.getTileNumberLat(latit_left);
-		longit_up_2D= CoordinatesConversor.getTileNumberLong(longit_up);
-		longit_down_2D= CoordinatesConversor.getTileNumberLong(longit_down);
+		latit_right_2D= CoordinatesConversor.getConvertedNumberLat(latit_right);
+		latit_left_2D= CoordinatesConversor.getConvertedNumberLat(latit_left);
+		longit_up_2D= CoordinatesConversor.getConvertedNumberLong(longit_up);
+		longit_down_2D= CoordinatesConversor.getConvertedNumberLong(longit_down);
 		
 		
 		//Analizo las cuatro direcciones
@@ -162,8 +162,8 @@ public class PolygonsOperator {
 			temp_node= graph.getNodes().get(poly.get(i));
 			latit= temp_node.getLat();
 			longit= temp_node.getLon();
-			xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
-			yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
+			xPoints[i]= CoordinatesConversor.getConvertedNumberLat(latit);
+			yPoints[i]= CoordinatesConversor.getConvertedNumberLong(longit);
 		}
 		
 		//ARMADO DEL PERÍMETRO DEL POLÍGONO
@@ -175,9 +175,7 @@ public class PolygonsOperator {
 			path.lineTo(xPoints[i], yPoints[i]);
 		
 		path.closePath();
-		
 		Area polygon_area= new Area(path);
-		
 		
 		return polygon_area;
 	}
@@ -189,6 +187,7 @@ public class PolygonsOperator {
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
 		for(int i=0;i<polygons.size();i++){	
+		//for(int i=0;i<3;i++){
 			//i-esimo polígono
 			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);

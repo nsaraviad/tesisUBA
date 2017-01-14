@@ -159,16 +159,7 @@ public class SystemSolver {
 		coefs[valsOnTrue.length]= 1 - maxOverlapping;
 	}
 
-	private void createQuadVars2Array(int maxOverlapping, Scip scip,
-			double[] valsOnTrue, Variable[] quadvars2) {
-		
-		for(int j=0;j<valsOnTrue.length;j++)
-			quadvars2[j]= scip.createVar("const"+j, 1, 1, 0, SCIP_Vartype.SCIP_VARTYPE_BINARY);
-		
-		
-		quadvars2[valsOnTrue.length]= scip.createVar("final", maxOverlapping -1 ,maxOverlapping -1, 0, SCIP_Vartype.SCIP_VARTYPE_INTEGER);
-	}
-
+	
 	private void createMultipleVariablesArray(Variable[] varsEdges, int e, Variable[] inSol,
 			Variable[] quadvars1) {
 		

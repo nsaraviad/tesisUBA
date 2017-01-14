@@ -68,7 +68,7 @@ public class OSMtoGraph extends JFrame {
 							gen.generatePolygons();
 							
 							SystemSolver solv= new SystemSolver();
- 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,4);
+ 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,3);
 							
  							System.out.println("Problem solved at "+ LocalDateTime.now() );
  							
@@ -90,6 +90,7 @@ public class OSMtoGraph extends JFrame {
 
 				int id_Pol;
 				
+				//Iterate over polygons in solution
 				for(int s=0;s < solv.getPolygonsInSolution().size();s++){
 					id_Pol= solv.getPolygonsInSolution().get(s);
 					polygonsInSolution.add(gen.getPolygonWithId(id_Pol));

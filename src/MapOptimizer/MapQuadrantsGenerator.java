@@ -168,8 +168,8 @@ private void calculateQuadrantsAreas(LinkedList quadrantsPoints,double[] xPoints
 				latit=   (double) t_quad.get(i).getFirst();
 				longit= (double) t_quad.get(i).getSecond();
 				lista.add(new Coordinate(latit,longit));
-				xPoints[i]= CoordinatesConversor.getTileNumberLat(latit);
-				yPoints[i]= CoordinatesConversor.getTileNumberLong(longit);
+				xPoints[i]= CoordinatesConversor.getConvertedNumberLat(latit);
+				yPoints[i]= CoordinatesConversor.getConvertedNumberLong(longit);
 			}
 		
 			//ARMADO DEL PERÍMETRO DEL CUADRANTE 

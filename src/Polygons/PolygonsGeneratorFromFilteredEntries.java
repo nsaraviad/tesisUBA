@@ -776,8 +776,8 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		latitude=node.getLat();
 		longitude= node.getLon();
 		
-		latit= CoordinatesConversor.getTileNumberLat(latitude);
-		longit= CoordinatesConversor.getTileNumberLong(longitude);
+		latit= CoordinatesConversor.getConvertedNumberLat(latitude);
+		longit= CoordinatesConversor.getConvertedNumberLong(longitude);
 		
 		return new Pair(latit,longit);
 	}

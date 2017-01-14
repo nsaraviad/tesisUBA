@@ -2,16 +2,11 @@ package Visualizer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
-
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 public class Viewer
