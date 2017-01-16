@@ -124,8 +124,11 @@ public class OSMtoGraph extends JFrame {
 
 			private boolean intersect(MapPolygon pol, MapPolygon temp_pol) {
 				//check intersection between map polygons
-				Area polArea= pol.getPolArea();
-				Area otherArea= temp_pol.getPolArea();
+				Area polArea= new Area(pol.getPolArea());
+				Area otherArea= new Area(temp_pol.getPolArea());
+				
+				//polArea= pol.getPolArea();
+				//otherArea= temp_pol.getPolArea();
 				
 				polArea.intersect(otherArea);
 				
