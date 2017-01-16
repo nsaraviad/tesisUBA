@@ -127,9 +127,6 @@ public class OSMtoGraph extends JFrame {
 				Area polArea= new Area(pol.getPolArea());
 				Area otherArea= new Area(temp_pol.getPolArea());
 				
-				//polArea= pol.getPolArea();
-				//otherArea= temp_pol.getPolArea();
-				
 				polArea.intersect(otherArea);
 				
 				return !polArea.isEmpty();
