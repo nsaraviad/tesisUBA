@@ -3,15 +3,10 @@ import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
-
 import org.openstreetmap.gui.jmapviewer.Coordinate;
-
-import GraphComponents.AdyacencyInfo;
 import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
-import GraphComponents.Pair;
 import GraphComponents.RoadGraph;
 import Parsing.OsmParserAndCustomizer;
 import Visualizer.CoordinatesConversor;
@@ -22,7 +17,6 @@ import Visualizer.Viewer;
 
 public class PolygonsOperator {
 
-	
 	public double checkIfEdgeIsInPolygon(DirectedEdge e, Area polygonArea,OsmParserAndCustomizer p){
 		GraphNode extrNode_1,extrNode_2;
 		double includedInPolygon= 0;
@@ -150,8 +144,8 @@ public class PolygonsOperator {
 	}
 
 	public Area calculatePolygonArea(LinkedList<Long> poly,RoadGraph graph) {
-		int size= poly.size();
 		
+		int size= poly.size();
 		double latit, longit;
 		GraphNode temp_node;
 		double[] xPoints= new double[size];
@@ -169,8 +163,8 @@ public class PolygonsOperator {
 		//ARMADO DEL PERÍMETRO DEL POLÍGONO
 		Path2D path= new Path2D.Double();
 		
-		
 		path.moveTo(xPoints[0], yPoints[0]);
+		
 		for(int i=1;i < size;i++)
 			path.lineTo(xPoints[i], yPoints[i]);
 		
@@ -186,8 +180,8 @@ public class PolygonsOperator {
 		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
-		for(int i=0;i<polygons.size();i++){	
-		//for(int i=0;i<3;i++){
+		//for(int i=0;i<polygons.size();i++){	
+		for(int i=0;i<5;i++){
 			//i-esimo polígono
 			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);

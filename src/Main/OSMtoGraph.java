@@ -86,15 +86,50 @@ public class OSMtoGraph extends JFrame {
                     }
                 }
 
-			private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList polygonsInSolution) {
+			private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList<MapPolygon> polygonsInSolution) {
 
 				int id_Pol;
 				
 				//Iterate over polygons in solution
 				for(int s=0;s < solv.getPolygonsInSolution().size();s++){
 					id_Pol= solv.getPolygonsInSolution().get(s);
-					polygonsInSolution.add(gen.getPolygonWithId(id_Pol));
+					MapPolygon pol= gen.getPolygonWithId(id_Pol);
+					greedyAddingMapPolygon(pol, polygonsInSolution);
+					//polygonsInSolution.add(gen.getPolygonWithId(id_Pol));
 				}
+			}
+			
+			//greedy algorithm (Solo se agregan los poligonos que no se solapan)
+			private void greedyAddingMapPolygon(MapPolygon polygon,LinkedList<MapPolygon> polygonsInSolution) {
+				//chequeo si no se interseca con ningun polígono en el conjunto solución
+				if (!overlapsWithOtherPolsInSolution(polygon,polygonsInSolution))
+					polygonsInSolution.add(polygon);
+			}
+
+			private boolean overlapsWithOtherPolsInSolution(MapPolygon pol,LinkedList<MapPolygon> polygonsInSolution) {
+			
+				boolean overlaps= false;
+				
+				//Iterate over solution
+				int p=0;
+				
+				while(p < polygonsInSolution.size() && !overlaps){
+					MapPolygon temp_pol= polygonsInSolution.get(p);
+					overlaps= intersect(pol, temp_pol);
+					p++;
+				}
+					
+				return overlaps;
+			}
+
+			private boolean intersect(MapPolygon pol, MapPolygon temp_pol) {
+				//check intersection between map polygons
+				Area polArea= pol.getPolArea();
+				Area otherArea= temp_pol.getPolArea();
+				
+				polArea.intersect(otherArea);
+				
+				return !polArea.isEmpty();
 			}
           });  
     }
