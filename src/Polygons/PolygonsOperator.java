@@ -180,8 +180,8 @@ public class PolygonsOperator {
 		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
-		//for(int i=0;i<polygons.size();i++){	
-		for(int i=0;i<5;i++){
+		for(int i=0;i<polygons.size();i++){	
+		//for(int i=0;i<5;i++){
 			//i-esimo polígono
 			poly= polygons.get(i).getPolygonPoints();
 			//calculatePolygonEdgesAndLenght(poly,p);

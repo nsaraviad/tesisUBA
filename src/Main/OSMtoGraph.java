@@ -25,6 +25,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import Parsing.OsmParserAndCustomizer;
 import Polygons.MapPolygon;
+import Polygons.PolygonAreaComparator;
 import Polygons.PolygonsGenerator;
 import Polygons.PolygonsGeneratorFromFilteredEntries;
 import Polygons.PolygonsOperator;
@@ -87,23 +88,71 @@ public class OSMtoGraph extends JFrame {
                 }
 
 			private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList<MapPolygon> polygonsInSolution) {
-
-				int id_Pol;
 				
+				/* Lista intermedia, en la cual los polígonos de la solución se insertan ordenadamente 
+				 * de acuerdo al tamaño de su área(orden ascendente)*/
+				LinkedList<MapPolygon> orderedListByAreaSize= new LinkedList<MapPolygon>();
+				
+				//como paso previo se puede insertar ordenadamente los polígonos comparando tamaños de area (menor a mayor)
+				int id_Pol;
+								
 				//Iterate over polygons in solution
+				orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
+					
+				//Una vez ordenada la lista, aplico el algoritmo greedy
+				greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
+				
+			}
+
+			private void orderListByPolygonAreaSize(PolygonsGenerator gen,
+					SystemSolver solv,
+					LinkedList<MapPolygon> orderedListByAreaSize) {
+				int id_Pol;
 				for(int s=0;s < solv.getPolygonsInSolution().size();s++){
 					id_Pol= solv.getPolygonsInSolution().get(s);
 					MapPolygon pol= gen.getPolygonWithId(id_Pol);
-					greedyAddingMapPolygon(pol, polygonsInSolution);
-					//polygonsInSolution.add(gen.getPolygonWithId(id_Pol));
+				
+					orderedInsertByAreaSize(pol,orderedListByAreaSize);
 				}
 			}
 			
+			private void orderedInsertByAreaSize(MapPolygon pol,LinkedList<MapPolygon> orderedListByAreaSize) {
+				// Inserta ordenadamente de menor a mayor por tamaño de area
+				PolygonAreaComparator comp = new PolygonAreaComparator();
+				
+				if(orderedListByAreaSize.isEmpty()){
+					orderedListByAreaSize.add(pol);
+				}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == -1){
+					//area de pol es menor al área del primero de la lista ordenada
+					//agrego al comienzo
+					orderedListByAreaSize.add(0, pol);
+				}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == 1){
+					//area de pol es mayor al area del ultimo elemento de la lista ordenada
+					//agrego al final
+					orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
+				}else{
+					int i= 0;
+					//mientras al área de pol sea mayor al area del i-esimo poligono de la lista, itero
+					while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == 1){
+						i++;
+					}
+					orderedListByAreaSize.add(i, pol);
+				}
+				
+			}
+
 			//greedy algorithm (Solo se agregan los poligonos que no se solapan)
-			private void greedyAddingMapPolygon(MapPolygon polygon,LinkedList<MapPolygon> polygonsInSolution) {
-				//chequeo si no se interseca con ningun polígono en el conjunto solución
-				if (!overlapsWithOtherPolsInSolution(polygon,polygonsInSolution))
-					polygonsInSolution.add(polygon);
+			private void greedyAddingMapPolygon(LinkedList<MapPolygon> orderedPolygonsList,LinkedList<MapPolygon> polygonsInSolution) {
+				
+				MapPolygon p_polygon;
+				
+				for(int p=0;p < orderedPolygonsList.size();p++){
+					p_polygon= orderedPolygonsList.get(p);
+					
+					//chequeo si no se interseca con ningun polígono en el conjunto solución
+					if (!overlapsWithOtherPolsInSolution(p_polygon,polygonsInSolution))
+						polygonsInSolution.add(p_polygon);
+				}
 			}
 
 			private boolean overlapsWithOtherPolsInSolution(MapPolygon pol,LinkedList<MapPolygon> polygonsInSolution) {
