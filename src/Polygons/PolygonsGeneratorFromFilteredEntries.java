@@ -182,8 +182,11 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 
 	private void createAndAddNewPolygon(LinkedList<Long> newPolygonPoints,int idFromNewPolygon, int polygon_quad_index) {
 		
-		Area newPolArea= polygons_op.calculatePolygonArea(newPolygonPoints, rg);
-		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,newPolygonPoints,newPolArea);
+		Pair p= polygons_op.calculatePolygonAreaAndPoints(newPolygonPoints, rg);
+		
+		Area newPolArea= (Area) p.getFirst();
+		
+		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,(Pair) p.getSecond(),newPolArea);
 		polygons[polygon_quad_index].add(newPolygon);
 		
 		//se agrega al mapa de poligonos general

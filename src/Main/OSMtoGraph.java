@@ -90,7 +90,8 @@ public class OSMtoGraph extends JFrame {
 			private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList<MapPolygon> polygonsInSolution) {
 				
 				/* Lista intermedia, en la cual los polígonos de la solución se insertan ordenadamente 
-				 * de acuerdo al tamaño de su área(orden ascendente)*/
+				   de acuerdo al tamaño de su área(orden ascendente)*/
+				
 				LinkedList<MapPolygon> orderedListByAreaSize= new LinkedList<MapPolygon>();
 				
 				//como paso previo se puede insertar ordenadamente los polígonos comparando tamaños de area (menor a mayor)
@@ -149,7 +150,7 @@ public class OSMtoGraph extends JFrame {
 				for(int p=0;p < orderedPolygonsList.size();p++){
 					p_polygon= orderedPolygonsList.get(p);
 					
-					//chequeo si no se interseca con ningun polígono en el conjunto solución
+					//Si no se interseca con ningún otro polígono en la solución, se agrega.
 					if (!overlapsWithOtherPolsInSolution(p_polygon,polygonsInSolution))
 						polygonsInSolution.add(p_polygon);
 				}

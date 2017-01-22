@@ -86,7 +86,7 @@ public class PolygonsOperator {
 		
 	}
 
-	public Area calculatePolygonArea(LinkedList<Long> poly,RoadGraph graph) {
+	public Pair calculatePolygonAreaAndPoints(LinkedList<Long> poly,RoadGraph graph) {
 		
 		int size= poly.size();
 		double latit, longit;
@@ -104,6 +104,9 @@ public class PolygonsOperator {
 			yPoints[i]= CoordinatesConversor.convertLongitudeToPoint(longit);
 		}
 		
+		//PUNTOS DEL POLÍGONO EN R2
+		Pair polygonPoints= new Pair(xPoints,yPoints);
+		
 		//ARMADO DEL PERÍMETRO DEL POLÍGONO
 		Path2D path= new Path2D.Double();
 		
@@ -115,49 +118,47 @@ public class PolygonsOperator {
 		path.closePath();
 		Area polygon_area= new Area(path);
 		
-		return polygon_area;
+		//retorna el par (area, (xPoints,yPoints))
+		return new Pair(polygon_area,polygonPoints);
 	}
 
 	
 	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<MapPolygon> polygons) {
-		LinkedList<Long> poly= new LinkedList<Long>();
+		
 		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
 		for(int i=0;i<polygons.size();i++){	
 		//for(int i=0;i<5;i++){
+			
 			//i-esimo polígono
-			poly= polygons.get(i).getPolygonPoints();
-			//calculatePolygonEdgesAndLenght(poly,p);
-			addMapPolygonToViewer(poly,p, mapPols);
-			//showPolygonsInMap(mapPols);
+			double[] xpoly= polygons.get(i).getPolygonxPoints();
+			double[] ypoly= polygons.get(i).getPolygonyPoints();
+
+			addMapPolygonToViewer(xpoly,ypoly,p, mapPols);
 		}
 		
 		showPolygonsInMap(mapPols);
 	}
 
-	private void addMapPolygonToViewer(LinkedList<Long> poly,OsmParserAndCustomizer p,
+	private void addMapPolygonToViewer(double[] xpoly,double[] ypoly,OsmParserAndCustomizer p,
 											LinkedList<LinkedList<Coordinate>> listPols) {
 		//Visualización de polígonos usando JMap Viewer
 		LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
 		
 		//Iterate over the polygons collection
-		setCoordinatesToList(poly,p,lista);
+		setCoordinatesToList(xpoly,ypoly,lista);
 		listPols.add(lista);
 	}
 	
-	private void setCoordinatesToList(LinkedList<Long> poly, OsmParserAndCustomizer p,LinkedList<Coordinate> lista) {
+	private void setCoordinatesToList(double[] xpoly, double[] ypoly,LinkedList<Coordinate> lista) {
 		//Método encargado de setear las coordenadas del polygono a la lista  
-		HashMap<Long,GraphNode> nodes;
-		long keyPoint;
 		double latit,longit;
 		
-		nodes= p.getRoadGraph().getNodes();
-		
-		for(int j=0;j<poly.size();j++){
-			keyPoint= poly.get(j);
-			latit= nodes.get(keyPoint).getLat();
-			longit= nodes.get(keyPoint).getLon();
+		//itera sobre los puntos del polígono
+		for(int j=0;j < xpoly.length;j++){
+			latit= CoordinatesConversor.convertPointToLatitud(xpoly[j]);
+			longit= CoordinatesConversor.convertPointToLongitude(ypoly[j]);
 			lista.add(new Coordinate(latit,longit));
 		}
 	}	

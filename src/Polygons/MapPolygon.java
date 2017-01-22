@@ -3,14 +3,18 @@ package Polygons;
 import java.awt.geom.Area;
 import java.util.LinkedList;
 
+import GraphComponents.Pair;
+
 public class MapPolygon {
 	private int id_polygon;
-	private LinkedList<Long> points;
+	private double[] xPoints;
+	private double[] yPoints;
 	private Area polygon_area;
 	
-	public MapPolygon(int id, LinkedList<Long> polygonPoints, Area area){
+	public MapPolygon(int id, Pair polygonPoints, Area area){
 		id_polygon= id;
-		points= polygonPoints;
+		xPoints= (double[]) polygonPoints.getFirst();
+		yPoints= (double[]) polygonPoints.getSecond();
 		polygon_area= area;
 	}
 	
@@ -22,8 +26,12 @@ public class MapPolygon {
 		return id_polygon;
 	}
 	
-	public LinkedList<Long> getPolygonPoints(){
-		return points;
+	public double[] getPolygonxPoints(){
+		return xPoints;
+	}
+	
+	public double[] getPolygonyPoints(){
+		return yPoints;
 	}
 	
 	public Area getPolArea(){
