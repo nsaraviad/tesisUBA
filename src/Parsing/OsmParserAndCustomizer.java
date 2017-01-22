@@ -263,8 +263,14 @@ public class OsmParserAndCustomizer {
 		for(int i=0;i < size; i++){
 			latit= nodesB.get(i).getLat();
 			longit= nodesB.get(i).getLon();
-			conv_latit= CoordinatesConversor.getConvertedNumberLat(latit);
-			conv_longit= CoordinatesConversor.getConvertedNumberLong(longit);
+			
+			//Pair conversionToLatLon= CoordinatesConversor.getConvertedNumberFromLatLong(latit, longit);
+			
+			//conv_latit= (double) conversionToLatLon.getSecond();
+			//conv_longit= (double) conversionToLatLon.getFirst();
+			
+			conv_latit= CoordinatesConversor.convertLatitudeToPoint(latit);
+			conv_longit= CoordinatesConversor.convertLongitudeToPoint(longit);
 			
 			//ACTUALIZO MAX Y MIN x y
 			if(latit < latit_min)

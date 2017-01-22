@@ -181,6 +181,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 	}
 
 	private void createAndAddNewPolygon(LinkedList<Long> newPolygonPoints,int idFromNewPolygon, int polygon_quad_index) {
+		
 		Area newPolArea= polygons_op.calculatePolygonArea(newPolygonPoints, rg);
 		MapPolygon newPolygon= new MapPolygon(idFromNewPolygon,newPolygonPoints,newPolArea);
 		polygons[polygon_quad_index].add(newPolygon);
@@ -196,6 +197,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 	private boolean validIntersections(HashSet<Long> res) {
 		// Se chequea que los nodos en la intersección sean válidos (distintos, que no sean vecinos y que no estén en una msima dirección)
 		//nodosDistintos(entry1, entry2) && esDeGrado4(entry1) && esDeGrado4(entry2) && theyAreNotNeighbors(entry1,entry2) && noDirectPathBetween(entry1,entry2);
+		
 		boolean distincts, neighbors, theyAreNotInSamePath;
 		long intersect_1, intersect_2;
 		
@@ -776,8 +778,12 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		latitude=node.getLat();
 		longitude= node.getLon();
 		
-		latit= CoordinatesConversor.getConvertedNumberLat(latitude);
-		longit= CoordinatesConversor.getConvertedNumberLong(longitude);
+		//Pair conversionToLatLon= CoordinatesConversor.getConvertedNumberFromLatLong(latitude, longitude);
+		
+		latit= CoordinatesConversor.convertLatitudeToPoint(latitude);
+		longit= CoordinatesConversor.convertLongitudeToPoint(longitude);
+		//latit= (double) conversionToLatLon.getSecond();
+		//longit= (double) conversionToLatLon.getFirst();
 		
 		return new Pair(latit,longit);
 	}

@@ -4,9 +4,12 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.LinkedList;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
+
 import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
+import GraphComponents.Pair;
 import GraphComponents.RoadGraph;
 import Parsing.OsmParserAndCustomizer;
 import Visualizer.CoordinatesConversor;
@@ -33,67 +36,8 @@ public class PolygonsOperator {
 		//1 si está incluído, 0 si no
 		return includedInPolygon;
 	}
-	/*
-	public Pair calculatePolygonEdgesAndLenght(LinkedList<Long> polygon, ParseOSM p) {
-		//Cálculo del conjunto de ejes incluídos en el polígono y longitud de recorrido 
-		AdyacencyInfo ady;
-		GraphNode temp_node,ady_node;
-		HashSet polygon_edges= new HashSet();
-		HashSet visitedNodes= new HashSet();
-		double polygonDistance= 0;
-		Pair res;
-		long node_id;
-		boolean test;
-		
-		RoadGraph graph= p.getRoadGraph();
-		
-		//ARMADO DEL AREA DEL POLÍGONO poly y de su perimetro
-		Area polygon_area= calculatePolygonArea(polygon, graph);
-		
-		//Itero sobre los nodos del polígono
-		for(int j=0;j < polygon.size();j++){
-			node_id= polygon.get(j);
-			temp_node= graph.getNodes().get(node_id);
-				
-			//verifica si es un nodo del polígono
-			if(nodeIsContainedInPolygon(temp_node,polygon_area)){
-				//Lo agrego a los nodos ya analizados
-				visitedNodes.add(temp_node);
-				//obtengo adyacentes
-				//LinkedList<AdyacencyInfo> adyacents= entry.getValue();
-				LinkedList<AdyacencyInfo> adyacents= graph.getAdyLst().get(node_id);
-				for(int i=0;i < adyacents.size();i++){
-					ady= adyacents.get(i);
-					//Si el adyacente  es nodo del poligono entonces cuento la distancia (el eje pertenece al poligono)
-					//ya que une dos nodos del mismo.
-					ady_node= graph.getNodes().get(ady.getAdyId());  
-					
-				    if((ady_node != null) &&  nodeIsContainedInPolygon(ady_node,polygon_area) && !visitedNodes.contains(ady_node)){
-				    	//Incremento en la distancia de recorrido del polígono
-				    	polygonDistance= polygonDistance + ady.getLenght();
-				    	//Agregar el eje que los une al conjunto de ejes del polígono
-				    	addEdgeToPolygonEdges(temp_node,ady_node,ady,polygon_edges);
-				    }
-				}
-			}
-			
-		}
-		
-		return new Pair(polygonDistance,polygon_edges);
-	}
-	 */
-	/*public void addEdgeToPolygonEdges(GraphNode temp_node,GraphNode ady_node, AdyacencyInfo ady, HashSet polygon_edges) {
-		//Dado dos nodos pertenecientes al polígono, se crea un eje y se lo agrega al conjunto de 
-		//ejes contenidos en el mismo
-		DirectedEdge newEdge; 
-		
-		newEdge = new DirectedEdge(temp_node, ady_node,
-				ady.getLenght(),ady.getOneWay(), ady.getType(),
-				ady.getName());
-		
-		polygon_edges.add(newEdge);
-	}
-*/
+	
+	
 	public boolean nodeIsContainedInPolygon(GraphNode temp_node,Area polygon_area) {
 		// Se chequea si dada la latitud y longitud del nodo, está contenida en el área del 
 		//polígono
@@ -115,14 +59,14 @@ public class PolygonsOperator {
 		longit_down= longit - move;
 		
 		//Punto real
-		latit2D= CoordinatesConversor.getConvertedNumberLat(latit);
-		longit2D= CoordinatesConversor.getConvertedNumberLong(longit);
+		latit2D= CoordinatesConversor.convertLatitudeToPoint(latit);
+		longit2D= CoordinatesConversor.convertLongitudeToPoint(longit);
 		
 		//Direcciones desplazadas
-		latit_right_2D= CoordinatesConversor.getConvertedNumberLat(latit_right);
-		latit_left_2D= CoordinatesConversor.getConvertedNumberLat(latit_left);
-		longit_up_2D= CoordinatesConversor.getConvertedNumberLong(longit_up);
-		longit_down_2D= CoordinatesConversor.getConvertedNumberLong(longit_down);
+		latit_right_2D= CoordinatesConversor.convertLatitudeToPoint(latit_right);
+		latit_left_2D= CoordinatesConversor.convertLatitudeToPoint(latit_left);
+		longit_up_2D= CoordinatesConversor.convertLongitudeToPoint(longit_up);
+		longit_down_2D= CoordinatesConversor.convertLongitudeToPoint(longit_down);
 		
 		
 		//Analizo las cuatro direcciones
@@ -130,7 +74,6 @@ public class PolygonsOperator {
 		Point2D dir_right_down= new Point2D.Double(latit_right_2D,longit_down_2D);
 		Point2D dir_left_up= new Point2D.Double(latit_left_2D,longit_up_2D);
 		Point2D dir_left_down= new Point2D.Double(latit_left_2D,longit_down_2D);
-		
 		
 		//El punto real
 		Point2D nodePoint= new Point2D.Double(latit2D,longit2D);
@@ -156,8 +99,9 @@ public class PolygonsOperator {
 			temp_node= graph.getNodes().get(poly.get(i));
 			latit= temp_node.getLat();
 			longit= temp_node.getLon();
-			xPoints[i]= CoordinatesConversor.getConvertedNumberLat(latit);
-			yPoints[i]= CoordinatesConversor.getConvertedNumberLong(longit);
+			
+			xPoints[i]= CoordinatesConversor.convertLatitudeToPoint(latit);
+			yPoints[i]= CoordinatesConversor.convertLongitudeToPoint(longit);
 		}
 		
 		//ARMADO DEL PERÍMETRO DEL POLÍGONO
