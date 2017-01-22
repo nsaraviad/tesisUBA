@@ -14,8 +14,6 @@ public class MapPolygon {
 		polygon_area= area;
 	}
 	
-	
-	
 	public void setId(int id){
 		id_polygon= id;
 	}

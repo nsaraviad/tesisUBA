@@ -135,14 +135,14 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 					if((cantIntersecciones == 2) && validIntersections(res)){
 						dimensiones= calculateDistances(res,distancesToNode1,distancesToNode2);
 						
-						LinkedList<Long> nuevoPoligonoPoints= new LinkedList<Long>();
+						LinkedList<Long> newPolygonPoints= new LinkedList<Long>();
 						
 						//ARMADO DEL POLÍGONO
-						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, nuevoPoligonoPoints);
+						poligonAssembling(res, pathsNode1, pathsNode2,dimensiones, entry1, entry2, newPolygonPoints);
 						
 						/*Se agrega el polígono al/los conjuntos de polígonos pertenecientes a cada caudrante
 						analizando sus esquinas*/
-						addNewPolygonToRespectiveQuadrants(nuevoPoligonoPoints,polygons_counter,entry1);
+						addNewPolygonToRespectiveQuadrants(newPolygonPoints,polygons_counter,entry1);
 						polygons_counter++;
 					}
 				}
@@ -381,7 +381,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		
 		return  nodosDistintos(entry1, entry2) && 
 				//sameQuadrantNodes(entry1,entry2) &&
-				distanceBetweenNodesInRange(entry1,entry2,0.6,0.8) &&
+				distanceBetweenNodesInRange(entry1,entry2,0.55,0.8) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);

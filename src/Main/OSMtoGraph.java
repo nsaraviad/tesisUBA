@@ -69,7 +69,7 @@ public class OSMtoGraph extends JFrame {
 							gen.generatePolygons();
 							
 							SystemSolver solv= new SystemSolver();
- 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,3);
+ 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,4);
 							
  							System.out.println("Problem solved at "+ LocalDateTime.now() );
  							
@@ -96,7 +96,7 @@ public class OSMtoGraph extends JFrame {
 				//como paso previo se puede insertar ordenadamente los polígonos comparando tamaños de area (menor a mayor)
 				int id_Pol;
 								
-				//Iterate over polygons in solution
+				//Ordered polygons list by area size
 				orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
 					
 				//Una vez ordenada la lista, aplico el algoritmo greedy
@@ -165,6 +165,7 @@ public class OSMtoGraph extends JFrame {
 				while(p < polygonsInSolution.size() && !overlaps){
 					MapPolygon temp_pol= polygonsInSolution.get(p);
 					overlaps= intersect(pol, temp_pol);
+					
 					p++;
 				}
 					
