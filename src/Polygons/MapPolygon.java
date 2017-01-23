@@ -34,6 +34,14 @@ public class MapPolygon {
 		return yPoints;
 	}
 	
+	public void setxPoints(double[] points){
+		xPoints= points;
+	}
+	
+	public void setyPoints(double[] points){
+		yPoints= points;
+	}
+	
 	public Area getPolArea(){
 		return polygon_area;
 	}

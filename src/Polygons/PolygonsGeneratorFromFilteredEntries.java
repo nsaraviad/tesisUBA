@@ -386,7 +386,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		
 		return  nodosDistintos(entry1, entry2) && 
 				//sameQuadrantNodes(entry1,entry2) &&
-				distanceBetweenNodesInRange(entry1,entry2,0.55,0.8) &&
+				distanceBetweenNodesInRange(entry1,entry2,0.55,0.9) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);

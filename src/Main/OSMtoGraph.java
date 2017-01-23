@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -89,14 +90,12 @@ public class OSMtoGraph extends JFrame {
 
 			private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList<MapPolygon> polygonsInSolution) {
 				
+				int id_Pol;
+				
 				/* Lista intermedia, en la cual los polígonos de la solución se insertan ordenadamente 
 				   de acuerdo al tamaño de su área(orden ascendente)*/
-				
 				LinkedList<MapPolygon> orderedListByAreaSize= new LinkedList<MapPolygon>();
 				
-				//como paso previo se puede insertar ordenadamente los polígonos comparando tamaños de area (menor a mayor)
-				int id_Pol;
-								
 				//Ordered polygons list by area size
 				orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
 					
@@ -150,9 +149,77 @@ public class OSMtoGraph extends JFrame {
 				for(int p=0;p < orderedPolygonsList.size();p++){
 					p_polygon= orderedPolygonsList.get(p);
 					
-					//Si no se interseca con ningún otro polígono en la solución, se agrega.
-					if (!overlapsWithOtherPolsInSolution(p_polygon,polygonsInSolution))
+					/*Se compara el poligono actual contra el resto de la solución. Si se interseca con
+					 * alguno se "recorta" dicha intersección. Finalmente se agrega a la solucion (si no es vacío). 
+					 */
+					
+					compareWithSolutionAndModifyIfNecessary(p_polygon,polygonsInSolution);
+					
+					if(!p_polygon.getPolArea().isEmpty())
 						polygonsInSolution.add(p_polygon);
+					
+					
+					//HASTA EL MOMENTO
+					//if (!overlapsWithOtherPolsInSolution(p_polygon,polygonsInSolution))
+					//	polygonsInSolution.add(p_polygon);
+				}
+			}
+
+			private void compareWithSolutionAndModifyIfNecessary(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
+				
+				for(int p=0;p < polygonsInSolution.size();p++){
+					MapPolygon temp_pol= polygonsInSolution.get(p);
+					checkOverlapsAndCutPolygonIfNecessary(p_polygon,temp_pol);
+				}
+				
+				//chequea que no sea vacía el area resultante
+				if(!p_polygon.getPolArea().isEmpty())
+					modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
+			}
+
+			private void modifyPolygonsPoints(MapPolygon p_polygon) {
+				// Dada el area modificada del polígono, se recorre su "contorno" y se actualizan los puntos 
+				double[] coords= new double[6];
+				LinkedList<Double> l1,l2;
+				l1= new LinkedList<Double>();
+				l2= new LinkedList<Double>();
+				
+				Area polygonArea= p_polygon.getPolArea();
+				//itero sobre el borde del area del polígono
+				for(PathIterator pi= polygonArea.getPathIterator(null);!pi.isDone();pi.next()){
+					if(pi.currentSegment(coords)==PathIterator.SEG_LINETO){
+						l1.add(coords[0]);
+						l2.add(coords[1]);
+					}
+				}
+				
+				//ambas longitudes deben ser iguales
+				assert (l1.size()==l2.size());
+				
+				//se actualizan los puntos del polígono
+				double[] xp= new double[l1.size()];
+				double[] yp= new double[l1.size()];
+				
+				copyListInArray(l1,xp);
+				copyListInArray(l2,yp);
+				
+				//update xpoints & yPoints 
+				p_polygon.setxPoints(xp);
+				p_polygon.setyPoints(yp);
+				
+			}
+
+
+			private void checkOverlapsAndCutPolygonIfNecessary(MapPolygon p_polygon,MapPolygon temp_pol) {
+				//Método encargado de chequear si hay interseccion entre ambos polígonos. En el caso de haber,
+				//se "corta" del polígono el area que se interseca.
+				Area thisPolArea, otherPolArea;
+				
+				if(intersect(p_polygon,temp_pol)){
+					thisPolArea= p_polygon.getPolArea();
+					otherPolArea= temp_pol.getPolArea();
+					
+					thisPolArea.subtract(otherPolArea);
 				}
 			}
 
@@ -166,7 +233,6 @@ public class OSMtoGraph extends JFrame {
 				while(p < polygonsInSolution.size() && !overlaps){
 					MapPolygon temp_pol= polygonsInSolution.get(p);
 					overlaps= intersect(pol, temp_pol);
-					
 					p++;
 				}
 					
@@ -182,6 +248,16 @@ public class OSMtoGraph extends JFrame {
 				
 				return !polArea.isEmpty();
 			}
+			
+			
+			private void copyListInArray(LinkedList<Double> l1, double[] xp) {
+
+				for(int i=0;i < l1.size();i++)
+					xp[i]= l1.get(i);
+				
+			}
+
+			
           });  
     }
 
