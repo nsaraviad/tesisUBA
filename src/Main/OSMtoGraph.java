@@ -167,13 +167,17 @@ public class OSMtoGraph extends JFrame {
 
 			private void compareWithSolutionAndModifyIfNecessary(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
 				
+				Area initPolArea= new Area(p_polygon.getPolArea());
+				
 				for(int p=0;p < polygonsInSolution.size();p++){
 					MapPolygon temp_pol= polygonsInSolution.get(p);
 					checkOverlapsAndCutPolygonIfNecessary(p_polygon,temp_pol);
 				}
 				
-				//chequea que no sea vacía el area resultante
-				if(!p_polygon.getPolArea().isEmpty())
+				boolean polAreaIsModified= !(p_polygon.getPolArea().equals(initPolArea));
+
+				//chequea que no sea vacía el area resultante. Caso en que el área del polígono sufrió cambios.
+				if(!p_polygon.getPolArea().isEmpty() && polAreaIsModified)
 					modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
 			}
 
@@ -218,7 +222,6 @@ public class OSMtoGraph extends JFrame {
 				if(intersect(p_polygon,temp_pol)){
 					thisPolArea= p_polygon.getPolArea();
 					otherPolArea= temp_pol.getPolArea();
-					
 					thisPolArea.subtract(otherPolArea);
 				}
 			}
