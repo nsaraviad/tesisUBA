@@ -70,7 +70,7 @@ public class OSMtoGraph extends JFrame {
 							gen.generatePolygons();
 							
 							SystemSolver solv= new SystemSolver();
- 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,4);
+ 							solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,5);
 							
  							System.out.println("Problem solved at "+ LocalDateTime.now() );
  							
@@ -104,9 +104,7 @@ public class OSMtoGraph extends JFrame {
 				
 			}
 
-			private void orderListByPolygonAreaSize(PolygonsGenerator gen,
-					SystemSolver solv,
-					LinkedList<MapPolygon> orderedListByAreaSize) {
+			private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
 				int id_Pol;
 				for(int s=0;s < solv.getPolygonsInSolution().size();s++){
 					id_Pol= solv.getPolygonsInSolution().get(s);
@@ -158,10 +156,6 @@ public class OSMtoGraph extends JFrame {
 					if(!p_polygon.getPolArea().isEmpty())
 						polygonsInSolution.add(p_polygon);
 					
-					
-					//HASTA EL MOMENTO
-					//if (!overlapsWithOtherPolsInSolution(p_polygon,polygonsInSolution))
-					//	polygonsInSolution.add(p_polygon);
 				}
 			}
 
