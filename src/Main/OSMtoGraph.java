@@ -150,16 +150,11 @@ public class OSMtoGraph extends JFrame {
 					/*Se compara el poligono actual contra el resto de la solución. Si se interseca con
 					 * alguno se "recorta" dicha intersección. Finalmente se agrega a la solucion (si no es vacío). 
 					 */
-					
-					compareWithSolutionAndModifyIfNecessary(p_polygon,polygonsInSolution);
-					
-					if(!p_polygon.getPolArea().isEmpty())
-						polygonsInSolution.add(p_polygon);
-					
+					compareWithSolutionModifyIfNecessaryAndAddToSolutionSet(p_polygon,polygonsInSolution);
 				}
 			}
 
-			private void compareWithSolutionAndModifyIfNecessary(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
+			private void compareWithSolutionModifyIfNecessaryAndAddToSolutionSet(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
 				
 				Area initPolArea= new Area(p_polygon.getPolArea());
 				
@@ -170,9 +165,14 @@ public class OSMtoGraph extends JFrame {
 				
 				boolean polAreaIsModified= !(p_polygon.getPolArea().equals(initPolArea));
 
-				//chequea que no sea vacía el area resultante. Caso en que el área del polígono sufrió cambios.
-				if(!p_polygon.getPolArea().isEmpty() && polAreaIsModified)
-					modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
+				//Caso en que el área del polígono sufrió cambios.
+				if(polAreaIsModified){
+					if(!p_polygon.getPolArea().isEmpty())
+						modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
+				}
+				
+				if(!p_polygon.getPolArea().isEmpty())
+					polygonsInSolution.add(p_polygon);	
 			}
 
 			private void modifyPolygonsPoints(MapPolygon p_polygon) {
