@@ -171,6 +171,7 @@ public class OSMtoGraph extends JFrame {
 						modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
 				}
 				
+				//Si una vez modificado, el área del polígono no es vacía, es agregado a la solución.
 				if(!p_polygon.getPolArea().isEmpty())
 					polygonsInSolution.add(p_polygon);	
 			}
@@ -207,39 +208,22 @@ public class OSMtoGraph extends JFrame {
 				
 			}
 
-
-			private void checkOverlapsAndCutPolygonIfNecessary(MapPolygon p_polygon,MapPolygon temp_pol) {
+			private void checkOverlapsAndCutPolygonIfNecessary(MapPolygon thisPolygon,MapPolygon otherPolygon) {
 				//Método encargado de chequear si hay interseccion entre ambos polígonos. En el caso de haber,
 				//se "corta" del polígono el area que se interseca.
 				Area thisPolArea, otherPolArea;
 				
-				if(intersect(p_polygon,temp_pol)){
-					thisPolArea= p_polygon.getPolArea();
-					otherPolArea= temp_pol.getPolArea();
+				if(intersect(thisPolygon,otherPolygon)){
+					thisPolArea= thisPolygon.getPolArea();
+					otherPolArea= otherPolygon.getPolArea();
 					thisPolArea.subtract(otherPolArea);
 				}
 			}
 
-			private boolean overlapsWithOtherPolsInSolution(MapPolygon pol,LinkedList<MapPolygon> polygonsInSolution) {
-			
-				boolean overlaps= false;
-				
-				//Iterate over solution
-				int p=0;
-				
-				while(p < polygonsInSolution.size() && !overlaps){
-					MapPolygon temp_pol= polygonsInSolution.get(p);
-					overlaps= intersect(pol, temp_pol);
-					p++;
-				}
-					
-				return overlaps;
-			}
-
-			private boolean intersect(MapPolygon pol, MapPolygon temp_pol) {
+			private boolean intersect(MapPolygon thisPolygon, MapPolygon otherPolygon) {
 				//check intersection between map polygons
-				Area polArea= new Area(pol.getPolArea());
-				Area otherArea= new Area(temp_pol.getPolArea());
+				Area polArea= new Area(thisPolygon.getPolArea());
+				Area otherArea= new Area(otherPolygon.getPolArea());
 				
 				polArea.intersect(otherArea);
 				
