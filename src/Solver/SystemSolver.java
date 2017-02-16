@@ -153,8 +153,7 @@ public class SystemSolver {
 	   			polygonsInSolution.add(i);
 	}
 
-	private void fillingCoeficientsArray(int maxOverlapping,
-			double[] valsOnTrue, double[] coefs) {
+	private void fillingCoeficientsArray(int maxOverlapping,double[] valsOnTrue, double[] coefs) {
 		Arrays.fill(coefs, 1);
 		coefs[valsOnTrue.length]= 1 - maxOverlapping;
 	}

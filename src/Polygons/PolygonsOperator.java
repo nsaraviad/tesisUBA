@@ -136,10 +136,9 @@ public class PolygonsOperator {
 			double[] ypoly= polygons.get(i).getPolygonyPoints();
 
 			addMapPolygonToViewer(xpoly,ypoly,p, mapPols);
-			showPolygonsInMap(mapPols);
+			//showPolygonsInMap(mapPols);
 		}
-		
-		//showPolygonsInMap(mapPols);
+		showPolygonsInMap(mapPols);
 	}
 
 	private void addMapPolygonToViewer(double[] xpoly,double[] ypoly,OsmParserAndCustomizer p,
