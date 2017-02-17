@@ -2,9 +2,13 @@ package Visualizer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
+
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.LinkedList;
@@ -51,20 +55,29 @@ public class Viewer
 		JMapViewer mapViewer = new JMapViewer();
 		_frame.getContentPane().add(mapViewer, BorderLayout.CENTER);
 		
-		
 		Color[] colors= new Color[7];
 		initializeColorsArray(colors);
-		
 		
 		// Agregamos varios marcadores
 		for(int l=0;l<lista.size();l++){
 			//for(Coordinate c: lista.get(l))
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
-				
 				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
 				
-				//coloreo de polígonos
+				int redComp, greenComp, blueComp;
+				
+				//Colors components R,G,B
+				redComp= colors[(lista.get(l).size() % 7)].getRed();
+				greenComp= colors[(lista.get(l).size() % 7)].getGreen();
+				blueComp= colors[(lista.get(l).size() % 7)].getBlue();
+				
+				Color col= new Color(redComp,greenComp,blueComp,80);
+				
 				new_mpol.setColor(colors[(lista.get(l).size() % 7)]);
+				new_mpol.setBackColor(col);
+				new_mpol.setStroke(new BasicStroke(0));
+				
+				
 				mapViewer.addMapPolygon(new_mpol);
 			
 		}

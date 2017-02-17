@@ -129,8 +129,6 @@ public class PolygonsOperator {
 		
 		//Calculo distancias recorridas y visualizacion de cada polígono
 		for(int i=0;i<polygons.size();i++){	
-		//for(int i=0;i<5;i++){
-			
 			//i-esimo polígono
 			double[] xpoly= polygons.get(i).getPolygonxPoints();
 			double[] ypoly= polygons.get(i).getPolygonyPoints();
