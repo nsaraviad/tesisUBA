@@ -76,7 +76,7 @@ public class Viewer
 				
 				new_mpol.setColor(borderColor);
 				new_mpol.setBackColor(backCol);
-				new_mpol.setStroke(new BasicStroke(0));
+				new_mpol.setStroke(new BasicStroke((float)1.5));
 				
 				
 				mapViewer.addMapPolygon(new_mpol);
