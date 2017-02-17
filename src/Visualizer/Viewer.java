@@ -64,9 +64,9 @@ public class Viewer
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
 				MapPolygonImpl new_mpol= new MapPolygonImpl(lista.get(l));
 				
+				//Colors components R,G,B
 				int redComp, greenComp, blueComp;
 				
-				//Colors components R,G,B
 				redComp= colors[(lista.get(l).size() % 7)].getRed();
 				greenComp= colors[(lista.get(l).size() % 7)].getGreen();
 				blueComp= colors[(lista.get(l).size() % 7)].getBlue();
