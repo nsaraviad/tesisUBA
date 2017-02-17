@@ -66,15 +66,16 @@ public class Viewer
 				
 				//Colors components R,G,B
 				int redComp, greenComp, blueComp;
+				Color borderColor= colors[(lista.get(l).size() % 7)];
 				
-				redComp= colors[(lista.get(l).size() % 7)].getRed();
-				greenComp= colors[(lista.get(l).size() % 7)].getGreen();
-				blueComp= colors[(lista.get(l).size() % 7)].getBlue();
+				redComp= borderColor.getRed();
+				greenComp= borderColor.getGreen();
+				blueComp= borderColor.getBlue();
 				
-				Color col= new Color(redComp,greenComp,blueComp,80);
+				Color backCol= new Color(redComp,greenComp,blueComp,80);
 				
-				new_mpol.setColor(colors[(lista.get(l).size() % 7)]);
-				new_mpol.setBackColor(col);
+				new_mpol.setColor(borderColor);
+				new_mpol.setBackColor(backCol);
 				new_mpol.setStroke(new BasicStroke(0));
 				
 				
@@ -95,7 +96,7 @@ public class Viewer
 		colors[3]= Color.GREEN;
 		colors[4]= Color.YELLOW;
 		colors[5]= Color.ORANGE;
-		colors[6]= Color.MAGENTA;
+		colors[6]= Color.DARK_GRAY;
 	}
 
 	// Muestra el frame
