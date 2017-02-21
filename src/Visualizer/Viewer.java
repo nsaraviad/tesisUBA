@@ -93,10 +93,10 @@ public class Viewer
 		colors[0]= Color.RED;
 		colors[1]= Color.BLUE;
 		colors[2]= Color.CYAN;
-		colors[3]= Color.GREEN;
-		colors[4]= Color.YELLOW;
+		colors[3]= Color.YELLOW;
+		colors[4]= Color.GREEN;
 		colors[5]= Color.ORANGE;
-		colors[6]= Color.DARK_GRAY;
+		colors[6]= Color.MAGENTA;
 	}
 
 	// Muestra el frame
