@@ -90,11 +90,11 @@ public class MapQuadrantsGenerator {
 		}
 		
 		
-		xPoints= new double[quadrantsPoints.size()];
-		yPoints= new double[quadrantsPoints.size()];
+		//xPoints= new double[quadrantsPoints.size()];
+		//yPoints= new double[quadrantsPoints.size()];
 		
 		//Conversión y calculo area de cada cuadrante
-		calculateQuadrantsAreas(quadrantsPoints, xPoints, yPoints);
+		calculateQuadrantsAreas(quadrantsPoints);
 		
 		setResultsInOsmParser();
 }
@@ -118,10 +118,14 @@ private void setResultsInOsmParser() {
 	}
 
 
-private void calculateQuadrantsAreas(LinkedList quadrantsPoints,double[] xPoints, double[] yPoints) {
+private void calculateQuadrantsAreas(LinkedList quadrantsPoints) {
 	LinkedList<Pair> t_quad;
 	double latit;
 	double longit;
+	
+	
+	double[] xPoints = new double[4];
+	double[] yPoints = new double[4];
 	
 	//quadrants count
 	cityQuadrants = new Area[quadrantsPoints.size()];
