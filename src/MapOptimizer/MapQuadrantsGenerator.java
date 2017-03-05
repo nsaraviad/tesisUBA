@@ -97,9 +97,7 @@ public class MapQuadrantsGenerator {
 		calculateQuadrantsAreas(quadrantsPoints, xPoints, yPoints);
 		
 		setResultsInOsmParser();
-		
 }
-	
 
 	private double getCityHeightDistance() {
 		// calculo de la distancia (en km) del alto total de la ciudad
@@ -110,38 +108,6 @@ public class MapQuadrantsGenerator {
 		// calculo de la distancia (en km) del ancho total de la ciudad
 		return pars.getRoadGraph().getDistance(min_latit,min_longit,min_latit,max_longit);
 	}
-
-	
-	/*
-	public void generateQuadrants() {
-		//Metodo encargado de subdividir el cuadrante principal que encierra a la ciudad entera en 4 subcuadrantes y los guarda en un array
-		
-		//Tengo 4 puntos extremos (max_x,min_y),(max_x,max_y),(min_x,max_y),(min_x,min_y)
-		LinkedList quadrantsPoints= new LinkedList<LinkedList<Pair>>();
-		LinkedList<Pair> t_quad;
-		Pair midpoint;
-		
-		//Calculo puntos intermedios
-		double mid_latit, mid_longit, latit, longit;
-		double[] xPoints;
-		double[] yPoints;
-		
-		//geopunto medio
-		midpoint= midPoint(min_latit,min_longit,max_latit,max_longit);
-		
-		//Creacion cuadrantes
-		prepareQuadrants(quadrantsPoints, (double)midpoint.getFirst(), (double)midpoint.getSecond());
-		
-		xPoints= new double[quadrantsPoints.size()];
-		yPoints= new double[quadrantsPoints.size()];
-		
-		//Conversión y calculo area de cada cuadrante
-		calculateQuadrantsAreas(quadrantsPoints, xPoints, yPoints);
-		
-		setResultsInOsmParser();
-	}
-*/
-
 
 private void setResultsInOsmParser() {
 		//Guarda los resultados en el parser

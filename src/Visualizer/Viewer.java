@@ -66,15 +66,15 @@ public class Viewer
 				
 				//Colors components R,G,B
 				int redComp, greenComp, blueComp;
-				Color borderColor= colors[(lista.get(l).size() % 7)];
+				Color color= colors[(lista.get(l).size() % 7)];
 				
-				redComp= borderColor.getRed();
-				greenComp= borderColor.getGreen();
-				blueComp= borderColor.getBlue();
+				redComp= color.getRed();
+				greenComp= color.getGreen();
+				blueComp= color.getBlue();
 				
 				Color backCol= new Color(redComp,greenComp,blueComp,80);
 				
-				new_mpol.setColor(borderColor);
+				new_mpol.setColor(Color.RED);
 				new_mpol.setBackColor(backCol);
 				new_mpol.setStroke(new BasicStroke((float)1.5));
 				

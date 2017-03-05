@@ -76,7 +76,7 @@ public class RoadGraph {
 							}
 						}
 					}
-					/*Obteniendo atributos del camino*/
+					/*Way attributes*/
 					else if(xrp.getName().equals("tag")){
 						if(tempNode == NULL_NODE)	{
 							for(int i = 0; i < attributeCount; i++){
