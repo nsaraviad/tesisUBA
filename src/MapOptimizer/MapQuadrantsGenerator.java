@@ -117,6 +117,7 @@ private void setResultsInOsmParser() {
 			pars.cityQuadrants[q]= cityQuadrants[q];
 	}
 
+
 private void calculateQuadrantsAreas(LinkedList quadrantsPoints,double[] xPoints, double[] yPoints) {
 	LinkedList<Pair> t_quad;
 	double latit;
