@@ -140,11 +140,6 @@ private void calculateQuadrantsAreas(LinkedList quadrantsPoints) {
 				longit= (double) t_quad.get(i).getSecond();
 				lista.add(new Coordinate(latit,longit));
 				
-				//Pair conversionToLatLon= CoordinatesConversor.getConvertedNumberFromLatLong(latit, longit);
-				
-				//xPoints[i]= (double) conversionToLatLon.getSecond();
-				//yPoints[i]= (double) conversionToLatLon.getFirst();
-
 				xPoints[i]= CoordinatesConversor.convertLatitudeToPoint(latit);
 				yPoints[i]= CoordinatesConversor.convertLongitudeToPoint(longit);
 			}
