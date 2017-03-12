@@ -89,10 +89,6 @@ public class MapQuadrantsGenerator {
 			minLong_temp= min_longit;
 		}
 		
-		
-		//xPoints= new double[quadrantsPoints.size()];
-		//yPoints= new double[quadrantsPoints.size()];
-		
 		//Conversión y calculo area de cada cuadrante
 		calculateQuadrantsAreas(quadrantsPoints);
 		
