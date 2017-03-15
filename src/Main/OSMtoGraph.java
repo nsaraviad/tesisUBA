@@ -98,10 +98,9 @@ public class OSMtoGraph extends JFrame {
 				
 				//Ordered polygons list by area size
 				orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
-					
+				
 				//Una vez ordenada la lista, aplico el algoritmo greedy
 				greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
-				
 			}
 
 			private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
@@ -182,14 +181,16 @@ public class OSMtoGraph extends JFrame {
 				LinkedList<Double> l1,l2;
 				l1= new LinkedList<Double>();
 				l2= new LinkedList<Double>();
+				boolean otroSeg;
 				
 				Area polygonArea= p_polygon.getPolArea();
 				//itero sobre el borde del area del polígono
-				for(PathIterator pi= polygonArea.getPathIterator(null);!pi.isDone();pi.next()){
-					if(pi.currentSegment(coords)==PathIterator.SEG_LINETO){
+				for(PathIterator pi= polygonArea.getPathIterator(null,2);!pi.isDone();pi.next()){
+					//if(pi.currentSegment(coords)==PathIterator.SEG_LINETO){
+						pi.currentSegment(coords);
 						l1.add(coords[0]);
 						l2.add(coords[1]);
-					}
+					//}
 				}
 				
 				//ambas longitudes deben ser iguales
@@ -197,7 +198,7 @@ public class OSMtoGraph extends JFrame {
 				
 				//se actualizan los puntos del polígono
 				double[] xp= new double[l1.size()];
-				double[] yp= new double[l1.size()];
+				double[] yp= new double[l2.size()];
 				
 				copyListInArray(l1,xp);
 				copyListInArray(l2,yp);
