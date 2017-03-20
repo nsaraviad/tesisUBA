@@ -181,16 +181,16 @@ public class OSMtoGraph extends JFrame {
 				LinkedList<Double> l1,l2;
 				l1= new LinkedList<Double>();
 				l2= new LinkedList<Double>();
-				boolean otroSeg;
-				
+							
 				Area polygonArea= p_polygon.getPolArea();
 				//itero sobre el borde del area del polígono
 				for(PathIterator pi= polygonArea.getPathIterator(null,2);!pi.isDone();pi.next()){
-					//if(pi.currentSegment(coords)==PathIterator.SEG_LINETO){
-						pi.currentSegment(coords);
+					if(pi.currentSegment(coords)==PathIterator.SEG_LINETO ||
+							pi.currentSegment(coords)==PathIterator.SEG_MOVETO){
+						//pi.currentSegment(coords);
 						l1.add(coords[0]);
 						l2.add(coords[1]);
-					//}
+					}
 				}
 				
 				//ambas longitudes deben ser iguales
