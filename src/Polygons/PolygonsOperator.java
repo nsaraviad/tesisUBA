@@ -91,8 +91,11 @@ public class PolygonsOperator {
 		int size= poly.size();
 		double latit, longit;
 		GraphNode temp_node;
-		double[] xPoints= new double[size];
-		double[] yPoints= new double[size];
+		//double[] xPoints= new double[size];
+		//double[] yPoints= new double[size];
+		LinkedList<Double> xPoints= new LinkedList<Double>();
+		LinkedList<Double> yPoints= new LinkedList<Double>();
+		
 		
 		//Conversión (latitud,longitud) a puntos en el plano R2 (x,y)
 		for(int i=0;i < size; i++){
@@ -100,8 +103,12 @@ public class PolygonsOperator {
 			latit= temp_node.getLat();
 			longit= temp_node.getLon();
 			
-			xPoints[i]= CoordinatesConversor.convertLatitudeToPoint(latit);
-			yPoints[i]= CoordinatesConversor.convertLongitudeToPoint(longit);
+			xPoints.add(CoordinatesConversor.convertLatitudeToPoint(latit));
+			yPoints.add(CoordinatesConversor.convertLongitudeToPoint(longit));
+			
+			
+			//xPoints[i]= CoordinatesConversor.convertLatitudeToPoint(latit);
+			//yPoints[i]= CoordinatesConversor.convertLongitudeToPoint(longit);
 		}
 		
 		//PUNTOS DEL POLÍGONO EN R2
@@ -110,10 +117,13 @@ public class PolygonsOperator {
 		//ARMADO DEL PERÍMETRO DEL POLÍGONO
 		Path2D path= new Path2D.Double();
 		
-		path.moveTo(xPoints[0], yPoints[0]);
+		//path.moveTo(xPoints[0], yPoints[0]);
+		
+		path.moveTo(xPoints.get(0), yPoints.get(0));
 		
 		for(int i=1;i < size;i++)
-			path.lineTo(xPoints[i], yPoints[i]);
+			//path.lineTo(xPoints[i], yPoints[i]);
+			path.lineTo(xPoints.get(i), yPoints.get(i));
 		
 		path.closePath();
 		Area polygon_area= new Area(path);
@@ -127,19 +137,36 @@ public class PolygonsOperator {
 		
 		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
 		
-		//Calculo distancias recorridas y visualizacion de cada polígono
 		for(int i=0;i<polygons.size();i++){	
-			//i-esimo polígono
-			double[] xpoly= polygons.get(i).getPolygonxPoints();
-			double[] ypoly= polygons.get(i).getPolygonyPoints();
-
-			addMapPolygonToViewer(xpoly,ypoly,p, mapPols);
-			//showPolygonsInMap(mapPols);
+			//El polígono sufrió modificaciones -> Los subpaths contienen la información del/los contorno/s de su área.
+			if(polygons.get(i).getSubpathsX()!=null && !polygons.get(i).getSubpathsX().isEmpty()){
+				LinkedList<LinkedList<Double>> xSubpath= polygons.get(i).getSubpathsX();
+				LinkedList<LinkedList<Double>> ySubpath= polygons.get(i).getSubpathsY();
+							
+				assert (xSubpath.size()==ySubpath.size());
+					
+				//assert (xSubpath.size() <= 1);
+					
+				for(int k=0;k<xSubpath.size();k++){
+					//addMapPolygonToViewer(xpoly,ypoly,p, mapPols);	
+					LinkedList<Double> temp_subpathX= xSubpath.get(k);
+					LinkedList<Double> temp_subpathY= ySubpath.get(k);
+					addMapPolygonToViewer(temp_subpathX,temp_subpathY,p, mapPols);
+				}
+			}
+			else //No hay subpaths(el área del poligono nunca se modifico)
+			{
+				//i-esimo polígono
+				LinkedList<Double> xpoly= polygons.get(i).getPolygonxPoints();
+				LinkedList<Double> ypoly= polygons.get(i).getPolygonyPoints();
+				addMapPolygonToViewer(xpoly,ypoly,p, mapPols);
+			}
+		//	showPolygonsInMap(mapPols);
 		}
 		showPolygonsInMap(mapPols);
 	}
 
-	private void addMapPolygonToViewer(double[] xpoly,double[] ypoly,OsmParserAndCustomizer p,
+	private void addMapPolygonToViewer(LinkedList<Double> xpoly,LinkedList<Double> ypoly,OsmParserAndCustomizer p,
 											LinkedList<LinkedList<Coordinate>> listPols) {
 		//Visualización de polígonos usando JMap Viewer
 		LinkedList<Coordinate> lista= new LinkedList<Coordinate>();
@@ -149,14 +176,14 @@ public class PolygonsOperator {
 		listPols.add(lista);
 	}
 	
-	private void setCoordinatesToList(double[] xpoly, double[] ypoly,LinkedList<Coordinate> lista) {
+	private void setCoordinatesToList(LinkedList<Double> xpoly, LinkedList<Double> ypoly,LinkedList<Coordinate> lista) {
 		//Método encargado de setear las coordenadas del polygono a la lista  
 		double latit,longit;
 		
 		//itera sobre los puntos del polígono
-		for(int j=0;j < xpoly.length;j++){
-			latit= CoordinatesConversor.convertPointToLatitud(xpoly[j]);
-			longit= CoordinatesConversor.convertPointToLongitude(ypoly[j]);
+		for(int j=0;j < xpoly.size();j++){
+			latit= CoordinatesConversor.convertPointToLatitud(xpoly.get(j));
+			longit= CoordinatesConversor.convertPointToLongitude(ypoly.get(j));
 			lista.add(new Coordinate(latit,longit));
 		}
 	}	

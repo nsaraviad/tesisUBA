@@ -166,46 +166,96 @@ public class OSMtoGraph extends JFrame {
 
 				//Caso en que el área del polígono sufrió cambios.
 				if(polAreaIsModified){
-					if(!p_polygon.getPolArea().isEmpty())
+					if(!p_polygon.getPolArea().isEmpty()){
 						modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
+						polygonsInSolution.add(p_polygon);
+					}
+				}else{
+					polygonsInSolution.add(p_polygon);
 				}
-				
-				//Si una vez modificado, el área del polígono no es vacía, es agregado a la solución.
-				if(!p_polygon.getPolArea().isEmpty())
-					polygonsInSolution.add(p_polygon);	
+									
 			}
 
 			private void modifyPolygonsPoints(MapPolygon p_polygon) {
 				// Dada el area modificada del polígono, se recorre su "contorno" y se actualizan los puntos 
 				double[] coords= new double[6];
-				LinkedList<Double> l1,l2;
-				l1= new LinkedList<Double>();
-				l2= new LinkedList<Double>();
-							
+				//LinkedList<Double> l1,l2;
+				//l1= new LinkedList<Double>();
+				//l2= new LinkedList<Double>();
+				LinkedList<LinkedList<Double>> l1,l2;
+				l1= new LinkedList<LinkedList<Double>>();
+				l2= new LinkedList<LinkedList<Double>>();
+						
+				
 				Area polygonArea= p_polygon.getPolArea();
 				//itero sobre el borde del area del polígono
-				for(PathIterator pi= polygonArea.getPathIterator(null,2);!pi.isDone();pi.next()){
-					if(pi.currentSegment(coords)==PathIterator.SEG_LINETO ||
-							pi.currentSegment(coords)==PathIterator.SEG_MOVETO){
-						//pi.currentSegment(coords);
+					
+				LinkedList<Double> aux_lstx= new LinkedList<Double>();
+				LinkedList<Double> aux_lsty= new LinkedList<Double>();
+				
+				for(PathIterator pi= polygonArea.getPathIterator(null);!pi.isDone();pi.next()){
+					
+					switch(pi.currentSegment(coords)){
+					
+						case PathIterator.SEG_MOVETO:
+							//Auxiliar listfor a new subpath
+							aux_lstx.clear();
+							aux_lsty.clear();
+							aux_lstx.add(coords[0]);
+							aux_lsty.add(coords[1]);
+							break;
+															
+						case PathIterator.SEG_LINETO:
+							//add in same subpath
+							aux_lstx.add(coords[0]);
+							aux_lsty.add(coords[1]);
+							break;
+						
+						case PathIterator.SEG_CLOSE:
+							l1.add(aux_lstx);
+							l2.add(aux_lsty);
+							break;
+					}
+									
+					/*
+					if(pi.currentSegment(coords)==PathIterator.SEG_LINETO) 
+					{
 						l1.add(coords[0]);
 						l2.add(coords[1]);
-					}
+					}else if(pi.currentSegment(coords)==PathIterator.SEG_CLOSE)
+					{
+						boolean otro;
+						otro= true;
+					}*/
 				}
 				
 				//ambas longitudes deben ser iguales
 				assert (l1.size()==l2.size());
 				
+				//actualizo los subpaths de los polígonos
+			    p_polygon.setSubpathsX(l1);
+			    p_polygon.setSubpathsY(l2);
+				
 				//se actualizan los puntos del polígono
-				double[] xp= new double[l1.size()];
-				double[] yp= new double[l2.size()];
-				
-				copyListInArray(l1,xp);
-				copyListInArray(l2,yp);
-				
-				//update xpoints & yPoints 
-				p_polygon.setxPoints(xp);
-				p_polygon.setyPoints(yp);
+				if(l1.size() == 1 && !l1.getFirst().isEmpty()){
+					
+					LinkedList<Double> xp= new LinkedList<Double>();
+					LinkedList<Double> yp= new LinkedList<Double>();
+					
+					xp= p_polygon.getSubpathsX().getFirst();
+					yp= p_polygon.getSubpathsY().getFirst();
+					
+					//double[] xp= new double[l1.size()];
+					//double[] yp= new double[l2.size()];
+					
+					//copyListInArray(l1,xp);
+					//copyListInArray(l2,yp);
+					
+					//update xpoints & yPoints 
+					p_polygon.setxPoints(xp);
+					p_polygon.setyPoints(yp);
+					
+				}
 				
 			}
 
@@ -215,9 +265,7 @@ public class OSMtoGraph extends JFrame {
 				Area thisPolArea, otherPolArea;
 				
 				if(intersect(thisPolygon,otherPolygon)){
-					thisPolArea= thisPolygon.getPolArea();
-					otherPolArea= otherPolygon.getPolArea();
-					thisPolArea.subtract(otherPolArea);
+					thisPolygon.getPolArea().subtract(otherPolygon.getPolArea());
 				}
 			}
 

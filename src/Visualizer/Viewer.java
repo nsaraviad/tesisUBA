@@ -58,7 +58,7 @@ public class Viewer
 		Color[] colors= new Color[7];
 		initializeColorsArray(colors);
 		
-		// Agregamos varios marcadores
+		//Agregamos varios marcadores
 		for(int l=0;l<lista.size();l++){
 			//for(Coordinate c: lista.get(l))
 				//mapViewer.addMapMarker(new MapMarkerDot(c.getLat(), c.getLon()));
@@ -76,11 +76,9 @@ public class Viewer
 				
 				new_mpol.setColor(Color.RED);
 				new_mpol.setBackColor(backCol);
-				new_mpol.setStroke(new BasicStroke((float)1.5));
-				
+				new_mpol.setStroke(new BasicStroke((float)1.6));
 				
 				mapViewer.addMapPolygon(new_mpol);
-			
 		}
 			
 		// Centramos el mapa sobre los marcadores
