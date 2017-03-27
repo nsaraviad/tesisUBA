@@ -2,7 +2,10 @@
 package Main;
  
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.awt.*;
 import java.awt.event.*;
@@ -64,18 +67,18 @@ public class OSMtoGraph extends JPanel
         	 String filePath = fc.getSelectedFile().getPath(); //Obtiene path del archivo
              String fileName = fc.getSelectedFile().getName(); //obtiene nombre del archivo
              
-             log.append(fileName + "is attached." + newline);
+             log.append(fileName + " is attached." + newline);
         	 log.update(log.getGraphics());
              
              OsmParserAndCustomizer p = new OsmParserAndCustomizer();
      	     
              try {
-            	
+            	 	DateTimeFormatter dtf= DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
             	 	//Parse osm to graph
-	            	log.append("Parsing started at " + LocalDateTime.now() + newline);
+	            	log.append("Parsing started at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                p.ParseOSM(filePath,fileName);
-	                log.append("Parsing ended at " + LocalDateTime.now() + newline);
+	                log.append("Parsing ended at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                 
      	    		//Polygons generator algorithm
@@ -89,7 +92,7 @@ public class OSMtoGraph extends JPanel
 	            	log.update(log.getGraphics());
 	                SystemSolver solv= new SystemSolver();
 					solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,5);
-					log.append("Problem solved at " + LocalDateTime.now() + newline);
+					log.append("Problem solved at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                
 					
