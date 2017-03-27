@@ -80,9 +80,8 @@ public class OsmParserAndCustomizer {
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
 		System.out.println("Nodes = "+g.getNodes().size());
-		System.out.println("AdyList = "+g.getAdyLst().size());
-		
-		System.out.println("refBound = "+g.getRefBoundary().size());
+		//System.out.println("AdyList = "+g.getAdyLst().size());
+		//System.out.println("refBound = "+g.getRefBoundary().size());
 		
 	}
 

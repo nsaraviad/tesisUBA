@@ -37,6 +37,7 @@ public class Viewer
 		}
 
 		_frame = new JFrame();
+		_frame.setTitle("Solution map");
 		_frame.setBounds(100, 100, 900, 600);
 		_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				
