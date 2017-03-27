@@ -31,7 +31,7 @@ public class OSMtoGraph extends JPanel
  
     public OSMtoGraph() {
         super(new BorderLayout());
- 
+        setPreferredSize(new Dimension(400,300));
         //Create the log first, because the action listener
         //needs to refer to it.
         log = new JTextArea(5,20);
@@ -39,9 +39,9 @@ public class OSMtoGraph extends JPanel
         log.setEditable(false);
         JScrollPane logScrollPane = new JScrollPane(log);
  
-        JButton sendButton = new JButton("Attach ...");
+        JButton sendButton = new JButton("Attach...");
         sendButton.addActionListener(this);
- 
+        
         add(sendButton, BorderLayout.PAGE_START);
         add(logScrollPane, BorderLayout.CENTER);
     }
@@ -50,25 +50,23 @@ public class OSMtoGraph extends JPanel
         //Set up the file chooser.
         if (fc == null) {
             fc = new JFileChooser();
- 
-            //Filter only osm files
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "OSM maps", "osm");
             
+            //Filter only osm files
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("OSM maps", "osm");
             fc.setFileFilter(filter);
         }
- 
+        
         //Show it.
         int returnVal = fc.showDialog(OSMtoGraph.this,"Attach");	
  
         //Process the results.
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-             String filePath = fc.getSelectedFile().getPath(); //Obtiene path del archivo
+        	 String filePath = fc.getSelectedFile().getPath(); //Obtiene path del archivo
              String fileName = fc.getSelectedFile().getName(); //obtiene nombre del archivo
              
              log.append(fileName + "is attached." + newline);
         	 log.update(log.getGraphics());
-                     	 
+             
              OsmParserAndCustomizer p = new OsmParserAndCustomizer();
      	     
              try {
@@ -337,7 +335,6 @@ public class OSMtoGraph extends JPanel
 	 
 	
     public static void main(String[] args) {
-        //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
