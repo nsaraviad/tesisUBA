@@ -386,7 +386,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		
 		return  nodosDistintos(entry1, entry2) && 
 				//sameQuadrantNodes(entry1,entry2) &&
-				distanceBetweenNodesInRange(entry1,entry2,0.8,1) &&
+				distanceBetweenNodesInRange(entry1,entry2,0.8,0.95) &&
 				filtroGradoNodos(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
@@ -412,14 +412,9 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 				rg.getDistance(lat1, long1, lat2, long2) > minDist ;
 	}
 
-	private boolean sameQuadrantNodes(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
-		return getPolygonQuad(entry1) == getPolygonQuad(entry2);
-	}
-
 	private boolean filtroGradoNodos(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
 		return deGrado234(entry1.getKey()) && deGrado234(entry2.getKey()); 
 	}
-
 	
 	private boolean deGrado234(Long nodeKey) {
 		return (esDeGrado2Particular(nodeKey) || esDeGrado(nodeKey,3) || esDeGrado(nodeKey,4));
