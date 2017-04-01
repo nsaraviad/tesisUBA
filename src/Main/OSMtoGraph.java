@@ -163,7 +163,7 @@ public class OSMtoGraph extends JPanel
 			orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
 		}else{
 			int i= 0;
-			//mientras al área de pol sea mayor al area del i-esimo poligono de la lista, itero
+			//mientras al área de pol sea mayor al area del i-esimo poligono de la lista, se itera
 			while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == 1){
 				i++;
 			}

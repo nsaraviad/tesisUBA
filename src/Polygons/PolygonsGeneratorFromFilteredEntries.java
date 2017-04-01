@@ -1,10 +1,8 @@
 package Polygons;
 
-
 import GraphComponents.*;
 import MapOptimizer.MapQuadrantsGenerator;
 import Parsing.OsmParserAndCustomizer;
-
 import java.awt.geom.Area;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,11 +14,8 @@ import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
-
 import org.omg.CORBA.DoubleSeqHelper;
-
 import Visualizer.CoordinatesConversor;
-
 
 
 public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
