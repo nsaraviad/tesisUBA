@@ -107,7 +107,6 @@ public class SystemSolver {
 	    			index++;
 	    		}
 	    		
-	    		
 	    		//RESTRICCIÓN 1 (TODAS LAS ARISTAS CUBIERTAS)
 	    		Constraint cons_1 = scip.createConsLinear("edgeCovered" + e, inSol, valsOnTrue,1,scip.infinity());
 	    		scip.addCons(cons_1);
@@ -117,8 +116,7 @@ public class SystemSolver {
 	     		if(optionActivated && covered > 0){
 		     		
 	     			//RESTRICCIÓN 2 (LÍMITE EN COBERTURA PARA CADA ARISTA)
-			    	
-	     			Variable[] multipleVars= new Variable[valsOnTrue.length + 1];
+			    	Variable[] multipleVars= new Variable[valsOnTrue.length + 1];
 	     			double[] coefs= new double[valsOnTrue.length + 1];
 	     			
 	     			//ARMO LOS ARRAYS DE VARS
@@ -138,12 +136,11 @@ public class SystemSolver {
 			    	inSol=null;
 			    	valsOnTrue=null;
 			    }
-	     	
 	     	}
 	    }
 
 	    //set limits time param (in seconds)
-	    scip.setRealParam("limits/time",120.0);
+	    scip.setRealParam("limits/time",100);
 	    scip.solve();
 		
 		Solution sol= scip.getBestSol();
@@ -168,7 +165,6 @@ public class SystemSolver {
 		
 		//en la última posición guardo la variable yi
 		quadvars1[inSol.length]= varsEdges[e];
-		
 	}
 
     public LinkedList<Integer> getPolygonsInSolution(){
