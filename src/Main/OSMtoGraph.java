@@ -67,6 +67,7 @@ public class OSMtoGraph extends JPanel
         	 String filePath = fc.getSelectedFile().getPath(); //Obtiene path del archivo
              String fileName = fc.getSelectedFile().getName(); //obtiene nombre del archivo
              
+             log.setText("");
              log.append(fileName + " is attached." + newline);
         	 log.update(log.getGraphics());
              
