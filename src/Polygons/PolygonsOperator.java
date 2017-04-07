@@ -144,12 +144,6 @@ public class PolygonsOperator {
 				LinkedList<LinkedList<Double>> ySubpath= polygons.get(i).getSubpathsY();
 							
 				assert (xSubpath.size()==ySubpath.size());
-				
-				if(xSubpath.size() > 1){
-					boolean caso;
-					caso=true;
-				}
-				//assert (xSubpath.size() <= 1);
 					
 				for(int k=0;k<xSubpath.size();k++){
 					//addMapPolygonToViewer(xpoly,ypoly,p, mapPols);	
