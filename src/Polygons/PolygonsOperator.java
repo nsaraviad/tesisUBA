@@ -146,7 +146,6 @@ public class PolygonsOperator {
 				assert (xSubpath.size()==ySubpath.size());
 					
 				for(int k=0;k<xSubpath.size();k++){
-					//addMapPolygonToViewer(xpoly,ypoly,p, mapPols);	
 					LinkedList<Double> temp_subpathX= xSubpath.get(k);
 					LinkedList<Double> temp_subpathY= ySubpath.get(k);
 					addMapPolygonToViewer(temp_subpathX,temp_subpathY,p, mapPols);
@@ -180,7 +179,7 @@ public class PolygonsOperator {
 		
 		//itera sobre los puntos del polígono
 		for(int j=0;j < xpoly.size();j++){
-			latit= CoordinatesConversor.convertPointToLatitud(xpoly.get(j));
+			latit= CoordinatesConversor.convertPointToLatitude(xpoly.get(j));
 			longit= CoordinatesConversor.convertPointToLongitude(ypoly.get(j));
 			lista.add(new Coordinate(latit,longit));
 		}

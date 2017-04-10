@@ -214,13 +214,9 @@ public class OSMtoGraph extends JPanel
 	private void modifyPolygonsPoints(MapPolygon p_polygon) {
 		// Dada el area modificada del polígono, se recorre su "contorno" y se actualizan los puntos 
 		double[] coords= new double[6];
-		//LinkedList<Double> l1,l2;
-		//l1= new LinkedList<Double>();
-		//l2= new LinkedList<Double>();
 		LinkedList<LinkedList<Double>> l1,l2;
 		l1= new LinkedList<LinkedList<Double>>();
 		l2= new LinkedList<LinkedList<Double>>();
-				
 		
 		Area polygonArea= p_polygon.getPolArea();
 		//itero sobre el borde del area del polígono
@@ -251,17 +247,7 @@ public class OSMtoGraph extends JPanel
 					l2.add(aux_lsty);
 					break;
 			}
-							
-			/*
-			if(pi.currentSegment(coords)==PathIterator.SEG_LINETO) 
-			{
-				l1.add(coords[0]);
-				l2.add(coords[1]);
-			}else if(pi.currentSegment(coords)==PathIterator.SEG_CLOSE)
-			{
-				boolean otro;
-				otro= true;
-			}*/
+			
 		}
 		
 		//ambas longitudes deben ser iguales
@@ -273,25 +259,16 @@ public class OSMtoGraph extends JPanel
 		
 		//se actualizan los puntos del polígono
 		if(l1.size() == 1 && !l1.getFirst().isEmpty()){
-			
 			LinkedList<Double> xp= new LinkedList<Double>();
 			LinkedList<Double> yp= new LinkedList<Double>();
 			
 			xp= p_polygon.getSubpathsX().getFirst();
 			yp= p_polygon.getSubpathsY().getFirst();
-			
-			//double[] xp= new double[l1.size()];
-			//double[] yp= new double[l2.size()];
-			
-			//copyListInArray(l1,xp);
-			//copyListInArray(l2,yp);
-			
+				
 			//update xpoints & yPoints 
 			p_polygon.setxPoints(xp);
 			p_polygon.setyPoints(yp);
-			
 		}
-		
 	}
 
 	private void checkOverlapsAndCutPolygonIfNecessary(MapPolygon thisPolygon,MapPolygon otherPolygon) {
@@ -316,12 +293,9 @@ public class OSMtoGraph extends JPanel
 	
 	
 	private void copyListInArray(LinkedList<Double> l1, double[] xp) {
-
 		for(int i=0;i < l1.size();i++)
 			xp[i]= l1.get(i);
-		
 	}
-	
 	  
      private static void createAndShowGUI() {
 	        //Create and set up the window.

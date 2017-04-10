@@ -23,7 +23,7 @@ public class CoordinatesConversor {
 		}
 
 		
-		public static double convertPointToLatitud(double yPoint) {
+		public static double convertPointToLatitude(double yPoint) {
 			//Conversión de punto en el plano (eje y) a coordenada geoespacial (latitud).
 			return Math.toDegrees(Math.atan(Math.exp(yPoint/radius))*2 - Math.PI/2);
 		}
