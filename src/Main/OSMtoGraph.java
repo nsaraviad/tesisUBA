@@ -68,7 +68,7 @@ public class OSMtoGraph extends JPanel
              String fileName = fc.getSelectedFile().getName(); //obtiene nombre del archivo
              
              log.setText("");
-             log.append(fileName + " is attached." + newline);
+             log.append("> " + fileName + " is attached." + newline);
         	 log.update(log.getGraphics());
              
              OsmParserAndCustomizer p = new OsmParserAndCustomizer();
@@ -76,35 +76,35 @@ public class OSMtoGraph extends JPanel
              try {
             	 	DateTimeFormatter dtf= DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
             	 	//Parse osm to graph
-	            	log.append("Parsing started at " + dtf.format(LocalDateTime.now()) + newline);
+	            	log.append("> Parsing started at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                p.ParseOSM(filePath,fileName);
-	                log.append("Parsing ended at " + dtf.format(LocalDateTime.now()) + newline);
+	                log.append("> Parsing ended at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                 
      	    		//Polygons generator algorithm
-	            	log.append("Generating polygons ..." + newline);
+	            	log.append("> Generating polygons ..." + newline);
 	            	log.update(log.getGraphics());
 	                PolygonsGenerator gen= new PolygonsGeneratorFromFilteredEntries(p);
 					gen.generatePolygons();
 					
 					//Solving problem
-					log.append("Solving system ..." + newline);
+					log.append("> Solving system ..." + newline);
 	            	log.update(log.getGraphics());
 	                SystemSolver solv= new SystemSolver();
 					solv.solve(gen.getPolygons(),gen.getPolygonsCount(), p,true,5);
-					log.append("Problem solved at " + dtf.format(LocalDateTime.now()) + newline);
+					log.append("> Problem solved at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                
 					
-	            	//Preparar lista de poligonos en solucion
-	            	log.append("Processing solution ..." + newline);
+	            	//Preparar lista de poligonos en solución
+	            	log.append("> Processing solution ..." + newline);
 	            	log.update(log.getGraphics());
 	                LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
 					extractPolygonsInSolutionToList(gen, solv,polygonsInSolution);
 					
 					//Visualize solution
-					log.append("Visualizing solution ..." + newline);
+					log.append("> Visualizing solution ..." + newline);
 	            	log.update(log.getGraphics());
 	                PolygonsOperator polOp= new PolygonsOperator();
 					polOp.operateWithPolygons(p, polygonsInSolution);
@@ -299,7 +299,7 @@ public class OSMtoGraph extends JPanel
 	  
      private static void createAndShowGUI() {
 	        //Create and set up the window.
-	        JFrame frame = new JFrame("Zoner");
+	        JFrame frame = new JFrame("MZoner");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        
 	        //Add content to the window.
