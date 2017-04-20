@@ -96,7 +96,6 @@ public class OSMtoGraph extends JPanel
 					log.append("> Problem solved at " + dtf.format(LocalDateTime.now()) + newline);
 	            	log.update(log.getGraphics());
 	                
-					
 	            	//Preparar lista de poligonos en solución
 	            	log.append("> Processing solution ..." + newline);
 	            	log.update(log.getGraphics());
