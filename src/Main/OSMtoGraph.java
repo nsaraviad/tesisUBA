@@ -87,7 +87,7 @@ public class OSMtoGraph extends JPanel
 	            	log.update(log.getGraphics());
 	                PolygonsGenerator gen= new PolygonsGeneratorFromFilteredEntries(p);
 					gen.generatePolygons();
-					
+										
 					//Solving problem
 					log.append("> Solving system ..." + newline);
 	            	log.update(log.getGraphics());
@@ -101,13 +101,15 @@ public class OSMtoGraph extends JPanel
 	            	log.update(log.getGraphics());
 	                LinkedList<MapPolygon> polygonsInSolution= new LinkedList<MapPolygon>();
 					extractPolygonsInSolutionToList(gen, solv,polygonsInSolution);
+					log.append("> Polygons in solution " + polygonsInSolution.size() + newline);
 					
 					//Visualize solution
 					log.append("> Visualizing solution ..." + newline);
 	            	log.update(log.getGraphics());
 	                PolygonsOperator polOp= new PolygonsOperator();
 					polOp.operateWithPolygons(p, polygonsInSolution);
-				    
+					log.append("> Final " + dtf.format(LocalDateTime.now()) + newline);
+					
      	    }catch (IOException | XmlPullParserException ex) {
 					ex	.printStackTrace();
 			}
@@ -125,9 +127,7 @@ public class OSMtoGraph extends JPanel
     private void extractPolygonsInSolutionToList(PolygonsGenerator gen,	SystemSolver solv, LinkedList<MapPolygon> polygonsInSolution) {
 		
 		int id_Pol;
-		
-		/* Lista intermedia, en la cual los polígonos de la solución se insertan ordenadamente 
-		   de acuerdo al tamaño de su área(orden ascendente)*/
+		//Ordered list by area size
 		LinkedList<MapPolygon> orderedListByAreaSize= new LinkedList<MapPolygon>();
 		
 		//Ordered polygons list by area size
@@ -198,16 +198,17 @@ public class OSMtoGraph extends JPanel
 		
 		boolean polAreaIsModified= !(p_polygon.getPolArea().equals(initPolArea));
 
-		//Caso en que el área del polígono sufrió cambios.
+		//Area is modified
 		if(polAreaIsModified){
 			if(!p_polygon.getPolArea().isEmpty()){
 				modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
 				polygonsInSolution.add(p_polygon);
 			}
-		}else{
-			polygonsInSolution.add(p_polygon);
 		}
-							
+		else
+			{
+				polygonsInSolution.add(p_polygon);
+		}
 	}
 
 	private void modifyPolygonsPoints(MapPolygon p_polygon) {
@@ -298,7 +299,7 @@ public class OSMtoGraph extends JPanel
 	  
      private static void createAndShowGUI() {
 	        //Create and set up the window.
-	        JFrame frame = new JFrame("MZoner");
+	        JFrame frame = new JFrame("ZOosm");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        
 	        //Add content to the window.

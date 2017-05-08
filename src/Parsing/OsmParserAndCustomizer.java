@@ -71,18 +71,12 @@ public class OsmParserAndCustomizer {
 		//Filtrado del mapa. Se quitan los nodos fuera de la zona adminstrativa del mapa
 		filterGraph();
 		
-		//Se crean los nodos a visualizar
-		//generateNodes();
-		
-		//Se crean los ejes
+		//Se crean las aristas del grafo
 		generateEdges();
 		
 		System.out.println("Parsing ended at"+ LocalDateTime.now() );
 		System.out.println("Edges = "+edges.size());
 		System.out.println("Nodes = "+g.getNodes().size());
-		//System.out.println("AdyList = "+g.getAdyLst().size());
-		//System.out.println("refBound = "+g.getRefBoundary().size());
-		
 	}
 
 	private void generateNodes() {
