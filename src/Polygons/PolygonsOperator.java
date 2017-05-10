@@ -114,17 +114,6 @@ public class PolygonsOperator {
 		AreaOperator op= new AreaOperator();
 		Area polygon_area= op.calculateArea(xPoints,yPoints);
 		
-		/*Path2D path= new Path2D.Double();
-		
-		path.moveTo(xPoints.get(0), yPoints.get(0));
-		
-		for(int i=1;i < size;i++)
-			path.lineTo(xPoints.get(i), yPoints.get(i));
-		
-		path.closePath();
-		Area polygon_area= new Area(path);
-		*/
-		
 		//retorna el par (area, (xPoints,yPoints))
 		return new Pair(polygon_area,polygonPoints);
 	}

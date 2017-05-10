@@ -212,8 +212,6 @@ public class OSMtoGraph extends JPanel
 			if(!p_polygon.getPolArea().isEmpty()){
 				modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
 				processingPolygonAndAddToSol(p_polygon,polygonsInSolution);
-				
-				//polygonsInSolution.add(p_polygon);
 			}
 		}
 		else
@@ -237,7 +235,7 @@ public class OSMtoGraph extends JPanel
 					
 					Area polArea= new AreaOperator().calculateArea(temp_subpathX, temp_subpathY);
 					Pair polPoints= new Pair(temp_subpathX,temp_subpathY);
-					MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId(),polPoints,polArea);
+					MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId()+200+k,polPoints,polArea);
 					
 					polygonsInSolution.add(newPol);
 				}
