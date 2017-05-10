@@ -17,6 +17,7 @@ import javax.swing.filechooser.*;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import Geom.AreaOperator;
 import Parsing.OsmParserAndCustomizer;
 import Polygons.MapPolygon;
 import Polygons.PolygonAreaComparator;
@@ -135,7 +136,12 @@ public class OSMtoGraph extends JPanel
 		
 		//Una vez ordenada la lista, aplico el algoritmo greedy
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
+		
+		//Calculate area size average
+		AreaOperator areaOp= new AreaOperator();
+		int avg= areaOp.calculateAreaSizeAverageFor(orderedListByAreaSize);
 	}
+	
 
 	private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
 		int id_Pol;
@@ -148,7 +154,7 @@ public class OSMtoGraph extends JPanel
 	}
 	
 	private void orderedInsertByAreaSize(MapPolygon pol,LinkedList<MapPolygon> orderedListByAreaSize) {
-		// Inserta ordenadamente de menor a mayor por tamaño de area
+		//Inserta ordenadamente de menor a mayor por tamaño de area
 		PolygonAreaComparator comp = new PolygonAreaComparator();
 		
 		if(orderedListByAreaSize.isEmpty()){
@@ -169,7 +175,6 @@ public class OSMtoGraph extends JPanel
 			}
 			orderedListByAreaSize.add(i, pol);
 		}
-		
 	}
 
 	//greedy algorithm (Solo se agregan los poligonos que no se solapan)
@@ -182,7 +187,7 @@ public class OSMtoGraph extends JPanel
 			
 			/*Se compara el poligono actual contra el resto de la solución. Si se interseca con
 			 * alguno se "recorta" dicha intersección. Finalmente se agrega a la solucion (si no es vacío). 
-			 */
+			*/
 			compareWithSolutionModifyIfNecessaryAndAddToSolutionSet(p_polygon,polygonsInSolution);
 		}
 	}
@@ -206,7 +211,7 @@ public class OSMtoGraph extends JPanel
 			}
 		}
 		else
-			{
+		{
 				polygonsInSolution.add(p_polygon);
 		}
 	}
