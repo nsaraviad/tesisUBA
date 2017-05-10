@@ -1,5 +1,7 @@
 package Geom;
 
+import java.awt.geom.Area;
+import java.awt.geom.Path2D;
 import java.util.LinkedList;
 
 import Polygons.MapPolygon;
@@ -46,7 +48,19 @@ public class AreaOperator {
   		
   		return res;
   	}
-	
-	
+
+	public Area calculateArea(LinkedList<Double> xPoints,LinkedList<Double> yPoints) {
+		// Calculate polygon area
+		Path2D path= new Path2D.Double();
+		
+		path.moveTo(xPoints.get(0), yPoints.get(0));
+		
+		for(int i=1;i < xPoints.size();i++)
+			path.lineTo(xPoints.get(i), yPoints.get(i));
+		
+		path.closePath();
+		
+		return new Area(path);
+	}
 	
 }

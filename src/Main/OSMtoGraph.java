@@ -18,6 +18,7 @@ import javax.swing.filechooser.*;
 import org.xmlpull.v1.XmlPullParserException;
 
 import Geom.AreaOperator;
+import GraphComponents.Pair;
 import Parsing.OsmParserAndCustomizer;
 import Polygons.MapPolygon;
 import Polygons.PolygonAreaComparator;
@@ -138,8 +139,8 @@ public class OSMtoGraph extends JPanel
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
 		
 		//Calculate area size average
-		AreaOperator areaOp= new AreaOperator();
-		int avg= areaOp.calculateAreaSizeAverageFor(orderedListByAreaSize);
+		//AreaOperator areaOp= new AreaOperator();
+		//int avg= areaOp.calculateAreaSizeAverageFor(orderedListByAreaSize);
 	}
 	
 
@@ -190,8 +191,11 @@ public class OSMtoGraph extends JPanel
 			*/
 			compareWithSolutionModifyIfNecessaryAndAddToSolutionSet(p_polygon,polygonsInSolution);
 		}
+		
+		
 	}
 
+	
 	private void compareWithSolutionModifyIfNecessaryAndAddToSolutionSet(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
 		
 		Area initPolArea= new Area(p_polygon.getPolArea());
@@ -207,13 +211,51 @@ public class OSMtoGraph extends JPanel
 		if(polAreaIsModified){
 			if(!p_polygon.getPolArea().isEmpty()){
 				modifyPolygonsPoints(p_polygon); //el area ya se ha modificado
-				polygonsInSolution.add(p_polygon);
+				processingPolygonAndAddToSol(p_polygon,polygonsInSolution);
+				
+				//polygonsInSolution.add(p_polygon);
 			}
 		}
 		else
 		{
 				polygonsInSolution.add(p_polygon);
 		}
+	}
+
+	private void processingPolygonAndAddToSol(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
+
+			//El polígono sufrió modificaciones -> Los subpaths contienen la información del/los contorno/s de su área.
+			if(p_polygon.getSubpathsX()!=null && !p_polygon.getSubpathsX().isEmpty()){
+				LinkedList<LinkedList<Double>> xSubpath= p_polygon.getSubpathsX();
+				LinkedList<LinkedList<Double>> ySubpath= p_polygon.getSubpathsY();
+							
+				assert (xSubpath.size()==ySubpath.size());
+					
+				for(int k=0;k<xSubpath.size();k++){
+					LinkedList<Double> temp_subpathX= xSubpath.get(k);
+					LinkedList<Double> temp_subpathY= ySubpath.get(k);
+					
+					Area polArea= new AreaOperator().calculateArea(temp_subpathX, temp_subpathY);
+					Pair polPoints= new Pair(temp_subpathX,temp_subpathY);
+					MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId(),polPoints,polArea);
+					
+					polygonsInSolution.add(newPol);
+				}
+			}
+			else //No hay subpaths(el área del poligono nunca se modifico)
+			{
+				//i-esimo polígono
+				LinkedList<Double> xpoly= p_polygon.getPolygonxPoints();
+				LinkedList<Double> ypoly= p_polygon.getPolygonyPoints();
+				
+				Area polArea= new AreaOperator().calculateArea(xpoly, ypoly);
+				Pair polPoints= new Pair(xpoly,ypoly);
+				MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId(),polPoints,polArea);
+				
+				polygonsInSolution.add(newPol);
+				
+			}
+
 	}
 
 	private void modifyPolygonsPoints(MapPolygon p_polygon) {

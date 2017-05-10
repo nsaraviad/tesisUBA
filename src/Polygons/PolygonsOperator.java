@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 
+import Geom.AreaOperator;
 import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
 import GraphComponents.Pair;
@@ -91,8 +92,6 @@ public class PolygonsOperator {
 		int size= poly.size();
 		double latit, longit;
 		GraphNode temp_node;
-		//double[] xPoints= new double[size];
-		//double[] yPoints= new double[size];
 		LinkedList<Double> xPoints= new LinkedList<Double>();
 		LinkedList<Double> yPoints= new LinkedList<Double>();
 		
@@ -106,27 +105,25 @@ public class PolygonsOperator {
 			xPoints.add(CoordinatesConversor.convertLatitudeToPoint(latit));
 			yPoints.add(CoordinatesConversor.convertLongitudeToPoint(longit));
 			
-			
-			//xPoints[i]= CoordinatesConversor.convertLatitudeToPoint(latit);
-			//yPoints[i]= CoordinatesConversor.convertLongitudeToPoint(longit);
 		}
 		
 		//PUNTOS DEL POLÍGONO EN R2
 		Pair polygonPoints= new Pair(xPoints,yPoints);
 		
 		//ARMADO DEL PERÍMETRO DEL POLÍGONO
-		Path2D path= new Path2D.Double();
+		AreaOperator op= new AreaOperator();
+		Area polygon_area= op.calculateArea(xPoints,yPoints);
 		
-		//path.moveTo(xPoints[0], yPoints[0]);
+		/*Path2D path= new Path2D.Double();
 		
 		path.moveTo(xPoints.get(0), yPoints.get(0));
 		
 		for(int i=1;i < size;i++)
-			//path.lineTo(xPoints[i], yPoints[i]);
 			path.lineTo(xPoints.get(i), yPoints.get(i));
 		
 		path.closePath();
 		Area polygon_area= new Area(path);
+		*/
 		
 		//retorna el par (area, (xPoints,yPoints))
 		return new Pair(polygon_area,polygonPoints);
@@ -136,29 +133,11 @@ public class PolygonsOperator {
 	public void operateWithPolygons(OsmParserAndCustomizer p, LinkedList<MapPolygon> polygons) {
 		
 		LinkedList<LinkedList<Coordinate>> mapPols= new LinkedList<LinkedList<Coordinate>>();
+		MapPolygon tempPol;
 		
 		for(int i=0;i<polygons.size();i++){	
-			//El polígono sufrió modificaciones -> Los subpaths contienen la información del/los contorno/s de su área.
-			if(polygons.get(i).getSubpathsX()!=null && !polygons.get(i).getSubpathsX().isEmpty()){
-				LinkedList<LinkedList<Double>> xSubpath= polygons.get(i).getSubpathsX();
-				LinkedList<LinkedList<Double>> ySubpath= polygons.get(i).getSubpathsY();
-							
-				assert (xSubpath.size()==ySubpath.size());
-					
-				for(int k=0;k<xSubpath.size();k++){
-					LinkedList<Double> temp_subpathX= xSubpath.get(k);
-					LinkedList<Double> temp_subpathY= ySubpath.get(k);
-					addMapPolygonToViewer(temp_subpathX,temp_subpathY,p, mapPols);
-				}
-			}
-			else //No hay subpaths(el área del poligono nunca se modifico)
-			{
-				//i-esimo polígono
-				LinkedList<Double> xpoly= polygons.get(i).getPolygonxPoints();
-				LinkedList<Double> ypoly= polygons.get(i).getPolygonyPoints();
-				addMapPolygonToViewer(xpoly,ypoly,p, mapPols);
-			}
-		//	showPolygonsInMap(mapPols);
+			tempPol= polygons.get(i);
+			addMapPolygonToViewer(tempPol.getPolygonxPoints(),tempPol.getPolygonyPoints(),p, mapPols);
 		}
 		showPolygonsInMap(mapPols);
 	}
