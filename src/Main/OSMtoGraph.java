@@ -113,10 +113,10 @@ public class OSMtoGraph extends JPanel
 					log.append("> Final " + dtf.format(LocalDateTime.now()) + newline);
 					
      	    }catch (IOException | XmlPullParserException ex) {
-					ex	.printStackTrace();
+					ex.printStackTrace();
 			}
-             
-        }else{
+        }
+        else{
             log.append("Attachment cancelled by user." + newline);
             log.update(log.getGraphics());
         }
@@ -139,11 +139,35 @@ public class OSMtoGraph extends JPanel
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
 		
 		//Calculate area size average
-		//AreaOperator areaOp= new AreaOperator();
-		//int avg= areaOp.calculateAreaSizeAverageFor(orderedListByAreaSize);
+		/*
+		AreaOperator areaOp= new AreaOperator();
+		
+		int avg= areaOp.calculateAreaSizeAverageFor(polygonsInSolution);
+		
+		while(!acceptableSizeOfAllPols(polygonsInSolution)){
+			
+		}
+		 */
 	}
 	
+	private boolean acceptableSizeOfAllPols(LinkedList<MapPolygon> polygonsInSolution) {
+		//Verify that all polygons have acceptable area size (>= average area size)
+		boolean accept= true;
+		
+		for(int p=0;(p<polygonsInSolution.size() && accept);p++){
+			accept= checkIfPolAreaSizeAreBellowAverage(polygonsInSolution.get(p));
+		}
+		
+		return accept;
+	}
 
+	
+	private boolean checkIfPolAreaSizeAreBellowAverage(MapPolygon mapPolygon) {
+		// Compare the pol area size with area size average
+		return false;
+	}
+
+	
 	private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
 		int id_Pol;
 		for(int s=0;s < solv.getPolygonsInSolution().size();s++){
