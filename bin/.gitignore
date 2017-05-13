@@ -1,9 +1,4 @@
-/Geom/
-/GraphComponents/
 /Main/
-/MapOptimizer/
-/Parsing/
+/Geom/
 /Polygons/
-/Solver/
-/Visualizer/
-/jscip/
+/Auxiliar/

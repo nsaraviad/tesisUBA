@@ -272,13 +272,13 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		
 		//Se van concatenando los caminos para formar el contorno del polígono
 		nuevoPoligono.add(intersect_1);
-		agregar_K_esimosElementos(intersect_1,camino_int1_1, distanceTo1_int_1 - 1,nuevoPoligono);
+		addKElements(intersect_1,camino_int1_1, distanceTo1_int_1 - 1,nuevoPoligono);
 		nuevoPoligono.add(entry1.getKey());
-		agregar_K_esimosElementos(entry1.getKey(),camino_int2_1, distanceTo1_int_2 - 1,nuevoPoligono);
+		addKElements(entry1.getKey(),camino_int2_1, distanceTo1_int_2 - 1,nuevoPoligono);
 		nuevoPoligono.add(intersect_2);
-		agregar_K_esimosElementos(intersect_2,camino_int2_2, distanceTo2_int_2 - 1,nuevoPoligono);
+		addKElements(intersect_2,camino_int2_2, distanceTo2_int_2 - 1,nuevoPoligono);
 		nuevoPoligono.add(entry2.getKey());
-		agregar_K_esimosElementos(entry2.getKey(),camino_int1_2, distanceTo2_int_1 - 1,nuevoPoligono);
+		addKElements(entry2.getKey(),camino_int1_2, distanceTo2_int_1 - 1,nuevoPoligono);
 	}
 
 	
@@ -307,7 +307,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 			visitedNodes[i].add(entry1.getKey());
 	}
 
-	private void agregar_K_esimosElementos(	long lastAdded, LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
+	private void addKElements(	long lastAdded, LinkedList<AdyacencyInfo> way, int k,	LinkedList<Long> result) {
 		//Agrega los k primeros elementos de way en result
 		//Chequea que el orden sea el adecuado (que lastAdded sea el vecino del primero del camino a agregar)
 		

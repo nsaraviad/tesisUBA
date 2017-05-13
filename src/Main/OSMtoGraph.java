@@ -17,6 +17,7 @@ import javax.swing.filechooser.*;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import Auxiliar.ListOperator;
 import Geom.AreaOperator;
 import GraphComponents.Pair;
 import Parsing.OsmParserAndCustomizer;
@@ -138,33 +139,92 @@ public class OSMtoGraph extends JPanel
 		//Una vez ordenada la lista, aplico el algoritmo greedy
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
 		
-		//Calculate area size average
-		/*
-		AreaOperator areaOp= new AreaOperator();
 		
+		//Calculate area size average
+		AreaOperator areaOp= new AreaOperator();
 		int avg= areaOp.calculateAreaSizeAverageFor(polygonsInSolution);
 		
-		while(!acceptableSizeOfAllPols(polygonsInSolution)){
-			
+		MapPolygon pol, minAreaSizeNeighbor;
+		
+		while(!acceptableSizeOfAllPols(polygonsInSolution,avg)){
+			for(int p=0;p<polygonsInSolution.size();p++){
+				pol= polygonsInSolution.get(p);
+				int areasize= areaOp.getAreaSize(pol);
+				if( areasize < (avg/5)){
+					minAreaSizeNeighbor= searchMinAreaSizeNeighbor(pol,polygonsInSolution);
+					mergePolygonsAreasAndUpdatePoints(minAreaSizeNeighbor,pol);
+					polygonsInSolution.remove(pol);					
+				}
+			}
 		}
-		 */
+		
 	}
 	
-	private boolean acceptableSizeOfAllPols(LinkedList<MapPolygon> polygonsInSolution) {
+	private void mergePolygonsAreasAndUpdatePoints(MapPolygon minAreaSizeNeighbor,	MapPolygon pol) {
+		// Merge pol area with neighbor area
+		minAreaSizeNeighbor.getPolArea().add(pol.getPolArea());
+		modifyPolygonsPoints(minAreaSizeNeighbor);
+	}
+
+	private MapPolygon searchMinAreaSizeNeighbor(MapPolygon pol,LinkedList<MapPolygon> polygonsInSolution){
+		// Search the minimum area size neighbor polygon for pol
+		AreaOperator op= new AreaOperator();
+		MapPolygon neighbor,temp_pol;
+		int minArea, temp_area;
+		
+		//initialize values with first polygon of solution
+		neighbor= polygonsInSolution.getFirst();
+		minArea= op.getAreaSize(neighbor);
+		
+		//iterates over the solution
+		for(int p=1;p<polygonsInSolution.size();p++){
+			temp_pol= polygonsInSolution.get(p);
+			temp_area= op.getAreaSize(temp_pol);
+			if(areNeighborsPolygons(pol,temp_pol) && (temp_area < minArea)){
+				//updates neighbor
+				neighbor= temp_pol;
+				minArea= temp_area;
+			}
+		}
+		
+		return neighbor;
+	}
+
+	private boolean areNeighborsPolygons(MapPolygon thisPol, MapPolygon otherPol) {
+		// checks if both polygons are neighbors
+		
+		LinkedList<Double> thisXPoints,thisYPoints,otherXPoints,otherYPoints;
+		
+		thisXPoints= thisPol.getPolygonxPoints();
+		thisYPoints= thisPol.getPolygonyPoints();
+		otherXPoints= otherPol.getPolygonxPoints();
+		otherYPoints= otherPol.getPolygonyPoints();
+		
+		ListOperator op= new ListOperator();
+		
+		return op.containsIntersects(thisXPoints,otherXPoints) && 
+				op.containsIntersects(thisYPoints,otherYPoints);
+	}
+
+	
+	private boolean acceptableSizeOfAllPols(LinkedList<MapPolygon> polygonsInSolution,int avgAreaSize) {
 		//Verify that all polygons have acceptable area size (>= average area size)
 		boolean accept= true;
 		
 		for(int p=0;(p<polygonsInSolution.size() && accept);p++){
-			accept= checkIfPolAreaSizeAreBellowAverage(polygonsInSolution.get(p));
+			accept= accept & checkIfPolAreaSizeAreInRangeWithAverage(polygonsInSolution.get(p),avgAreaSize);
 		}
 		
 		return accept;
 	}
 
 	
-	private boolean checkIfPolAreaSizeAreBellowAverage(MapPolygon mapPolygon) {
+	private boolean checkIfPolAreaSizeAreInRangeWithAverage(MapPolygon mapPolygon, int avgAreaSize) {
 		// Compare the pol area size with area size average
-		return false;
+		AreaOperator op= new AreaOperator();
+		int polAreaSize= op.getAreaSize(mapPolygon);
+		
+		return (avgAreaSize*0.8 <= polAreaSize) && (polAreaSize <= avgAreaSize*1.2);
 	}
 
 	
@@ -215,8 +275,6 @@ public class OSMtoGraph extends JPanel
 			*/
 			compareWithSolutionModifyIfNecessaryAndAddToSolutionSet(p_polygon,polygonsInSolution);
 		}
-		
-		
 	}
 
 	

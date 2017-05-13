@@ -20,7 +20,7 @@ public class AreaOperator {
 	}
 
     //Calculate the area size from a MapPolygon
-  	private int getAreaSize(MapPolygon mapPolygon){
+  	public int getAreaSize(MapPolygon mapPolygon){
   		
   		LinkedList<Double> xs,ys;
   		int sum= 0;
