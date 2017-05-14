@@ -134,11 +134,13 @@ public class OSMtoGraph extends JPanel
 		//Ordered list by area size
 		LinkedList<MapPolygon> orderedListByAreaSize= new LinkedList<MapPolygon>();
 		
-		//Ordered polygons list by area size
-		orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
+		//Ordered polygons list by area size (mayor a menor)
+		orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize,0);
 		
 		//Una vez ordenada la lista, aplico el algoritmo greedy
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
+		
+		//orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
 		
 		/*
 		//Calculate area size average
@@ -231,37 +233,65 @@ public class OSMtoGraph extends JPanel
 	}
 
 	
-	private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
+	private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize,int asc) {
 		int id_Pol;
 		for(int s=0;s < solv.getPolygonsInSolution().size();s++){
 			id_Pol= solv.getPolygonsInSolution().get(s);
 			MapPolygon pol= gen.getPolygonWithId(id_Pol);
-		
-			orderedInsertByAreaSize(pol,orderedListByAreaSize);
+			
+			orderedInsertByAreaSize(pol,orderedListByAreaSize,asc);
 		}
 	}
 	
-	private void orderedInsertByAreaSize(MapPolygon pol,LinkedList<MapPolygon> orderedListByAreaSize) {
+	private void orderedInsertByAreaSize(MapPolygon pol,LinkedList<MapPolygon> orderedListByAreaSize,int asc) {
 		//Inserta ordenadamente de menor a mayor por tamaño de area
 		PolygonAreaComparator comp = new PolygonAreaComparator();
 		
-		if(orderedListByAreaSize.isEmpty()){
-			orderedListByAreaSize.add(pol);
-		}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == -1){
-			//area de pol es menor al área del primero de la lista ordenada
-			//agrego al comienzo
-			orderedListByAreaSize.add(0, pol);
-		}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == 1){
-			//area de pol es mayor al area del ultimo elemento de la lista ordenada
-			//agrego al final
-			orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
-		}else{
-			int i= 0;
-			//mientras al área de pol sea mayor al area del i-esimo poligono de la lista, se itera
-			while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == 1){
-				i++;
+		switch(asc){
+		//asc order
+		case 1:
+			
+			if(orderedListByAreaSize.isEmpty()){
+				orderedListByAreaSize.add(pol);
+			}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == -1){
+				//area de pol es menor al área del primero de la lista ordenada
+				//agrego al comienzo
+				orderedListByAreaSize.add(0, pol);
+			}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == 1){
+				//area de pol es mayor al area del ultimo elemento de la lista ordenada
+				//agrego al final
+				orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
+			}else{
+				int i= 0;
+				//mientras al área de pol sea mayor al area del i-esimo poligono de la lista, se itera
+				while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == 1){
+					i++;
+				}
+				orderedListByAreaSize.add(i, pol);
+			}	
+			
+			
+		//desc order
+		case 0:
+		
+			if(orderedListByAreaSize.isEmpty()){
+				orderedListByAreaSize.add(pol);
+			}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == 1){
+				//area de pol es mayor al área del primero de la lista ordenada
+				//agrego al comienzo
+				orderedListByAreaSize.add(0, pol);
+			}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == -11){
+				//area de pol es menor al area del ultimo elemento de la lista ordenada
+				//agrego al final
+				orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
+			}else{
+				int i= 0;
+				//mientras al área de pol sea menor al area del i-esimo poligono de la lista, se itera
+				while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == -1){
+					i++;
+				}
+				orderedListByAreaSize.add(i, pol);
 			}
-			orderedListByAreaSize.add(i, pol);
 		}
 	}
 
