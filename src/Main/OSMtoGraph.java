@@ -135,14 +135,12 @@ public class OSMtoGraph extends JPanel
 		LinkedList<MapPolygon> orderedListByAreaSize= new LinkedList<MapPolygon>();
 		
 		//Ordered polygons list by area size (mayor a menor)
-		orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize,0);
+		orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
 		
 		//Una vez ordenada la lista, aplico el algoritmo greedy
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
 		
-		//orderListByPolygonAreaSize(gen, solv, orderedListByAreaSize);
 		
-		/*
 		//Calculate area size average
 		AreaOperator areaOp= new AreaOperator();
 		double avg= areaOp.calculateAreaSizeAverageFor(polygonsInSolution);
@@ -154,14 +152,15 @@ public class OSMtoGraph extends JPanel
 			for(Iterator<MapPolygon> it= polygonsInSolution.iterator();it.hasNext();){
 				pol= it.next();
 				areasize= areaOp.getAreaSize(pol);
-				if( areasize < (avg*0.5)){
+				if( areasize < (avg*0.6)){
 					minAreaSizeNeighbor= searchMinAreaSizeNeighbor(pol,polygonsInSolution);
 					mergePolygonsAreasAndUpdatePoints(minAreaSizeNeighbor,pol);
 					it.remove(); //removes polygon pol
 				}
 			}
 		}
-		*/
+		
+		//PROCESSING NEW SUBPATHS
 		
 	}
 	
@@ -216,9 +215,8 @@ public class OSMtoGraph extends JPanel
 		//Verify that all polygons have acceptable area size (>= average area size)
 		boolean accept= true;
 		
-		for(int p=0;(p<polygonsInSolution.size() && accept);p++){
+		for(int p=0;(p<polygonsInSolution.size() && accept);p++)
 			accept= accept & checkIfPolAreaSizeAreInRangeWithAverage(polygonsInSolution.get(p),avgAreaSize);
-		}
 		
 		return accept;
 	}
@@ -229,70 +227,43 @@ public class OSMtoGraph extends JPanel
 		AreaOperator op= new AreaOperator();
 		double polAreaSize= op.getAreaSize(mapPolygon);
 		
-		return (avgAreaSize*0.5 <= polAreaSize);
+		return (avgAreaSize*0.6 <= polAreaSize);
 	}
 
 	
-	private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize,int asc) {
+	private void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
 		int id_Pol;
 		for(int s=0;s < solv.getPolygonsInSolution().size();s++){
 			id_Pol= solv.getPolygonsInSolution().get(s);
 			MapPolygon pol= gen.getPolygonWithId(id_Pol);
 			
-			orderedInsertByAreaSize(pol,orderedListByAreaSize,asc);
+			orderedInsertByAreaSize(pol,orderedListByAreaSize);
 		}
 	}
 	
-	private void orderedInsertByAreaSize(MapPolygon pol,LinkedList<MapPolygon> orderedListByAreaSize,int asc) {
+	private void orderedInsertByAreaSize(MapPolygon pol,LinkedList<MapPolygon> orderedListByAreaSize) {
 		//Inserta ordenadamente de menor a mayor por tamaño de area
 		PolygonAreaComparator comp = new PolygonAreaComparator();
 		
-		switch(asc){
-		//asc order
-		case 1:
-			
-			if(orderedListByAreaSize.isEmpty()){
+		if(orderedListByAreaSize.isEmpty()){
 				orderedListByAreaSize.add(pol);
-			}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == -1){
-				//area de pol es menor al área del primero de la lista ordenada
-				//agrego al comienzo
-				orderedListByAreaSize.add(0, pol);
-			}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == 1){
-				//area de pol es mayor al area del ultimo elemento de la lista ordenada
-				//agrego al final
-				orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
-			}else{
-				int i= 0;
-				//mientras al área de pol sea mayor al area del i-esimo poligono de la lista, se itera
-				while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == 1){
-					i++;
-				}
-				orderedListByAreaSize.add(i, pol);
-			}	
-			
-			
-		//desc order
-		case 0:
-		
-			if(orderedListByAreaSize.isEmpty()){
-				orderedListByAreaSize.add(pol);
-			}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == 1){
+		}else if(comp.compare(pol.getPolArea(),orderedListByAreaSize.getFirst().getPolArea()) == 1){
 				//area de pol es mayor al área del primero de la lista ordenada
 				//agrego al comienzo
 				orderedListByAreaSize.add(0, pol);
-			}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == -11){
+		}else if(comp.compare(pol.getPolArea(), orderedListByAreaSize.getLast().getPolArea()) == -11){
 				//area de pol es menor al area del ultimo elemento de la lista ordenada
 				//agrego al final
 				orderedListByAreaSize.add(orderedListByAreaSize.size(), pol);
-			}else{
+		}else{
 				int i= 0;
 				//mientras al área de pol sea menor al area del i-esimo poligono de la lista, se itera
 				while(comp.compare(pol.getPolArea(), orderedListByAreaSize.get(i).getPolArea()) == -1){
 					i++;
 				}
 				orderedListByAreaSize.add(i, pol);
-			}
 		}
+		
 	}
 
 	//greedy algorithm (Solo se agregan los poligonos que no se solapan)
@@ -366,9 +337,7 @@ public class OSMtoGraph extends JPanel
 				MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId(),polPoints,polArea);
 				
 				polygonsInSolution.add(newPol);
-				
 			}
-
 	}
 
 	private void modifyPolygonsPoints(MapPolygon p_polygon) {
@@ -482,6 +451,5 @@ public class OSMtoGraph extends JPanel
             }
         });
     }
-	
 	
 }
