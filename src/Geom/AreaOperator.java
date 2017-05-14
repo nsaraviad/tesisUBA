@@ -9,8 +9,8 @@ import Polygons.MapPolygon;
 public class AreaOperator {
 
 	//Calculate area size average 
-    public int calculateAreaSizeAverageFor(LinkedList<MapPolygon> polList) {
-		int areaSum= 0;
+    public double calculateAreaSizeAverageFor(LinkedList<MapPolygon> polList) {
+		double areaSum= 0;
 		
 		for(int p=0;p<polList.size();p++){
 			areaSum= areaSum + getAreaSize(polList.get(p));
@@ -20,23 +20,26 @@ public class AreaOperator {
 	}
 
     //Calculate the area size from a MapPolygon
-  	public int getAreaSize(MapPolygon mapPolygon){
+  	public double getAreaSize(MapPolygon mapPolygon){
   		
   		LinkedList<Double> xs,ys;
-  		int sum= 0;
+  		double sum= 0;
   		
-  		if(mapPolygon.getSubpathsX() == null){
-  			xs= mapPolygon.getPolygonxPoints();
-  			ys= mapPolygon.getPolygonyPoints();
+  		xs= mapPolygon.getPolygonxPoints();
+  		ys= mapPolygon.getPolygonyPoints();
   			
-  			sum= sum + calculateSum(xs, ys); 
-  		}
-  		else{//tiene mas de un subpaths
-  			for(int s=0; s < mapPolygon.getSubpathsX().size();s++)
-  				sum= sum + calculateSum(mapPolygon.getSubpathsX().get(s),mapPolygon.getSubpathsY().get(s));
+  		for(int i=0;i < xs.size()-1;i++){
+  			if(i==0){
+  				sum=+ xs.get(i)*(ys.get(i+1) - ys.get(xs.size()-1) );
+  			}
+  			else{
+  				sum=+ xs.get(i)*(ys.get(i+1) - ys.get(i-1));
+  			}
   		}
   		
-  		return Math.abs(sum/2);
+  		double area= 0.5*Math.abs(sum);
+  		
+  		return area;
   	}
   	
     //calculate the sum for 

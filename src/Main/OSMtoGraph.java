@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.awt.*;
 import java.awt.event.*;
@@ -139,24 +140,26 @@ public class OSMtoGraph extends JPanel
 		//Una vez ordenada la lista, aplico el algoritmo greedy
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
 		
-		
+		/*
 		//Calculate area size average
 		AreaOperator areaOp= new AreaOperator();
-		int avg= areaOp.calculateAreaSizeAverageFor(polygonsInSolution);
+		double avg= areaOp.calculateAreaSizeAverageFor(polygonsInSolution);
+		double areasize;
 		
 		MapPolygon pol, minAreaSizeNeighbor;
 		
 		while(!acceptableSizeOfAllPols(polygonsInSolution,avg)){
-			for(int p=0;p<polygonsInSolution.size();p++){
-				pol= polygonsInSolution.get(p);
-				int areasize= areaOp.getAreaSize(pol);
-				if( areasize < (avg/5)){
+			for(Iterator<MapPolygon> it= polygonsInSolution.iterator();it.hasNext();){
+				pol= it.next();
+				areasize= areaOp.getAreaSize(pol);
+				if( areasize < (avg*0.5)){
 					minAreaSizeNeighbor= searchMinAreaSizeNeighbor(pol,polygonsInSolution);
 					mergePolygonsAreasAndUpdatePoints(minAreaSizeNeighbor,pol);
-					polygonsInSolution.remove(pol);					
+					it.remove(); //removes polygon pol
 				}
 			}
 		}
+		*/
 		
 	}
 	
@@ -170,7 +173,7 @@ public class OSMtoGraph extends JPanel
 		// Search the minimum area size neighbor polygon for pol
 		AreaOperator op= new AreaOperator();
 		MapPolygon neighbor,temp_pol;
-		int minArea, temp_area;
+		double minArea, temp_area;
 		
 		//initialize values with first polygon of solution
 		neighbor= polygonsInSolution.getFirst();
@@ -180,7 +183,7 @@ public class OSMtoGraph extends JPanel
 		for(int p=1;p<polygonsInSolution.size();p++){
 			temp_pol= polygonsInSolution.get(p);
 			temp_area= op.getAreaSize(temp_pol);
-			if(areNeighborsPolygons(pol,temp_pol) && (temp_area < minArea)){
+			if(areNeighborsPolygons(pol,temp_pol) && (pol.getPolygonId()!= temp_pol.getPolygonId()) && (temp_area < minArea)){
 				//updates neighbor
 				neighbor= temp_pol;
 				minArea= temp_area;
@@ -207,7 +210,7 @@ public class OSMtoGraph extends JPanel
 	}
 
 	
-	private boolean acceptableSizeOfAllPols(LinkedList<MapPolygon> polygonsInSolution,int avgAreaSize) {
+	private boolean acceptableSizeOfAllPols(LinkedList<MapPolygon> polygonsInSolution,double avgAreaSize) {
 		//Verify that all polygons have acceptable area size (>= average area size)
 		boolean accept= true;
 		
@@ -219,12 +222,12 @@ public class OSMtoGraph extends JPanel
 	}
 
 	
-	private boolean checkIfPolAreaSizeAreInRangeWithAverage(MapPolygon mapPolygon, int avgAreaSize) {
+	private boolean checkIfPolAreaSizeAreInRangeWithAverage(MapPolygon mapPolygon, double avgAreaSize) {
 		// Compare the pol area size with area size average
 		AreaOperator op= new AreaOperator();
-		int polAreaSize= op.getAreaSize(mapPolygon);
+		double polAreaSize= op.getAreaSize(mapPolygon);
 		
-		return (avgAreaSize*0.8 <= polAreaSize) && (polAreaSize <= avgAreaSize*1.2);
+		return (avgAreaSize*0.5 <= polAreaSize);
 	}
 
 	
