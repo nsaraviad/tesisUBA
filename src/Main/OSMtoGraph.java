@@ -155,29 +155,36 @@ public class OSMtoGraph extends JPanel
 		
 		
 		while(!acceptableSizeOfAllPols(polygonsInSolution,avg) && (cantExpand.size() < polygonsInSolution.size())){
-			for(Iterator<MapPolygon> it= polygonsInSolution.iterator();it.hasNext();){
-				pol= it.next();
+			checkAndMergePolygons(polygonsInSolution, areaOp, avg, cantExpand);
+		}
+	}
+
+	private void checkAndMergePolygons(LinkedList<MapPolygon> polygonsInSolution, AreaOperator areaOp,
+										double avg, HashSet<MapPolygon> cantExpand) {
+		MapPolygon pol;
+		MapPolygon minAreaSizeNeighbor;
+		for(Iterator<MapPolygon> it= polygonsInSolution.iterator();it.hasNext();){
+			pol= it.next();
+			
+			if(!cantExpand.contains(pol)){
+				double areasize= areaOp.getAreaSize(pol);
 				
-				if(!cantExpand.contains(pol)){
-					double areasize= areaOp.getAreaSize(pol);
+				if(areasize < (avg*0.5)){
+					minAreaSizeNeighbor= searchMinAreaSizeNeighbor(pol,polygonsInSolution,avg,cantExpand);
 					
-					if(areasize < (avg*0.5)){
-						minAreaSizeNeighbor= searchMinAreaSizeNeighbor(pol,polygonsInSolution,avg,cantExpand);
-						
-						if(minAreaSizeNeighbor != null){
-						
-							//neighbor found
-							mergePolygonsAreasAndUpdatePoints(minAreaSizeNeighbor,pol);
-							it.remove(); //removes polygon pol
-						}
-						else{ 
-							//neighbor not found
-							cantExpand.add(pol);
-						}
-						
-					}else{
-						  cantExpand.add(pol);
+					if(minAreaSizeNeighbor != null){
+					
+						//neighbor found
+						mergePolygonsAreasAndUpdatePoints(minAreaSizeNeighbor,pol);
+						it.remove(); //removes polygon pol
 					}
+					else{ 
+						//neighbor not found
+						cantExpand.add(pol);
+					}
+					
+				}else{
+					  cantExpand.add(pol);
 				}
 			}
 		}
