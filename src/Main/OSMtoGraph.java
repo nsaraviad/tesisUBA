@@ -141,16 +141,12 @@ public class OSMtoGraph extends JPanel
 		//Una vez ordenada la lista, aplico el algoritmo greedy
 		greedyAddingMapPolygon(orderedListByAreaSize, polygonsInSolution);
 		
-		/*
-		MapPolygon pol;
-		for(Iterator<MapPolygon> it=polygonsInSolution.iterator();it.hasNext();){
-			pol= it.next();
-			if(pol.getPolygonId()!=2308 && pol.getPolygonId()!=2266)
-				it.remove();
-		}*/
+		//Processing solution polygons
+		processingAndMergeSmallPolygons(polygonsInSolution);
 		
-		
-		//Calculate area size average
+	}
+
+	private void processingAndMergeSmallPolygons(LinkedList<MapPolygon> polygonsInSolution) {
 		AreaOperator areaOp= new AreaOperator();
 		double avg= areaOp.calculateAreaSizeAverageFor(polygonsInSolution);
 		
@@ -185,8 +181,6 @@ public class OSMtoGraph extends JPanel
 				}
 			}
 		}
-		
-		
 	}
 	
 	private void mergePolygonsAreasAndUpdatePoints(MapPolygon minAreaSizeNeighbor,	MapPolygon pol) {
