@@ -362,7 +362,7 @@ public class OSMtoGraph extends JPanel
 					
 					Area polArea= new AreaOperator().calculateArea(temp_subpathX, temp_subpathY);
 					Pair polPoints= new Pair(temp_subpathX,temp_subpathY);
-					MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId()+200+k,polPoints,polArea);
+					MapPolygon newPol= new MapPolygon(p_polygon.getPolygonId()*2 + k,polPoints,polArea);
 					
 					polygonsInSolution.add(newPol);
 				}
