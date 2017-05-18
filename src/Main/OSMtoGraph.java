@@ -161,8 +161,8 @@ public class OSMtoGraph extends JPanel
 
 	private void checkAndMergePolygons(LinkedList<MapPolygon> polygonsInSolution, AreaOperator areaOp,
 										double avg, HashSet<MapPolygon> cantExpand) {
-		MapPolygon pol;
-		MapPolygon minAreaSizeNeighbor;
+		MapPolygon pol,minAreaSizeNeighbor;
+		
 		for(Iterator<MapPolygon> it= polygonsInSolution.iterator();it.hasNext();){
 			pol= it.next();
 			
