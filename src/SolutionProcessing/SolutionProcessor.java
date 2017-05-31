@@ -24,8 +24,8 @@ public class SolutionProcessor {
 		MapPolygon pol, minAreaSizeNeighbor;
 		HashSet<MapPolygon> cantExpand= new HashSet<MapPolygon>();
 		
-		// && canExpandPolygons(polygonsInSolution, cantExpand)
-		while(!acceptableSizeOfAllPols(polygonsInSolution,avg)){
+		
+		while(!acceptableSizeOfAllPols(polygonsInSolution,avg) && canExpandPolygons(polygonsInSolution, cantExpand)){
 			checkAndMergePolygons(polygonsInSolution, areaOp, avg, cantExpand);
 		}
 	}
@@ -61,7 +61,7 @@ public class SolutionProcessor {
 			
 							}else{
 									cantExpand.add(pol);
-									}
+								}
 				}
 			}
 	}

@@ -140,7 +140,7 @@ public class SystemSolver {
 	    }
 
 	    //set limits time param (in seconds)
-	    scip.setRealParam("limits/time",100);
+	    scip.setRealParam("limits/time",600);
 	    scip.solve();
 		
 		Solution sol= scip.getBestSol();
