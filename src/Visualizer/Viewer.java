@@ -95,7 +95,7 @@ public class Viewer
 	}
 
 	// Muestra el frame
-	public void mostrar()
+	public void show()
 	{
 		_frame.setVisible(true);
 	}

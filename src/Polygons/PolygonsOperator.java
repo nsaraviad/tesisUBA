@@ -156,7 +156,7 @@ public class PolygonsOperator {
 	//SHOW POLYGON IN MAP
 	private void showPolygonsInMap(LinkedList<LinkedList<Coordinate>> lista) {
 		Viewer viewer = new Viewer(lista);
-		viewer.mostrar();
+		viewer.show();
 	}
 	
 }
