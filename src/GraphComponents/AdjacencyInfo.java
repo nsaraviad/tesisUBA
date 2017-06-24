@@ -1,7 +1,7 @@
 package GraphComponents;
 
 
-public class AdyacencyInfo{
+public class AdjacencyInfo{
 
 	private final long adyacent_id;
 	private final double lenght;
@@ -10,7 +10,7 @@ public class AdyacencyInfo{
 	private final String name;
 	
 	
-	public AdyacencyInfo(long ady_id, double lgt, boolean oneWay, String typ, String nm){
+	public AdjacencyInfo(long ady_id, double lgt, boolean oneWay, String typ, String nm){
 		adyacent_id= ady_id;
 		lenght= lgt;
 		isOneWayInfo= oneWay;
@@ -18,7 +18,7 @@ public class AdyacencyInfo{
 		name= nm;
 	}
 	
-	public long getAdyId() {return adyacent_id;}
+	public long getAdjId() {return adyacent_id;}
 	public double getLenght() {return lenght;}
 	public boolean getOneWay() {return isOneWayInfo;}
 	public String getType() {return type;}

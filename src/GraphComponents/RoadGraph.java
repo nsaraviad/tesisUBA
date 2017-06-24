@@ -15,7 +15,7 @@ import Parsing.BinSearch;
 public class RoadGraph {
 
 	private HashMap<Long,GraphNode> nodes;
-	private Map<Long,LinkedList<AdyacencyInfo>> adylst;
+	private Map<Long,LinkedList<AdjacencyInfo>> adylst;
 	private LinkedList<Long> refBound;
 	public LinkedList<GraphNode> nodesBoundary;
 	
@@ -185,7 +185,7 @@ public class RoadGraph {
 			if(way.getType() != null){
 			
 				long keyActualNode, keyNextNode; 
-				AdyacencyInfo nextNodeAsNeighbor, actualNodeAsNeighbor ;
+				AdjacencyInfo nextNodeAsNeighbor, actualNodeAsNeighbor ;
 				
 				GraphNode firstNode = getNode(allNodes,(long) way.getRefs().get(0));
 				keyActualNode= firstNode.getId();
@@ -203,12 +203,12 @@ public class RoadGraph {
 					//AGREGO AL HASHMAP
 					
 					//long ady_id, double lgt, boolean oneWay, String typ, String nm
-					nextNodeAsNeighbor = new AdyacencyInfo(nextNode.getId(),len,way.isOneway(),way.getType(),way.getName());
-					actualNodeAsNeighbor= new AdyacencyInfo(keyActualNode,len,way.isOneway(),way.getType(),way.getName());
+					nextNodeAsNeighbor = new AdjacencyInfo(nextNode.getId(),len,way.isOneway(),way.getType(),way.getName());
+					actualNodeAsNeighbor= new AdjacencyInfo(keyActualNode,len,way.isOneway(),way.getType(),way.getName());
 					
 					//Si no estan creadas las listas para ambos id,se crean
-					adylst.putIfAbsent(keyActualNode,new LinkedList<AdyacencyInfo>());
-					adylst.putIfAbsent(keyNextNode,new LinkedList<AdyacencyInfo>());
+					adylst.putIfAbsent(keyActualNode,new LinkedList<AdjacencyInfo>());
+					adylst.putIfAbsent(keyNextNode,new LinkedList<AdjacencyInfo>());
 					
 					//Si la clave está ya contenida
 					if(adylst.containsKey(keyActualNode))
@@ -428,7 +428,7 @@ public class RoadGraph {
 		return this.nodes;
 	}
 	
-	public  Map<Long,LinkedList<AdyacencyInfo>> getAdyLst(){
+	public  Map<Long,LinkedList<AdjacencyInfo>> getAdjLst(){
 		return this.adylst;
 	}
 }

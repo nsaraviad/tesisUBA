@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import Visualizer.CoordinatesConversor;
 import Visualizer.Viewer;
-import GraphComponents.AdyacencyInfo;
+import GraphComponents.AdjacencyInfo;
 import GraphComponents.DirectedEdge;
 import GraphComponents.GraphNode;
 import GraphComponents.Pair;
@@ -92,13 +92,13 @@ public class OsmParserAndCustomizer {
 	private void generateEdges() {
 		GraphNode actual, adyNode;
 		HashSet visitedNodes= new HashSet();
-		AdyacencyInfo adyItem;
+		AdjacencyInfo adyItem;
 		DirectedEdge tempEdge;
 		
 		
-		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
+		for(Iterator<Entry<Long,LinkedList<AdjacencyInfo>>> it= g.getAdjLst().entrySet().iterator(); it.hasNext();)
 		{
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
+			Map.Entry<Long, LinkedList<AdjacencyInfo>> entry= it.next();
 			
 			//Nodo actual
 			actual= g.getNodes().get(entry.getKey());
@@ -108,14 +108,14 @@ public class OsmParserAndCustomizer {
 				visitedNodes.add(entry.getKey());
 				
 				//Lista de adyacentes
-				LinkedList<AdyacencyInfo> listValues= entry.getValue();
+				LinkedList<AdjacencyInfo> listValues= entry.getValue();
 				
 				for(int i=0;i < listValues.size();i++){
 					//nodo adyacente "actual"
 					adyItem= listValues.get(i);
-					adyNode= g.getNodes().get(adyItem.getAdyId());
+					adyNode= g.getNodes().get(adyItem.getAdjId());
 					
-					if(!visitedNodes.contains(adyItem.getAdyId()) && adyNode != null && nodeIsIncludedInCity(adyNode)){
+					if(!visitedNodes.contains(adyItem.getAdjId()) && adyNode != null && nodeIsIncludedInCity(adyNode)){
 						
 						//Se obtiene el cuadrante donde se encuentra el nuevo eje (cuadrante del primer extremo)
 						int edgeQuads= getEdgeQuadrant(actual,adyNode);
@@ -171,24 +171,24 @@ public class OsmParserAndCustomizer {
 
 	private void filterGraph() {
 		filterOnlyNodesInCityPolygon();
-		filterOnlyCityAdyNodes();
+		filterOnlyCityAdjNodes();
 	}
 
-	private void filterOnlyCityAdyNodes() {
-		AdyacencyInfo ady;
+	private void filterOnlyCityAdjNodes() {
+		AdjacencyInfo ady;
 		//FILTRO EN LA LISTA DE ADYACENCIAS DE CADA NODO LOS ADYACENTES PERTENECIENTES A LA CIUDAD 
-		for(Iterator<Entry<Long,LinkedList<AdyacencyInfo>>> it= g.getAdyLst().entrySet().iterator(); it.hasNext();)
+		for(Iterator<Entry<Long,LinkedList<AdjacencyInfo>>> it= g.getAdjLst().entrySet().iterator(); it.hasNext();)
 		{
-			Map.Entry<Long, LinkedList<AdyacencyInfo>> entry= it.next();
+			Map.Entry<Long, LinkedList<AdjacencyInfo>> entry= it.next();
 			
 			//verifica si es un nodo de la ciudad
 			if(g.getNodes().containsKey(entry.getKey())){
-				LinkedList<AdyacencyInfo> listValues= entry.getValue();
+				LinkedList<AdjacencyInfo> listValues= entry.getValue();
 				for(int i=0;i < listValues.size();i++){
 					ady= listValues.get(i);
 					
 					//Si el adyacente no es nodo de la ciudad lo quito de la lista de adyacentes
-					if(!g.getNodes().containsKey(ady.getAdyId()))
+					if(!g.getNodes().containsKey(ady.getAdjId()))
 						entry.getValue().remove(ady);
 				}
 			}else{
