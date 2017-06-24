@@ -411,14 +411,14 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 	}
 	
 	private boolean deGrado234(Long nodeKey) {
-		return (esDeGrado2Particular(nodeKey) || degree(nodeKey,3) || degree(nodeKey,4));
+		return (esDeGrado2Particular(nodeKey) || isDegree(nodeKey,3) || isDegree(nodeKey,4));
 	}
 
 	private boolean esDeGrado2Particular(Long nodeKey) {
 		//Retorna true si el nodo es de grado 2 y el angulo formado entre los ejes adyacentes esta proximo a los 90º
 		boolean result= false;
 		
-		if(degree(nodeKey,2))
+		if(isDegree(nodeKey,2))
 			ejesEntrantesEnAngulo(nodeKey);
 		
 		return result;
@@ -554,7 +554,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		
 	}
 
-	private boolean degree(Long node_id,int grado) {
+	private boolean isDegree(Long node_id,int grado) {
 		//devuelve true cuando el grado del nodo es igual algrado especificado
 		int gradoNodo = adjLst.get(node_id).size();
 		return (gradoNodo == grado);
@@ -701,7 +701,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 					//Actualizo el angulo "actual que cumple"
 					//Considero aquellos nodos de grado 2 que pueden continuar por un path
 					if( ( ((0 < angle) && (angle < 45) && !visitedNodes.contains(ady_temp_id)) ) ||
-						( (degree(lastNode_id,2)) &&  ((0 < angle) && (angle < 50) && !visitedNodes.contains(ady_temp_id)))	)
+						( (isDegree(lastNode_id,2)) &&  ((0 < angle) && (angle < 50) && !visitedNodes.contains(ady_temp_id)))	)
 						result= adyacents.get(i);
 				}	
 				
