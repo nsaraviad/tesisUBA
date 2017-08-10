@@ -379,9 +379,9 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		//Se verifica que (entry1,entry2) con entry1 != entry2 y que el grado(entry1)=grado(entry2)=4
 		//y ademas no tiene que estar en la misma calle
 		
-		return  nodosDistintos(entry1, entry2) && 
+		return  differentsNodes(entry1, entry2) && 
 				distanceBetweenNodesInRange(entry1,entry2,0.85,1.2) &&
-				filtroGradoNodos(entry1,entry2) &&
+				graphNodesFilter(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
 	}
@@ -406,15 +406,15 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 				rg.getDistance(lat1, long1, lat2, long2) > minDist ;
 	}
 
-	private boolean filtroGradoNodos(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
-		return deGrado234(entry1.getKey()) && deGrado234(entry2.getKey()); 
+	private boolean graphNodesFilter(Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2) {
+		return degrees234(entry1.getKey()) && degrees234(entry2.getKey()); 
 	}
 	
-	private boolean deGrado234(Long nodeKey) {
-		return (esDeGrado2Particular(nodeKey) || isDegree(nodeKey,3) || isDegree(nodeKey,4));
+	private boolean degrees234(Long nodeKey) {
+		return (degree2Part(nodeKey) || isDegree(nodeKey,3) || isDegree(nodeKey,4));
 	}
 
-	private boolean esDeGrado2Particular(Long nodeKey) {
+	private boolean degree2Part(Long nodeKey) {
 		//Retorna true si el nodo es de grado 2 y el angulo formado entre los ejes adyacentes esta proximo a los 90º
 		boolean result= false;
 		
@@ -453,7 +453,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 	}
 		
 
-	private boolean nodosDistintos(	Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2){
+	private boolean differentsNodes(	Entry<Long, GraphNode> entry1,Entry<Long, GraphNode> entry2){
 		return entry1.getKey() != entry2.getKey();
 	}
 

@@ -93,7 +93,7 @@ public class OSMtoGraph extends JPanel
 	            	log.update(log.getGraphics());
 	                PolygonsGenerator gen= new PolygonsGeneratorFromFilteredEntries(p);
 					gen.generatePolygons();
-										
+															
 					//Solving problem
 					log.append("> Solving system ..." + newline);
 	            	log.update(log.getGraphics());

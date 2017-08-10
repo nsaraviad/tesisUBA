@@ -57,11 +57,11 @@ public class SolutionProcessor {
 							else{ 
 									//neighbor not found
 									cantExpand.add(pol);
-									}
-			
-							}else{
-									cantExpand.add(pol);
 								}
+			
+						}else{
+								cantExpand.add(pol);
+						  	 }
 				}
 			}
 	}
@@ -224,7 +224,7 @@ public class SolutionProcessor {
 	private void processingPolygonAndAddToSol(MapPolygon p_polygon,LinkedList<MapPolygon> polygonsInSolution) {
 
 		//El polígono sufrió modificaciones -> Los subpaths contienen la información del/los contorno/s de su área.
-		if(p_polygon.getSubpathsX()!=null && !p_polygon.getSubpathsX().isEmpty()){
+		if(p_polygon.getSubpathsX()!=null && !p_polygon.getSubpathsX().getFirst().isEmpty()){
 			LinkedList<LinkedList<Double>> xSubpath= p_polygon.getSubpathsX();
 			LinkedList<LinkedList<Double>> ySubpath= p_polygon.getSubpathsY();
 						
@@ -241,7 +241,7 @@ public class SolutionProcessor {
 				polygonsInSolution.add(newPol);
 			}
 		}
-		else //No hay subpaths(el área del poligono nunca se modifico)
+		else //No hay subpaths(el área del poligono nunca se dividió)
 		{
 			//i-esimo polígono
 			LinkedList<Double> xpoly= p_polygon.getPolygonxPoints();
