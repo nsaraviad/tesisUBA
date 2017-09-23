@@ -22,7 +22,6 @@ public class RoadGraph {
 	public RoadGraph(){
 		nodes= new HashMap();
 		adylst= new HashMap();
-		
 		refBound = new LinkedList<Long>();
 		nodesBoundary = new LinkedList<GraphNode>();
 	}

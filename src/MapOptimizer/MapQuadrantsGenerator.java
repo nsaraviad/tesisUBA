@@ -91,7 +91,6 @@ public class MapQuadrantsGenerator {
 		
 		//Conversión y calculo area de cada cuadrante
 		calculateQuadrantsAreas(quadrantsPoints);
-		
 		setResultsInOsmParser();
 }
 

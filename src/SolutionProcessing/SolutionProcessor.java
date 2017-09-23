@@ -143,7 +143,7 @@ public class SolutionProcessor {
 		AreaOperator op= new AreaOperator();
 		double polAreaSize= op.getAreaSize(mapPolygon);
 		
-		return ((avgAreaSize*0.5) <= polAreaSize);
+		return ((avgAreaSize*0.7) <= polAreaSize);
 	}
 	
 	public void orderListByPolygonAreaSize(PolygonsGenerator gen,SystemSolver solv,LinkedList<MapPolygon> orderedListByAreaSize) {
@@ -228,7 +228,7 @@ public class SolutionProcessor {
 			LinkedList<LinkedList<Double>> xSubpath= p_polygon.getSubpathsX();
 			LinkedList<LinkedList<Double>> ySubpath= p_polygon.getSubpathsY();
 						
-			assert (xSubpath.size()==ySubpath.size());
+			assert (xSubpath.size() == ySubpath.size());
 				
 			for(int k=0;k<xSubpath.size();k++){
 				LinkedList<Double> temp_subpathX= xSubpath.get(k);
@@ -244,7 +244,7 @@ public class SolutionProcessor {
 		else //No hay subpaths(el área del poligono nunca se dividió)
 		{
 			//i-esimo polígono
-			LinkedList<Double> xpoly= p_polygon.getPolygonxPoints();
+			LinkedList<Double> xpoly= p_polygon.getPolygonxPoints();	
 			LinkedList<Double> ypoly= p_polygon.getPolygonyPoints();
 			
 			Area polArea= new AreaOperator().calculateArea(xpoly, ypoly);
@@ -291,7 +291,6 @@ public class SolutionProcessor {
 					l2.add(aux_lsty);
 					break;
 			}
-			
 		}
 		
 		//ambas longitudes deben ser iguales
@@ -340,6 +339,5 @@ public class SolutionProcessor {
 		for(int i=0;i < l1.size();i++)
 			xp[i]= l1.get(i);
 	}
-
 
 }
