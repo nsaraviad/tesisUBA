@@ -380,7 +380,7 @@ public class PolygonsGeneratorFromFilteredEntries extends PolygonsGenerator {
 		//y ademas no tiene que estar en la misma calle
 		
 		return  differentsNodes(entry1, entry2) && 
-				distanceBetweenNodesInRange(entry1,entry2,0.9,1.2) &&
+				distanceBetweenNodesInRange(entry1,entry2,0.7,1) &&
 				graphNodesFilter(entry1,entry2) &&
 			    theyAreNotNeighbors(entry1,entry2) && 
 				noDirectPathBetween(entry1,entry2);
