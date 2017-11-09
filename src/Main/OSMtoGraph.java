@@ -153,7 +153,7 @@ public class OSMtoGraph extends JPanel
 		  
      private static void createAndShowGUI() {
 	        //Create and set up the window.
-	        JFrame frame = new JFrame("OZM");
+	        JFrame frame = new JFrame("OSMz");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        
 	        //Add content to the window.
